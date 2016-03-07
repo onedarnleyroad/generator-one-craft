@@ -1,5 +1,18 @@
  {
+    "author": "One Darnley Road Digital Ltd",
     "devDependencies": {
-        "gulp": "^3.9.0"
+        "browser-sync": "^2.9.11",
+        "gulp": "^3.8.10",
+        "gulp-autoprefixer": "^3.1.0",
+        "gulp-file-include": "^0.11.1",
+        "gulp-if": "^2.0.0",
+        "gulp-load-plugins": "^1.0.0",
+        "gulp-merge-media-queries": "^0.2.1",
+        "gulp-plumber": "^0.6.6",
+        "gulp-sass": "^2.1.0",
+        "gulp-sourcemaps": "^1.6.0",
+        "gulp-uglifycss": "^1.0.4",
+        "gulp-useref": "^3.0.4",
+        "gulp-watch": "^3.0.0"
     }
 }
