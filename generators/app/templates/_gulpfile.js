@@ -166,4 +166,4 @@ gulp.task('serve', ['styles'], function() {
 
 gulp.task('default', ['styles', 'templates'], function() {
     console.log( "copying styles and templates");
-}
+});

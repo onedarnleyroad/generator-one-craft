@@ -2,6 +2,7 @@ var path = require('path');
 var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
 var yosay = require('yosay');
+var mkdirp = require('mkdirp');
 
 // include our own utilities
 var oneutils = require('./utils.js');
@@ -224,15 +225,29 @@ module.exports = yeoman.Base.extend({
 
         this.fs.copyTpl( this.templatePath('_gulpfile.js'), this.destinationPath('gulpfile.js'), gulpOptions );
 
+        // Package JSON
+        this.fs.copyTpl( this.templatePath('_package.json'), this.destinationPath('package.json'), gulpOptions );
 
-        // copying folders entirely
-        // craft
 
-        var folders = ['craft', 'public', 'src'];
 
-        var self = this;
+        /**
+         * ---------------
+         * Copying Folders
+         * ---------------
+         */
+
+
+        // Copying folders with things in them
+        var folders = ['craft', 'public', 'src/scss'];
+
+        // using some ES6 arrow functions here.
+        // 1. It's NodeJS, it's our side, it should just work unless the NodeJS is very old.
+        //
+        // 2. It's so much easier considering how important "this" is in the context of the yeoman process.
+        //    So it saves a lot of silly var self = this as ES6 was supposed to do.
+        //
         folders.forEach( (folder) =>  {
-            console.log( folder, this.templatePath( folder + '/**/*') );
+
 
             this.fs.copyTpl(
                 this.templatePath( folder + '/**/*'),
@@ -240,6 +255,28 @@ module.exports = yeoman.Base.extend({
             );
 
         } );
+
+
+        // Empty folders - be careful with nested folders and also be careful that they don't exist above
+        // although in that case it should fail gracefully enough.
+        //
+        // this uses `mkdir -p` where it'll make parent directories.
+        //
+        // We can make directories with code here, without them having to exist in the generator itself.
+        var emptyFolders = [
+            'src/img',
+            'src/js',
+            'src/partials'
+        ];
+
+        console.log('Making empty folders...');
+        emptyFolders.forEach( (folder) => {
+            console.log(chalk.green('     ' + folder ) );
+            mkdirp( this.destinationPath( folder ), function(err) {
+                if (err) { console.log( chalk.red(err) ); }
+            });
+        });
+
 
 
 
@@ -261,10 +298,6 @@ module.exports = yeoman.Base.extend({
     // in the case of this stuff bower and npm are probably not optional, as the package will define
     // how we build and develop a new project so unless we're also going to ask about what dependencies they want...
     ,install: function () {
-
-        if (!this.props.runinstall) {
-            return;
-        }
 
         if (this.props.bower) {
             this.installDependencies();

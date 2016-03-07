@@ -13,6 +13,8 @@
         "gulp-sourcemaps": "^1.6.0",
         "gulp-uglifycss": "^1.0.4",
         "gulp-useref": "^3.0.4",
-        "gulp-watch": "^3.0.0"
+        "gulp-watch": "^3.0.0",
+        "gulp-changed": "^1.3.0",
+        "gulp-imagemin": "^2.4.0"
     }
 }

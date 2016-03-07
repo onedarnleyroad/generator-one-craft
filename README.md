@@ -113,8 +113,10 @@ Just some notes for our node modules and tools to run the generator.  This is no
 ### Chalk
 
 https://www.npmjs.com/package/chalk
+**Simply colours the console output - makes for easier reading of the terminal's output.**
 
-Simply colours the console output - makes for easier reading of the terminal's output.
+https://www.npmjs.com/package/mkdirp
+**So we can just build empty directories, as Yeoman isn't so great at 'copying' empty directories.**
 
 --
 
