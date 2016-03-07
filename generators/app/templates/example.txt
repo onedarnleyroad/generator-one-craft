@@ -1,3 +1,0 @@
-This is an example file
-
-Username set was <%= username %>
