@@ -3,6 +3,11 @@ var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
 var yosay = require('yosay');
 
+// include our own utilities
+var oneutils = require('./utils.js');
+
+// oneutils.stripTrailingSlash(str) // returns a string without a trailing slash
+
 module.exports = yeoman.Base.extend({
 
     /**
@@ -101,7 +106,7 @@ module.exports = yeoman.Base.extend({
      * or choosing which packages to install or whatever we like.
      *
      */
-    prompting: function () {
+    ,prompting: function () {
         var done = this.async();
 
         // Have Yeoman greet the user.
@@ -121,17 +126,7 @@ module.exports = yeoman.Base.extend({
                 type: 'confirm', // input, confirm, list, rawlist, password
                 name: 'bower',
                 message: 'Using Bower?',
-                default: false
-            },
-
-
-
-            // Yes / no example
-            {
-                type: 'confirm', // input, confirm, list, rawlist, password
-                name: 'runinstall',
-                message: 'Run an npm install?',
-                default: false
+                default: true
             },
 
             // Craft Username
@@ -140,6 +135,22 @@ module.exports = yeoman.Base.extend({
                 name: 'adminUsername',
                 message: 'What should be the admin username for Craft?',
                 default: 'webmaster'
+            },
+
+            // Proxy
+            {
+                type: 'input',
+                name: 'proxy',
+                message: 'What will you call your dev server? eg 1dr.dev',
+                default: 'local.dev'
+            },
+
+            // Destination for Assets
+            {
+                type: 'input',
+                name: 'assets',
+                message: 'Where will your assets live? Default ./public/assets',
+                default: './public/assets'
             }
 
         ];
@@ -191,56 +202,50 @@ module.exports = yeoman.Base.extend({
 
         console.log( chalk.grey( "Installing dependencies" ) );
 
-
-
-        // Copying files:
-
-        // note `this.fs` is
+        // Note `this.fs` is
         // https://github.com/sboudrias/mem-fs-editor
         // and not the native node fs = require('fs') module.
-
-        // with recent node, we can use various ES6 stuff, but you can say if you'd rather avoid this coding style
-        // but when the node docs use it, it feels like it's worth playing with
-
-        // dynamic files defined only in this file
-        this.fs.write( this.destinationPath('userLogin.txt'), "User is " + this.props.adminUsername );
-
-
-        // files run through templates:
+        //
+        // Files run through templates:
         // see http://ejs.co/
         // but basically <%= username %> corresponds to the property below.
         // we can also have nested properties eg user.name and so on.
         //
         // The nice advantage with <%= %> as a syntax is it doesn't clash with twig or any other templating we're using
         // in our actual projects so far.
-        this.fs.copyTpl(
-            this.templatePath('example.txt'),
-            this.destinationPath('example.txt'),
-            { username: this.props.adminUsername }
-        );
+
+        // GULPFILE
+        // send this to the gulpfile
+        var gulpOptions = {
+            assets: oneutils.stripTrailingSlash( this.props.assets ),
+            bower: this.props.bower,
+            proxy: this.props.proxy
+        };
+
+        this.fs.copyTpl( this.templatePath('_gulpfile.js'), this.destinationPath('gulpfile.js'), gulpOptions );
 
 
-        // copy our minified JS to see it beautified:
-        this.fs.copy(
-            this.templatePath('minified.js'),
-            this.destinationPath('beautified.js')
-        );
+        // copying folders entirely
+        // craft
 
-        // example of copying directory using globs (like in gulp.src) - we don't have to explicitly list each file
-        this.fs.copyTpl(
-            this.templatePath('contents/**/*'),
-            this.destinationPath('contents/')
-        );
+        var folders = ['craft', 'public', 'src'];
+
+        var self = this;
+        folders.forEach( (folder) =>  {
+            console.log( folder, this.templatePath( folder + '/**/*') );
+
+            this.fs.copyTpl(
+                this.templatePath( folder + '/**/*'),
+                this.destinationPath( folder + '/')
+            );
+
+        } );
 
 
 
 
 
-        // copy the package.json so NPM can do something with it later
-        this.fs.copy(
-            this.templatePath('_package.json'),
-            this.destinationPath('package.json')
-        );
+
 
 
 
