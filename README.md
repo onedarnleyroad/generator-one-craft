@@ -24,6 +24,29 @@ Now, it's installed on your system, and accessible from Yeoman.  Effectively mod
 $ yo one-craft
 ```
 
+## Folder Structure
+
+These folders are generated from the `app/templates` directory but there may be some moving around on the Yeoman scaffolding process.  So below is what you'll end up with:
+
+```
+├── craft                       # Craft CMS app
+├── public                      # Document root directory, used by craft.  Compiled assets end up here
+├── src                         # Front end source files mostly
+|   ├── scss                    
+|   ├── js
+|   ├── img                     # do we want to do this? this can get compiled into the public folder, and transformed - eg losslessly compressed?
+|   └── templates               # this is for any twig template snippets you wish to transform before sending to craft
+|   
+├── README.md
+├── .gitignore       
+├── package.json
+├── bower.json                  
+├── gulpfile.js
+└── ???
+```     
+
+
+
 
 ## Optional
 
