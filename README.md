@@ -1,15 +1,15 @@
-# Yeoman Generator - Example 
+# Craft CMS Generator  
 
-Barebones generator, with a lot of comments.  This doesn't really do anything, but copy a few arbitrary files to understand how to build a yeoman generator.
+Scaffold a new Craft CMS project, the One Darnley Road way.
 
 ## Installing the Generator
 
 While this is in development and not published on NPM, we need to take a few steps to get this repo working as a yeoman generator.  When this is done, you are able to continue to make changes to the generator itself and have those instantly updated the next time you run the generator.
 
-**Please note that the folder that the repo lives in needs to be prefixed with `generator`.**  Eg: `generator-name` - where `name` is the name of the generator,  and thus you would run `yo name` to run the app.  See http://yeoman.io/authoring/ for more details.
+**Please note that the folder that the repo lives in needs to be prefixed with `generator`.**  Eg: `generator-one-craft` - where `one-craft` is the name of the generator,  and thus you would run `yo one-craft` to run the app.  See http://yeoman.io/authoring/ for more details.
 
 ```
-$ git clone https://github.com/nathanedwards/generator-example.git
+$ git clone https://github.com/onedarnleyroad/generator-one-craft.git
 $ npm install
 ```
 We need to link this as a global npm module so that yeoman can find it, and make sure yeoman is globally installed:
@@ -21,13 +21,28 @@ $ npm install -g yeoman # if not previously done
 Now, it's installed on your system, and accessible from Yeoman.  Effectively modifying this repo, doing a git pull updates the generator, so be wary if someone has updated the repo, they've updated the generator.  After `npm link` has done its thing you can run the generator:
 
 ```
-$ yo example
+$ yo one-craft
 ```
 
 
-## Options
+## Optional
 
-***to do***
+***Proposed***
+
+1. Bower
+
+## Non-optionals
+For want of a better term, these things are going to install no matter what
+
+### Gulp and Gulp Plugins
+
+
+## Optionals
+Things that you don't have to use, but may want
+1. Bower
+Add this 
+
+    
 
 
 # To Do
