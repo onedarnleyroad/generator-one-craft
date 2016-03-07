@@ -1,0 +1,25 @@
+{
+  "name": "generator-example",
+  "version": "0.0.1",
+  "description": "Yeoman generator to spin up Craft CMS project, One Darnley Road style",
+  "files": [
+    "generators/app"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "craftcms",
+    "craft",
+    "yeoman-generator"
+  ],
+  "author": "One Darnley Road",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^1.1.1",
+    "gulp-beautify": "^2.0.0",
+    "gulp-if": "^2.0.0",
+    "yeoman-generator": "^0.22.5",
+    "yosay": "^1.1.0"
+  }
+}
