@@ -29,7 +29,7 @@ $ yo one-craft
 These folders are generated from the `app/templates` directory but there may be some moving around on the Yeoman scaffolding process.  So below is what you'll end up with:
 
 ```
-├── craft                       # Craft CMS app
+├── craft                       # Craft CMS app - including templates.
 ├── public                      # Document root directory, used by craft.  Compiled assets end up here
 ├── src                         # Front end source files mostly
 |   ├── scss                    
@@ -44,6 +44,7 @@ These folders are generated from the `app/templates` directory but there may be 
 ├── gulpfile.js
 └── ???
 ```     
+
 
 
 
