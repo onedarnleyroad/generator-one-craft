@@ -34,7 +34,7 @@ These folders are generated from the `app/templates` directory but there may be 
 ├── src                         # Front end source files mostly
 |   ├── scss                    
 |   ├── js
-|   ├── img                     # do we want to do this? this can get compiled into the public folder, and transformed - eg losslessly compressed?
+|   ├── img                     # see gulpfile - we put in images here and they get compressed into public
 |   └── templates               # this is for any twig template snippets you wish to transform before sending to craft
 |   
 ├── README.md
@@ -45,26 +45,65 @@ These folders are generated from the `app/templates` directory but there may be 
 └── ???
 ```     
 
+## Gulpfile and Gulp Plugins
+
+The generator copies over a gulpfile with a few tasks ready made.  It can be configured how you like after the scaffold but out of the box you get...
+
+*** work in progress ***
+
+### CSS
+
+`$ gulp styles`
+`$ gulp styles-production`
+Pretty straightforward, this is your SASS compiler.  The latter simply omits sourcemaps, and minifies.  Tweak the `serve` bit below if you prefer this - but something like `minimee` may do the compression for us.  Sourcemaps are useful for development, and probably a negligible bloat to the filesize of the compiled CSS.
+
+### Images
+`$ gulp images`
+This is something for discussion - but simply images go in at `src/img` and come out at `public/assets/img` - on the way they are run through `gulp-imagemin` (yet to be fully configured in the gulpfile).  This losslessly compresses them - it's good for stripping metadata.  As these assets generally come out of a PSD and PS isn't great and removing superfluous data, this should do enough work for us to get the files nice and small.  There's also `gulp-changed` to avoid doing this again and again - as it's probably quite a hefty gulp task.  Needs testing
+
+### HTML / Twig
+`$ gulp templates`
+This is something for discussion. 
+The thinking here is we can do a couple of things here:
+#### Wire up our Bower Components
+Bower is great at copying vendor repos, but since they are as tidy and accessible as people make them, it's a little bit of a mess.  `wiredep` - an npm module - is great at parsing your `bower.json` and writing in `<script>` tags accordingly - with paths to the right scripts.  The problem though is it'll just point to where your bower scripts were installed.
+
+Enter `gulp-useref`.  This can concatenate JS and copy them somewhere else, while then saving an HTML file with the new bundled javascript files in `script` tags.
+
+At that point we need those to live in a Twig template, so html would be copied over into the templates directory.  
+
+So here are the questions about how we set this up: 
+
+1. Do we just have some sort of `scripts-snippet.html` in this `src/templates` folder and then copy that to some sort of `_compiled-includes` folder in our `craft/templates` folder?
+
+In other words *everything* would get copied from `src/templates/` into `craft/templates/_compiled-includes/` - that way we know not to touch it when making twig templates.
+
+**OR**
+
+
+2. Or do we treat our `src/templates` directory as a not-yet-compiled templates directory which compiles into `craft/templates`
+
+With 2. we get to use `gulp-file-include` which allows us to use cool parsing and functions that Twig was not made to do - it's a way to end up with perhaps less DRY and bloated Twig templates that are actually fast for our server to process, but our actual `src/tempates` can be really nicely DRY because we use processors to compile.
 
 
 
 
-## Optional
+`$ gulp serve`
+
+
+
+
+## Optional Addons
 
 ***Proposed***
 
 1. Bower
 
-## Non-optionals
-For want of a better term, these things are going to install no matter what
-
-### Gulp and Gulp Plugins
 
 
-## Optionals
-Things that you don't have to use, but may want
-1. Bower
-Add this 
+
+
+
 
     
 
