@@ -224,13 +224,13 @@ tweak the generator to your liking.  We can always modify this generator to acce
 **While the options have defaults, leave them unset at your peril!  The combination of things can create a bit of a mess potentially, so it's important to know what's being copied where, as we cannot always predict how someone sets their plugin repo**
 
 #### plugin.name 
-`_required_`
+_required_
 Type: `string`
 
 The name of the plugin. Acts as the prompt choice, so make this readable, but also gets stored in the `.yo-rc.json` storage file (to remember a users' choices).  
 
 #### plugin.url 
-`_required_`
+_required_
 Type: `string`
 
 Remote URL to a zipfile (this is important!) to be downloaded and extracted.  Usually a github master file, for example `https://github.com/johndwells/craft.minimee/archive/master.zip`
