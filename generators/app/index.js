@@ -3,7 +3,10 @@ var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
 var yosay = require('yosay');
 var mkdirp = require('mkdirp');
+var fs = require('fs');
 
+// permissions for craft files
+var permission = "0774";
 
 
 // include our own utilities
@@ -133,8 +136,13 @@ module.exports = yeoman.Base.extend({
         // setup a list for our craft plugins
         var plugin_options = [];
         craftplugins.forEach( plugin => {
+
+            // plugin.checked = plugin.checked || false; // not undefined?
             if (!plugin.essential) {
-                plugin_options.push( plugin.name );
+                plugin_options.push( {
+                    name: plugin.name,
+                    checked: plugin.checked
+                    } );
             }
 
         });
@@ -191,6 +199,17 @@ module.exports = yeoman.Base.extend({
                 message: 'What is your servers public folder eg public or public_html or htdocs or www',
                 default: 'public'
             },
+
+            // .htaccess or htaccess
+            {
+                type: 'list', // input, confirm, list, rawlist, password
+                name: 'htaccess',
+                message: 'htaccess file: .htaccess or htaccess?',
+                choices: ['.htaccess','htaccess'],
+                default: 0
+            },
+
+
 
             // Proxy
             {
@@ -360,18 +379,7 @@ module.exports = yeoman.Base.extend({
             });
         });
 
-
-
-
-
-
-
-
-
-
     }
-
-
 
 
     /**
@@ -381,8 +389,9 @@ module.exports = yeoman.Base.extend({
     // in the case of this stuff bower and npm are probably not optional, as the package will define
     // how we build and develop a new project so unless we're also going to ask about what dependencies they want...
     //
-    // We're also throwing craft in here, because we need the above stuff to happen first (because of our slightly unorthodox
-    // approach of using force to overwrite default craft files)
+    // We're also throwing Craft in here, because we need the above stuff to happen first (because of our slightly unorthodox
+    // approach of using force to overwrite default craft files).  It's not perfect, as the download of Craft then happens a lot
+    // later and not parallel to other actions, but it's 'safer' this way.
     ,install: {
         npm: function () {
 
@@ -391,6 +400,7 @@ module.exports = yeoman.Base.extend({
         // } else {
         //     this.npmInstall();
         // }
+
         }
 
         ,installCraft: function() {
@@ -404,14 +414,13 @@ module.exports = yeoman.Base.extend({
             this.extract(
                 'http://buildwithcraft.com/latest.zip?accept_license=yes',
                 this.destinationPath('./'),
-                {mode: "0774"},
-
-                (err, remote) => {
+                {mode:permission}, // this is important - without it we seem to end up with files that are 0000
+                err => {
                   if (err) {
                     console.log(err);
                   } else {
                     console.log('-----------------------------');
-                    console.log(chalk.green("") + "Craft download completed!");
+                    console.log(chalk.green("Craft download completed!"));
                     console.log('-----------------------------');
 
                     // now run specific overrides
@@ -419,15 +428,24 @@ module.exports = yeoman.Base.extend({
                     // temp force this - we don't want to ask people about overwritign db.php etc.
                     this.conflicter.force = true;
 
+                    // At this point we copy everything from the templates/craft directory into the new
+                    // craft directory, thus overwriting anything that the default craft installed.
+                    // for example, a new db.php file.  we're running it through the templater, so we can
+                    // add custom config
                     this.fs.copyTpl(
                         this.templatePath( 'craft' + '/**/*'),
                         this.destinationPath( 'craft' + '/'),
                         this.craftvars
                     );
 
+                    // for apache hosts, as craft has htaccess by default.
+                    if ( this.props.htaccess === '.htaccess') {
+                        this.fs.move( this.destinationPath( this.props.public_folder + "/htaccess"), this.destinationPath( this.props.public_folder + "/.htaccess") );
+                    }
+
 
                     // make a storage folder
-                    mkdirp( this.destinationPath('craft/storage'), "0774");
+                    mkdirp( this.destinationPath('craft/storage'), permission);
 
                 }
 
@@ -440,9 +458,40 @@ module.exports = yeoman.Base.extend({
             if (!this.props.craftLicense) {
                 return;
             }
+
             console.log( "installing craft plugins");
 
-            console.log( craftplugins, this.props.craftplugins );
+
+
+            craftplugins.forEach( plugin => {
+
+
+                if (plugin.essential || this.props.craftplugins.indexOf( plugin.name ) != -1) {
+
+                    // this has an issue in that it 'dirties' our plugin directory a little.
+                    // It happily extracts the right things, at least in the case of the two added as an example,
+                    // but if they add other files and folders alongside their zipfile, then it can just leave them in the
+                    // plugins directory.
+                    //
+                    // We have to do some sort of cleaning, possibly stop using this.extract and use a more manual approach
+                    // using Download (https://www.npmjs.com/package/download) which this is a wrapper for anyway.
+                    this.extract(
+                        plugin.url, // from
+                        this.destinationPath('craft/plugins'), // to
+                        { mode:permission, strip: 1, extract: true }, // chmod permissions
+                        err => { // complete callback
+                            if (err) {
+                                console.log( chalk.red( err ) );
+                            } else {
+                                var installmessage = (plugin.essential) ? chalk.red("essential") : chalk.blue("chosen");
+                                console.log( "Installed " + installmessage + " plugin " + chalk.green( plugin.name ) );
+                            }
+                        }
+                    );
+                }
+            });
+
+
         }
     }
 

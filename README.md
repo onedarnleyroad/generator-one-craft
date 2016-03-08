@@ -24,6 +24,13 @@ Now, it's installed on your system, and accessible from Yeoman.  Effectively mod
 $ yo one-craft
 ```
 
+This will install into the present working directory.  If you want to install into a subfolder, then run 
+
+```
+$ yo one-craft myproject
+```
+
+
 ## Folder Structure
 
 These folders are generated from the `app/templates` directory but there may be some moving around on the Yeoman scaffolding process.  So below is what you'll end up with:
