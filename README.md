@@ -14,7 +14,7 @@ While this is in development and not published on NPM, we need to take a few ste
 We need to link this as a global npm module so that yeoman can find it, and make sure yeoman is globally installed:
 
 	$ npm link
-	$ npm install -g yeoman # if not previously done
+	$ npm install -g yo # if not previously done
 
 Now, it's installed on your system, and accessible from Yeoman.  Effectively modifying this repo, doing a git pull updates the generator, so be wary if someone has updated the repo, they've updated the generator.  After `npm link` has done its thing you can run the generator:
 
