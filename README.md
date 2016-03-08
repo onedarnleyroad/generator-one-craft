@@ -36,26 +36,27 @@ $ yo one-craft myproject
 These folders are generated from the `app/templates` directory but there may be some moving around on the Yeoman scaffolding process.  So below is what you'll end up with:
 
 ```
-├── craft                       # Craft CMS app - including templates.
-├── public                      # Document root directory, used by craft.  Compiled assets end up here
-├── src                         # Front end source files mostly
+├── craft                # Craft CMS app - including templates.
+├── public               # Document root directory, used by craft.  Compiled assets end up here
+├── src                  # Front end source files mostly
 |   ├── scss                    
 |   ├── js
-|   ├── partials                # for the templates folder using @@includes - see below.
-|   ├── img                     # see gulpfile - we put in images here and they get compressed into public
-|   └── templates               # this is for any twig template snippets you wish to transform before sending to craft
+|   ├── partials         # for the templates folder using @@includes - see below.
+|   ├── img              # see gulpfile - we put in images here and they get compressed into public
+|   └── templates        # this is for any twig template snippets you wish to transform before sending to craft
 |   
 ├── README.md
 ├── .gitignore       
 ├── package.json
 ├── bower.json                  
-├── gulpfile.js
-└── ???
+└── gulpfile.js
 ```     
 
 ## Gulpfile and Gulp Plugins
 
 The generator copies over a gulpfile with a few tasks ready made.  It can be configured how you like after the scaffold but out of the box you get some of the following tasks:
+
+_Note that while I say they come out at `public/assets` this is something that the generator can change - it'll prompt you where you want these to end up.  See below.
 
 ### CSS
 
@@ -70,6 +71,8 @@ Pretty straightforward, this is your SASS compiler.  The latter simply omits sou
 $ gulp images
 ```
 This is something for discussion - but simply images go in at `src/img` and come out at `public/assets/img` - on the way they are run through `gulp-imagemin` (yet to be fully configured in the gulpfile).  This losslessly compresses them - it's good for stripping metadata.  As these assets generally come out of a PSD and PS isn't great and removing superfluous data, this should do enough work for us to get the files nice and small.  There's also `gulp-changed` to avoid doing this again and again - as it's probably quite a hefty gulp task.  Needs testing
+
+
 
 ### HTML / Twig
 ```
@@ -188,6 +191,17 @@ $ gulp serve
 The usual - watches for css files and runs browser sync.  When running the generator, it will ask you for the proxy server.  This is what browser sync looks for, but you can always edit the `gulpfile.js` if you put in something wrong.  
 
 Bear in mind we may need to rethink how this works for local development and our `gulp templates` task above, as this method is going to compile vendor scripts without sourcemaps.  It might mean then, that it can be harder to debug but I've found that usually the errors are logged in my own code and not vendor code.  
+
+## Options when generating
+
+1. Confirming the craft license agreement - won't install without saying yes
+2. Selecting Craft Plugins - won't happen unless you said yes to 1.
+3. Overwriting Craft files - it's just a way to `--force` overwriting things like `config/db.php`
+4. Local Database name - updates the local db name in `craft/config/db.php` 
+5. Public Folder - Craft uses `public` by default but could be `public_html` etc
+6. HTACCESS - Craft has `htaccess` but you can choose `.htaccess` for most apache setups - which is our default
+7. Proxy for Browsersync - eg `mysite.dev` or `mysite.local` - just tweaks the gulpfile.
+8. Assets - where will the gulpfile compile images, js, css to? Default is `assets` which will be saved inside whatever you chose for public folder above.  eg `public/assets`
 
 
 ## Craft CMS setup

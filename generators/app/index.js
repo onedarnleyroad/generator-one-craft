@@ -197,13 +197,7 @@ module.exports = yeoman.Base.extend({
                 default: ''
             },
 
-            // Craft Username
-            {
-                type: 'input',
-                name: 'adminUsername',
-                message: 'What should be the admin username for Craft?',
-                default: 'webmaster'
-            },
+
 
             // Server Config
             // Public Folder
@@ -235,8 +229,8 @@ module.exports = yeoman.Base.extend({
             {
                 type: 'input',
                 name: 'assets',
-                message: 'Where will your assets live? Default ./public/assets',
-                default: './public/assets'
+                message: 'Where will your assets live? Default assets - inside the public folder chosen above',
+                default: 'assets'
             }
 
         ];
@@ -320,7 +314,7 @@ module.exports = yeoman.Base.extend({
 
         // set some options for the templates to use.
         var gulpOptions = {
-            assets: oneutils.stripTrailingSlash( this.props.assets ),
+            assets: this.props.public_folder + "/" + oneutils.stripTrailingSlash( this.props.assets ),
             bower: this.props.bower,
             proxy: this.props.proxy
         };
