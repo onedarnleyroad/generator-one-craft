@@ -53,59 +53,144 @@ The generator copies over a gulpfile with a few tasks ready made.  It can be con
 
 ### CSS
 
-`$ gulp styles`
-`$ gulp styles-production`
+```
+$ gulp styles
+$ gulp styles-production
+```
 Pretty straightforward, this is your SASS compiler.  The latter simply omits sourcemaps, and minifies.  Tweak the `serve` bit below if you prefer this - but something like `minimee` may do the compression for us.  Sourcemaps are useful for development, and probably a negligible bloat to the filesize of the compiled CSS.
 
 ### Images
-`$ gulp images`
+```
+$ gulp images
+```
 This is something for discussion - but simply images go in at `src/img` and come out at `public/assets/img` - on the way they are run through `gulp-imagemin` (yet to be fully configured in the gulpfile).  This losslessly compresses them - it's good for stripping metadata.  As these assets generally come out of a PSD and PS isn't great and removing superfluous data, this should do enough work for us to get the files nice and small.  There's also `gulp-changed` to avoid doing this again and again - as it's probably quite a hefty gulp task.  Needs testing
 
 ### HTML / Twig
-`$ gulp templates`
-This is something for discussion. 
-The thinking here is we can do a couple of things here:
-#### Wire up our Bower Components
-Bower is great at copying vendor repos, but since they are as tidy and accessible as people make them, it's a little bit of a mess.  `wiredep` - an npm module - is great at parsing your `bower.json` and writing in `<script>` tags accordingly - with paths to the right scripts.  The problem though is it'll just point to where your bower scripts were installed.
+```
+$ gulp templates
+```
 
-Enter `gulp-useref`.  This can concatenate JS and copy them somewhere else, while then saving an HTML file with the new bundled javascript files in `script` tags.
+This is the task for handling template files.  Until this changes in a later commit, the idea is that you build ALL your Craft templates in `src/templates` and these get compiled into `craft/templates`.
 
-At that point we need those to live in a Twig template, so html would be copied over into the templates directory.  
+As such, during development, do not edit anything in `craft/templates` as you may later overwrite files you added in the source folder.  
 
-So here are the questions about how we set this up: 
+While developing in the source folder your templates will be run through three preprocessors:
 
-1. Do we just have some sort of `scripts-snippet.html` in this `src/templates` folder and then copy that to some sort of `_compiled-includes` folder in our `craft/templates` folder?
+#### Wiredep
 
-In other words *everything* would get copied from `src/templates/` into `craft/templates/_compiled-includes/` - that way we know not to touch it when making twig templates.
+Visit https://www.npmjs.com/package/wiredep for docs_
 
-**OR**
+Quite simply, this is for handling your Bower installs.  This reads through your `bower.json` file to work out your chosen script dependencies, and then searches through your `src/templates` folder for HTML that has the appropriate snippet to inject script tags.  We use this in conjunction with `gulp-useref` (see below) to then compile these scripts into our assets folder.
+
+It looks for something along these lines:
+
+```
+<html>
+<head>
+  <!-- bower:css -->
+  <!-- endbower -->
+</head>
+<body>
+  <!-- bower:js -->
+  <!-- endbower -->
+</body>
+</html>
+```
+
+But feel free to look at `src/templates/_snippets/vendor.html` for our setup.
+
+#### Useref
+
+_Visit https://www.npmjs.com/package/gulp-useref for docs_
+
+This is the next stage of the bower step above, but it can be used for other files and other scripts.  We're mostly just using it for Bower, as `Minimee` handles our scripts usually.
+
+Consider the following example:
+
+From `src/templates/_snippets/vendor.html`
+```
+<html>
+<head>
+    <!-- build:css assets/css/vendor.css -->
+    <link href="css/one.css" rel="stylesheet">
+    <link href="css/two.css" rel="stylesheet">
+    <!-- endbuild -->
+</head>
+<body>
+    <!-- build:js assets/js/vendor.js -->
+    <!-- bower:js -->
+    <script type="text/javascript" src="bower_components/vendor1/one.js"></script> 
+    <script type="text/javascript" src="bower_components/vendor2/two.js"></script>
+    <!-- endbower -->
+    <script type="text/javascript" src="src/js/one.js"></script> 
+    <script type="text/javascript" src="src/js/two.js"></script> 
+    <!-- endbuild -->
+</body>
+</html>
+```
+
+Would be compiled (in our case) to `craft/templates/_snippets/vendor.html` like so:
+
+```
+<html>
+<head>
+    <link rel="stylesheet" href="assets/css/combined.css"/>
+</head>
+<body>
+    <script src="assets/js/combined.js"></script> 
+</body>
+</html>
+```
+
+Your Craft templates can include the above in the normal way.  We aren't running a minification process here, because again `minimee` handles that - but we may want to use a linter with something like `gulp-if`.
+
+#### Gulp File Include
+
+_Visit https://www.npmjs.com/package/gulp-file-include for docs_
+
+Lastly, for extra functionality we have access to `gulp-file-include` but this is entirely optional.  So as to avoid conflicts when compiling all included files from this step are in `src/partials` rather than within the `src/templates` folder.  
+
+It's something that is entirely optional, and doesn't really add much to the compiling time, but can be used whenever you're having trouble using Twig to keep things DRY. 
+
+When an HTML file in `src/templates` contains something like the following:
+```
+<h1>Cat Voices</h1>
+@@include("file.html", {"catsays" : "meow"} )
+```
+
+It would look for `src/partials/file.html` which might look like this:
+
+```
+<strong>Our cat says @@catsays</strong>
+```
+
+It compiles into `craft/templates` to:
+
+```
+<h1>Cat Voices</h1>
+<strong>Our cat says meow</strong>
+```
+
+For the most part Twig includes can handle this kind of behaviour and more dynamically, so we may find this feature is never used.  The data object is optional, eg `@@include("file.html")` but remember if the include file references variables it can't find, gulp will throw an error.  Includes can include files themselves too.
 
 
-2. Or do we treat our `src/templates` directory as a not-yet-compiled templates directory which compiles into `craft/templates`
+### While developing
+```
+$ gulp serve
+```
 
-With 2. we get to use `gulp-file-include` which allows us to use cool parsing and functions that Twig was not made to do - it's a way to end up with perhaps less DRY and bloated Twig templates that are actually fast for our server to process, but our actual `src/tempates` can be really nicely DRY because we use processors to compile.
+The usual - watches for css files and runs browser sync.  When running the generator, it will ask you for the proxy server.  This is what browser sync looks for, but you can always edit the `gulpfile.js` if you put in something wrong.  
 
-
-
-
-`$ gulp serve`
+Bear in mind we may need to rethink how this works for local development and our `gulp templates` task above, as this method is going to compile vendor scripts without sourcemaps.  It might mean then, that it can be harder to debug but I've found that usually the errors are logged in my own code and not vendor code.  
 
 
 
 
 ## Optional Addons
 
-***Proposed***
-
 1. Bower
 
-
-
-
-
-
-
-    
+Even if you include Bower in your project, you don't really have to even use it, as it'll just sort of sit there and isn't too intrusive.  Saying no to this option when generating will give you a slightly leaner Gulpfile.    
 
 
 # To Do
@@ -116,8 +201,6 @@ Could we run a bash script to set up the local database? Perhaps the generator c
 
 
 ## Notes on installation
-
-### Build Tools
 
 ### Craft Setup
 
