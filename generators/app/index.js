@@ -147,13 +147,19 @@ module.exports = yeoman.Base.extend({
 
         });
 
+        // handle defaults
+
+
+
+
+
         var prompts = [
 
             {
               type: 'confirm',
               name: 'craftLicense',
               message: 'I agree to the terms and conditions. http://buildwithcraft.com/license',
-              default: false
+              default: true // change to false!
             },
 
             {
@@ -168,13 +174,19 @@ module.exports = yeoman.Base.extend({
 
             },
 
-            // Yes / no example
-            {
-                type: 'confirm', // input, confirm, list, rawlist, password
-                name: 'bower',
-                message: 'Using Bower?',
+            // installing custom craft
+             {
+                // only ask when license was yes
+                when: function(response) {
+                    return response.craftLicense;
+                },
+                type: 'confirm',
+                name: 'craftForce',
+                message: 'Force overwrite custom craft files? config/db.php etc',
                 default: true
+
             },
+
 
             {
                 type: 'input',
@@ -209,8 +221,6 @@ module.exports = yeoman.Base.extend({
                 default: 0
             },
 
-
-
             // Proxy
             {
                 type: 'input',
@@ -229,6 +239,17 @@ module.exports = yeoman.Base.extend({
 
         ];
 
+        // set the defaults to whatever is saved
+        var configDefaults = this.config.getAll();
+
+        // based on saved data, we could even skip some prompts...
+        prompts.forEach( prompt => {
+            if (configDefaults.hasOwnProperty( prompt.name )) {
+                prompt.default = configDefaults[ prompt.name ];
+            }
+        });
+
+
         this.prompt(prompts, function (props) {
 
             this.props = props;
@@ -242,6 +263,13 @@ module.exports = yeoman.Base.extend({
             this.craftvars = {
                 localdatabase: this.props.localdatabase
             };
+
+            // save each property into the config
+            for (var prop in this.props) {
+                var obj = {};
+                obj[prop] = this.props[prop];
+                this.config.set(obj);
+            }
 
             done();
 
@@ -268,34 +296,13 @@ module.exports = yeoman.Base.extend({
 
 
 
-    /**
-     * 4.1 Write Optional (runs under default priority)
-     *
-     * Write all the files that were optionally added.  This could just be a function called within the
-     * `writing` function but it probably doesn't matter a whole lot at this point.  We may want to
-     * rethink this if we ever use this in conjunction with other generators.
-     */
-     ,writeOptional: function() {
-        console.log( chalk.grey( "Installing optional stuff" ) );
-        if (this.props.bower) {
-            // copy the package.json so NPM can do something with it later
-            this.fs.copy(
-                this.templatePath('_bower.json'),
-                this.destinationPath('bower.json')
-            );
-        }
-    }
-
-
-
-
 
     /**
      * 5. WRITING
      */
     ,writing: function () {
 
-        console.log( chalk.grey( "Installing dependencies" ) );
+        console.log( chalk.grey( "Installing files" ) );
 
         // Note `this.fs` is
         // https://github.com/sboudrias/mem-fs-editor
@@ -309,13 +316,14 @@ module.exports = yeoman.Base.extend({
         // The nice advantage with <%= %> as a syntax is it doesn't clash with twig or any other templating we're using
         // in our actual projects so far.
 
-        // GULPFILE
+        // set some options for the templates to use.
         var gulpOptions = {
             assets: oneutils.stripTrailingSlash( this.props.assets ),
             bower: this.props.bower,
             proxy: this.props.proxy
         };
 
+        // gulpfile
         this.fs.copyTpl( this.templatePath('_gulpfile.js'), this.destinationPath('gulpfile.js'), gulpOptions );
 
         // Package JSON
@@ -324,6 +332,8 @@ module.exports = yeoman.Base.extend({
         // gitignore
         this.fs.copyTpl( this.templatePath('_gitignore'), this.destinationPath('.gitignore'), gulpOptions );
 
+        // Bower
+        this.fs.copyTpl( this.templatePath('_bower.json'), this.destinationPath('bower.json'), gulpOptions );
 
 
         /**
@@ -332,6 +342,10 @@ module.exports = yeoman.Base.extend({
          * ---------------
          */
 
+
+        /**
+         * Folders with things in....do not touch /craft though! That's handled on craft installation.
+         */
         // public - copy to whatever they named their public directory as
         this.fs.copyTpl(
                 this.templatePath( 'public' + '/**/*'),
@@ -339,12 +353,8 @@ module.exports = yeoman.Base.extend({
             );
 
 
-        // Copying folders with things in them - do not add craft stuff! this has to be
-        // added after the download is complete.
+
         var folders = ['templates', 'src/scss'];
-
-
-
 
 
         // Note that craft was installed in an earlier step.  This is going to
@@ -361,12 +371,12 @@ module.exports = yeoman.Base.extend({
         } );
 
 
-        // Empty folders - be careful with nested folders and also be careful that they don't exist above
-        // although in that case it should fail gracefully enough.
-        //
+        /**
+         * Empty folders
+         */
+
         // this uses `mkdir -p` where it'll make parent directories.
-        //
-        // We can make directories with code here, without them having to exist in the generator itself.
+        // We can make empty directories with code here, without them having to exist in the generator itself.
         var emptyFolders = [
             'src/img',
             'src/js',
@@ -397,12 +407,12 @@ module.exports = yeoman.Base.extend({
     ,install: {
         npm: function () {
 
-        // if (this.props.bower) {
-        //     this.installDependencies();
-        // } else {
-        //     this.npmInstall();
-        // }
-
+            // install dependencies and then run gulp - this will do a first build so that Craft has assets and templates where they should be.
+            this.installDependencies({
+                callback: () => {
+                    this.spawnCommand('gulp');
+                }
+            });
         }
 
         ,installCraft: function() {
@@ -427,8 +437,11 @@ module.exports = yeoman.Base.extend({
 
                     // now run specific overrides
 
-                    // temp force this - we don't want to ask people about overwritign db.php etc.
-                    this.conflicter.force = true;
+                    // add force when editing files below?  This would have been set in the prompter
+                    // and really it just saves people having to keep typing Y for every file.
+                    //
+                    // However if they type no it at least allows them to run the scaffolder again without overwriting new things.
+                    this.conflicter.force = this.props.craftForce;
 
                     // At this point we copy everything from the templates/craft directory into the new
                     // craft directory, thus overwriting anything that the default craft installed.
@@ -438,6 +451,11 @@ module.exports = yeoman.Base.extend({
                         this.templatePath( 'craft' + '/**/*'),
                         this.destinationPath( 'craft' + '/'),
                         this.craftvars
+                    );
+
+                    // Empty Craft's default template directory - we're going to put in our own and run gulp later
+                    this.fs.delete(
+                         this.templatePath( 'craft/templates' + '/**/*')
                     );
 
                     // for apache hosts, as craft has htaccess by default.
