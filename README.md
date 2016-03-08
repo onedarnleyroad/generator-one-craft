@@ -241,7 +241,6 @@ Type: `bool`
 
 Whether the option is checked by default for the user when running the generator.
 
-
 #### plugin.essential
 Default: `false`
 Type: `bool` 
@@ -264,7 +263,7 @@ Then maybe you only want to copy `pluginname` as the others will just muddy up t
 
 If `false` then it will just copy everything in the repo - use in conjuction with `plugin.destfolder` and `plugin.strip` for best results. 
 
-#### destfolder
+#### plugin.destfolder
 Default: `false`
 Type: `string, false`
 
