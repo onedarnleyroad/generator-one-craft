@@ -4,8 +4,13 @@ var chalk = require('chalk');
 var yosay = require('yosay');
 var mkdirp = require('mkdirp');
 
+
+
 // include our own utilities
 var oneutils = require('./utils.js');
+
+// load plugin data
+var craftplugins = require('./craftplugins.js');
 
 // oneutils.stripTrailingSlash(str) // returns a string without a trailing slash
 
@@ -57,6 +62,8 @@ module.exports = yeoman.Base.extend({
         this.argument('appname', { type: String, required: false });
 
 
+
+
         // if there's an argument passed, install into that directory, which would be a sub directory?
         // otherwise it'll just install here
         if ( this.appname ) {
@@ -65,7 +72,7 @@ module.exports = yeoman.Base.extend({
 
         // but let people know the full path - they can then abort if it's not right:
         console.log( chalk.blue( "------------") );
-        console.log("installing into " + chalk.blue( this.destinationRoot() ));
+        console.log("Installing into " + chalk.blue( this.destinationRoot() ));
         console.log( chalk.blue( "------------") );
 
         // save a yeoman config file - this allows users to run yo in sub directories
@@ -75,25 +82,27 @@ module.exports = yeoman.Base.extend({
         // run things through streams, Gulpstylee
         //
         // remember to match the if pattern up here, with whatever you're doing with the writing of files below.
-        var beautify = require('gulp-beautify');
-        var gulpIf = require('gulp-if');
 
 
-        // optionally pass a function to gulpIf instead of a glob matching pattern
-        var fileCheck = function(file){
-            // do something with file
-            return true;
-        };
+        // var beautify = require('gulp-beautify');
+        // var gulpIf = require('gulp-if');
 
 
-        this.registerTransformStream(
+        // // optionally pass a function to gulpIf instead of a glob matching pattern
+        // var fileCheck = function(file){
+        //     // do something with file
+        //     return true;
+        // };
 
 
-            gulpIf(
-                "beautified.js", // if matches this pattern then...
-                beautify({indentSize: 2 }) // do this
-            )
-        );
+        // this.registerTransformStream(
+
+
+        //     gulpIf(
+        //         "beautified.js", // if matches this pattern then...
+        //         beautify({indentSize: 2 }) // do this
+        //     )
+        // );
 
         // basically we can use any gulp plugin if we want...
     }
@@ -112,7 +121,7 @@ module.exports = yeoman.Base.extend({
 
         // Have Yeoman greet the user.
         this.log(yosay(
-            'Welcome to the cat\'s pajamas ' + chalk.red('') + ' generator!'
+            'Welcome to the One Darnley Road\'s Craft CMS generator!'
         ));
 
         // Create an array of options - this is where the installer configures the output
@@ -120,7 +129,36 @@ module.exports = yeoman.Base.extend({
         // http://yeoman.io/authoring/user-interactions.html
         // Prompts come from Inquirer:
         // https://github.com/SBoudrias/Inquirer.js
+
+        // setup a list for our craft plugins
+        var plugin_options = [];
+        craftplugins.forEach( plugin => {
+            if (!plugin.essential) {
+                plugin_options.push( plugin.name );
+            }
+
+        });
+
         var prompts = [
+
+            {
+              type: 'confirm',
+              name: 'craftLicense',
+              message: 'I agree to the terms and conditions. http://buildwithcraft.com/license',
+              default: false
+            },
+
+            {
+                // only ask when license was yes
+                when: function(response) {
+                    return response.craftLicense;
+                },
+                type: 'checkbox',
+                name: 'craftplugins',
+                message: 'Which Craft Plugins would you like to install',
+                choices: plugin_options
+
+            },
 
             // Yes / no example
             {
@@ -130,12 +168,28 @@ module.exports = yeoman.Base.extend({
                 default: true
             },
 
+            {
+                type: 'input',
+                name: 'localdatabase',
+                message: 'What is your local database name?  You will still have a chance to change this as it will just set up local/config/db.php',
+                default: ''
+            },
+
             // Craft Username
             {
                 type: 'input',
                 name: 'adminUsername',
                 message: 'What should be the admin username for Craft?',
                 default: 'webmaster'
+            },
+
+            // Server Config
+            // Public Folder
+            {
+                type: 'input',
+                name: 'public_folder',
+                message: 'What is your servers public folder eg public or public_html or htdocs or www',
+                default: 'public'
             },
 
             // Proxy
@@ -157,10 +211,26 @@ module.exports = yeoman.Base.extend({
         ];
 
         this.prompt(prompts, function (props) {
+
             this.props = props;
             // To access props later use this.props.someOption;
 
+            if ( !this.props.craftLicense ) {
+                console.log( chalk.red( "NOT INSTALLING CRAFT - You have to agree to the license to download Craft!") );
+            }
+
+            // set some craft vars for use in templates
+            this.craftvars = {
+                localdatabase: this.props.localdatabase
+            };
+
             done();
+
+
+
+
+
+
         }.bind(this));
     }
 
@@ -175,6 +245,7 @@ module.exports = yeoman.Base.extend({
     /**
      * 4. ADD YOUR DEFAULT / CUSTOM METHODS HERE
      */
+
 
 
 
@@ -195,6 +266,10 @@ module.exports = yeoman.Base.extend({
             );
         }
     }
+
+
+
+
 
     /**
      * 5. WRITING
@@ -236,22 +311,30 @@ module.exports = yeoman.Base.extend({
          * ---------------
          */
 
+        // public - copy to whatever they named their public directory as
+        this.fs.copyTpl(
+                this.templatePath( 'public' + '/**/*'),
+                this.destinationPath( this.props.public_folder + '/')
+            );
 
-        // Copying folders with things in them
-        var folders = ['craft', 'public', 'src/scss'];
 
-        // using some ES6 arrow functions here.
-        // 1. It's NodeJS, it's our side, it should just work unless the NodeJS is very old.
-        //
-        // 2. It's so much easier considering how important "this" is in the context of the yeoman process.
-        //    So it saves a lot of silly var self = this as ES6 was supposed to do.
-        //
-        folders.forEach( (folder) =>  {
+        // Copying folders with things in them - do not add craft stuff! this has to be
+        // added after the download is complete.
+        var folders = ['templates', 'src/scss'];
+
+
+
+
+
+        // Note that craft was installed in an earlier step.  This is going to
+        folders.forEach( folder =>  {
 
 
             this.fs.copyTpl(
                 this.templatePath( folder + '/**/*'),
-                this.destinationPath( folder + '/')
+                this.destinationPath( folder + '/'),
+                this.craftvars
+
             );
 
         } );
@@ -270,7 +353,7 @@ module.exports = yeoman.Base.extend({
         ];
 
         console.log('Making empty folders...');
-        emptyFolders.forEach( (folder) => {
+        emptyFolders.forEach( folder => {
             console.log(chalk.green('     ' + folder ) );
             mkdirp( this.destinationPath( folder ), function(err) {
                 if (err) { console.log( chalk.red(err) ); }
@@ -297,12 +380,69 @@ module.exports = yeoman.Base.extend({
     // finally run npm install and bower install, if the user said they want the bower packages
     // in the case of this stuff bower and npm are probably not optional, as the package will define
     // how we build and develop a new project so unless we're also going to ask about what dependencies they want...
-    ,install: function () {
+    //
+    // We're also throwing craft in here, because we need the above stuff to happen first (because of our slightly unorthodox
+    // approach of using force to overwrite default craft files)
+    ,install: {
+        npm: function () {
 
-        if (this.props.bower) {
-            this.installDependencies();
-        } else {
-            this.npmInstall();
+        // if (this.props.bower) {
+        //     this.installDependencies();
+        // } else {
+        //     this.npmInstall();
+        // }
+        }
+
+        ,installCraft: function() {
+
+            if (!this.props.craftLicense) {
+                return;
+            }
+
+            console.log( "installing craft");
+
+            this.extract(
+                'http://buildwithcraft.com/latest.zip?accept_license=yes',
+                this.destinationPath('./'),
+                {mode: "0774"},
+
+                (err, remote) => {
+                  if (err) {
+                    console.log(err);
+                  } else {
+                    console.log('-----------------------------');
+                    console.log(chalk.green("") + "Craft download completed!");
+                    console.log('-----------------------------');
+
+                    // now run specific overrides
+
+                    // temp force this - we don't want to ask people about overwritign db.php etc.
+                    this.conflicter.force = true;
+
+                    this.fs.copyTpl(
+                        this.templatePath( 'craft' + '/**/*'),
+                        this.destinationPath( 'craft' + '/'),
+                        this.craftvars
+                    );
+
+
+                    // make a storage folder
+                    mkdirp( this.destinationPath('craft/storage'), "0774");
+
+                }
+
+            });
+        }
+
+
+        ,installPlugins: function() {
+
+            if (!this.props.craftLicense) {
+                return;
+            }
+            console.log( "installing craft plugins");
+
+            console.log( craftplugins, this.props.craftplugins );
         }
     }
 
