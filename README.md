@@ -34,6 +34,7 @@ These folders are generated from the `app/templates` directory but there may be 
 ├── src                         # Front end source files mostly
 |   ├── scss                    
 |   ├── js
+|   ├── partials                # for the templates folder using @@includes - see below.
 |   ├── img                     # see gulpfile - we put in images here and they get compressed into public
 |   └── templates               # this is for any twig template snippets you wish to transform before sending to craft
 |   
