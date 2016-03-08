@@ -55,9 +55,7 @@ These folders are generated from the `app/templates` directory but there may be 
 
 ## Gulpfile and Gulp Plugins
 
-The generator copies over a gulpfile with a few tasks ready made.  It can be configured how you like after the scaffold but out of the box you get...
-
-*** work in progress ***
+The generator copies over a gulpfile with a few tasks ready made.  It can be configured how you like after the scaffold but out of the box you get some of the following tasks:
 
 ### CSS
 
@@ -86,7 +84,7 @@ While developing in the source folder your templates will be run through three p
 
 #### Wiredep
 
-Visit https://www.npmjs.com/package/wiredep for docs_
+_Visit https://www.npmjs.com/package/wiredep for docs_
 
 Quite simply, this is for handling your Bower installs.  This reads through your `bower.json` file to work out your chosen script dependencies, and then searches through your `src/templates` folder for HTML that has the appropriate snippet to inject script tags.  We use this in conjunction with `gulp-useref` (see below) to then compile these scripts into our assets folder.
 
