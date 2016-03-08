@@ -32,7 +32,7 @@ module.exports = [
         name: "Minimee", // label so people know what they're installing
         url: "https://github.com/johndwells/craft.minimee/archive/v0.9.6.zip", // link to a zip file so yeoman can extract
         checked: true, // on or off in the list by default?
-        essential: false, // set to true to not give people the option to turn it off
+        essential: true, // set to true to not give people the option to turn it off
         zipfolder: 'minimee'
     },
 

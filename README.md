@@ -192,11 +192,19 @@ The usual - watches for css files and runs browser sync.  When running the gener
 Bear in mind we may need to rethink how this works for local development and our `gulp templates` task above, as this method is going to compile vendor scripts without sourcemaps.  It might mean then, that it can be harder to debug but I've found that usually the errors are logged in my own code and not vendor code.  
 
 
+## Craft CMS setup
 
+### Local Config
+
+After the latest version of Craft is downloaded and installed, we then overwrite a few configuration files for our way of development.  They'll still need some tweaking most probably:
+
+`craft/config/db.php` is copied over from the `generators/app/templates/craft/generator` directory, with the `localdatabase` variable that Yeoman will have asked you for.  This is so you can set it up in your server configuration, we're using the MAMP Pro defaults for mysql being `localhost` with `root` as the username and password - but the database name is updated.  
+
+It also adds some custom code to look for `craft/config/local/db.php` and use that in place of the existing file.  That way you can make custom modifications for you local environment - there is also a .gitignore in the local directory so that it stays local. 
 
 ## Optional Addons
 
-1. Bower
+### Bower
 
 Even if you include Bower in your project, you don't really have to even use it, as it'll just sort of sit there and isn't too intrusive.  Saying no to this option when generating will give you a slightly leaner Gulpfile.    
 
@@ -208,13 +216,7 @@ Even if you include Bower in your project, you don't really have to even use it,
 Could we run a bash script to set up the local database? Perhaps the generator could take a project name, thus naming the repo, and create a `.sh` file that sets up a MySQL database assuming normal commands.  It would also update the `local/config/db.php` (check filename) and rewrite it with supplied variables.   It would also be good to have a default SQL file to import, bootstrapping the usual credentials.  At the time of generation, we could supply an admin account, and possibly a client account login
 
 
-## Notes on installation
 
-### Craft Setup
-
-// ETC
-
-------------
 
 # Notes
 

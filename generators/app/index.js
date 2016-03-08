@@ -310,7 +310,6 @@ module.exports = yeoman.Base.extend({
         // in our actual projects so far.
 
         // GULPFILE
-        // send this to the gulpfile
         var gulpOptions = {
             assets: oneutils.stripTrailingSlash( this.props.assets ),
             bower: this.props.bower,
@@ -321,6 +320,9 @@ module.exports = yeoman.Base.extend({
 
         // Package JSON
         this.fs.copyTpl( this.templatePath('_package.json'), this.destinationPath('package.json'), gulpOptions );
+
+        // gitignore
+        this.fs.copyTpl( this.templatePath('_gitignore'), this.destinationPath('.gitignore'), gulpOptions );
 
 
 
