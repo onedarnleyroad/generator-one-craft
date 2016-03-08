@@ -4,6 +4,8 @@ var chalk = require('chalk');
 var yosay = require('yosay');
 var mkdirp = require('mkdirp');
 var fs = require('fs');
+var Download = require("download");
+
 
 // permissions for craft files
 var permission = "0774";
@@ -454,15 +456,15 @@ module.exports = yeoman.Base.extend({
                     );
 
                     // Empty Craft's default template directory - we're going to put in our own and run gulp later
+                    // little bit extreme perhaps, but we don't want any default routes and templates confusing things.
                     this.fs.delete(
-                         this.templatePath( 'craft/templates' + '/**/*')
+                        this.destinationPath('craft/templates' + '/**/*')
                     );
 
                     // for apache hosts, as craft has htaccess by default.
                     if ( this.props.htaccess === '.htaccess') {
                         this.fs.move( this.destinationPath( this.props.public_folder + "/htaccess"), this.destinationPath( this.props.public_folder + "/.htaccess") );
                     }
-
 
                     // make a storage folder
                     mkdirp( this.destinationPath('craft/storage'), permission);
@@ -483,33 +485,77 @@ module.exports = yeoman.Base.extend({
 
 
 
-            craftplugins.forEach( plugin => {
 
+
+            var pluginsDir = this.destinationPath('craft/plugins/');
+
+            craftplugins.forEach( plugin => {
 
                 if (plugin.essential || this.props.craftplugins.indexOf( plugin.name ) != -1) {
 
-                    // this has an issue in that it 'dirties' our plugin directory a little.
-                    // It happily extracts the right things, at least in the case of the two added as an example,
-                    // but if they add other files and folders alongside their zipfile, then it can just leave them in the
-                    // plugins directory.
-                    //
-                    // We have to do some sort of cleaning, possibly stop using this.extract and use a more manual approach
-                    // using Download (https://www.npmjs.com/package/download) which this is a wrapper for anyway.
-                    this.extract(
-                        plugin.url, // from
-                        this.destinationPath('craft/plugins'), // to
-                        { mode:permission, strip: 1, extract: true }, // chmod permissions
-                        err => { // complete callback
-                            if (err) {
-                                console.log( chalk.red( err ) );
-                            } else {
-                                var installmessage = (plugin.essential) ? chalk.red("essential") : chalk.blue("chosen");
-                                console.log( "Installed " + installmessage + " plugin " + chalk.green( plugin.name ) );
-                            }
-                        }
-                    );
+                    plugin.strip = plugin.strip || 1;
+                    var p = new Download({ mode: permission, extract: true, strip: plugin.strip })
+                                .get( plugin.url )
+                                .run( function( err, files ) {
+
+                                    if (err) throw err;
+
+                                    files.forEach( file => {
+                                            // someone's going to complain if they run this on windows...
+
+
+
+                                            if ( plugin.srcfolder && typeof plugin.srcfolder === 'string') {
+                                                // we have specified a specific folder, so check against this:
+                                                var chunks = file.path.split( "/" );
+
+                                                // only pass if the first directory matches our src target
+                                                var folderTest = (chunks[0] === plugin.srcfolder);
+                                                // set the path
+
+
+                                            } else if (!plugin.srcfolder) {
+                                                var folderTest = true;
+                                            }
+
+
+                                            if ( plugin.destfolder) {
+                                                // specified a subfolder to put things in
+                                                file.path = pluginsDir + plugin.destfolder + "/" + file.path;
+                                            } else {
+                                                file.path = pluginsDir + file.path;
+                                            }
+
+
+
+                                            if (typeof folderTest === "string") {
+
+
+
+                                                mkdirp( file.dirname, { mode: permission } );
+
+                                                if ( file.isBuffer() ) {
+                                                    fs.writeFile( file.path, file.contents, { mode: permission }, function(err) {
+                                                        if (err) {
+                                                            //console.log( file.path + " buffer errr" );
+                                                        } else {
+
+                                                        }
+                                                    });
+                                                }
+
+                                            }
+                                    });
+
+                                    console.log( "Saved " + chalk.green( plugin.name ) );
+                                });
+
+
                 }
-            });
+
+
+});
+
 
 
         }
