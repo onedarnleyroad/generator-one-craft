@@ -202,21 +202,87 @@ After the latest version of Craft is downloaded and installed, we then overwrite
 
 It also adds some custom code to look for `craft/config/local/db.php` and use that in place of the existing file.  That way you can make custom modifications for you local environment - there is also a .gitignore in the local directory so that it stays local. 
 
-## Optional Addons
+### Plugins
 
-### Bower
+We have added a list of our preferred plugins in `generators/app/craftplugins.js` which is called on in the generator and processed.  As plugin developers have their own ways of storing the plugin itself, we have to do a little bit of configuration to get the downloader to extract the right thing (and not a load of junk) to the right place.
 
-Even if you include Bower in your project, you don't really have to even use it, as it'll just sort of sit there and isn't too intrusive.  Saying no to this option when generating will give you a slightly leaner Gulpfile.    
+As such you have to build an array of objects with the following options - but since this is in the generator, you're not really editing this unless you want to 
+tweak the generator to your liking.  We can always modify this generator to accept some sort of config json?
+
+**While the options have defaults, leave them unset at your peril!  The combination of things can create a bit of a mess potentially, so it's important to know what's being copied where, as we cannot always predict how someone sets their plugin repo**
+
+#### plugin.name 
+`_required_`
+Type: `string`
+
+The name of the plugin. Acts as the prompt choice, so make this readable, but also gets stored in the `.yo-rc.json` storage file (to remember a users' choices).  
+
+#### plugin.url 
+`_required_`
+Type: `string`
+
+Remote URL to a zipfile (this is important!) to be downloaded and extracted.  Usually a github master file, for example `https://github.com/johndwells/craft.minimee/archive/master.zip`
+
+#### plugin.checked
+Default: `false`
+Type: `bool` 
+
+Whether the option is checked by default for the user when running the generator.
+
+
+#### plugin.essential
+Default: `false`
+Type: `bool` 
+
+If true then we won't ask people, it just gets installed regardless - useful if your default templates have dependencies, such as with `minimee`
+
+#### plugin.srcfolder:
+Default: `false`
+Type: `string, false`
+
+If a string, then it will only copy that from that folder in the zip.  So for example if the repo has two directories:
+
+```
+pluginname
+docs
+src
+```
+
+Then maybe you only want to copy `pluginname` as the others will just muddy up the plugins folder, and also potentially create conflicts.  Specifying `pluginname` in this instance will only add that folder.
+
+If `false` then it will just copy everything in the repo - use in conjuction with `plugin.destfolder` and `plugin.strip` for best results. 
+
+#### destfolder
+Default: `false`
+Type: `string, false`
+
+If a string, then it will put everything into this folder, in the plugins directory.  Eg.
+
+`seomatic` will copy everything into `craft/plugins/seomatic`.  This is useful when the plugin has everything at its repository root and `plugin.strip` is 0
+
+Otherwise you may end up with some weird results.  But some fiddling may be good if a zip had, say, more than 1 plugin in.
+
+#### plugin.strip
+Default: `1`
+Type: `int`
+
+How many paths to strip from the path of the files in the directory.  For example a repo might generate `myrepo-master/pluginname`
+
+At `strip: 0` it would extract to `craft/plugins/myrepo-master/pluginname` which is obviously incorrect.  1 would then strip out `myrepo-master` and so on.  
+
+Use in combination with `srcfolder` and `destfolder` to track down the right directory and put it in the right place.
+
+
+----------------
 
 
 # To Do
 
-## Database Automation
+## MAMP PRO automation / PHP
 
-Could we run a bash script to set up the local database? Perhaps the generator could take a project name, thus naming the repo, and create a `.sh` file that sets up a MySQL database assuming normal commands.  It would also update the `local/config/db.php` (check filename) and rewrite it with supplied variables.   It would also be good to have a default SQL file to import, bootstrapping the usual credentials.  At the time of generation, we could supply an admin account, and possibly a client account login
+It'd be nice to be able to set up the server based on our prompting options.  Since we generate a db.php file that has a database name, and we generate a gulpfile that has the hostname, it'd be great to send that to MySQL and to MAMP Pro to add all the bits and then we could literally start developing our site - especially if we were to perform a SQL import.  All depends on MAMP, and it's still a fairly basic GUI process.  
 
-
-
+----------------
 
 # Notes
 
