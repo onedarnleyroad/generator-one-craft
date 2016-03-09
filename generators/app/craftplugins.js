@@ -30,17 +30,17 @@
  * TO ADD
  *
 
-CacheFlag
-ColdCache
-CropField (not yet on Github, one of ours, still needs polish)
-ImageResizer
-Minimee
-LinkIt
-Preparse Field
-RedactorI
-SEOMatic
-TransformInfo (not yet on Github, it's a small one of mine)
-Translate
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -77,17 +77,8 @@ module.exports = [
     {
         name: "Minimee", // label so people know what they're installing
         url: "https://github.com/johndwells/craft.minimee/archive/master.zip", // link to a zip file so yeoman can extract
-        checked: true, // on or off in the list by default?
         essential: true, // set to true to not give people the option to turn it off
         srcfolder: 'minimee'
-    },
-
-    {
-        name: "Supercool Button-box",
-        url: "https://github.com/supercool/Button-Box/archive/master.zip",
-        checked: false,
-        essential: false,
-        srcfolder: 'buttonbox'
     },
 
     {
@@ -100,6 +91,66 @@ module.exports = [
 
         // default is 1 for stripe, which means it'll go to the next level and strip out the top level folder.  But since this repo
         strip: 0
-    }
+    },
+
+    {
+        name: "CacheFlag",
+        url: "https://github.com/mmikkel/CacheFlag-Craft/archive/master.zip",
+        checked: false,
+        srcfolder: "cacheflag"
+    },
+
+    {
+        name: "ColdCache",
+        url: "https://github.com/pixelandtonic/ColdCache/archive/master.zip",
+        checked: false,
+        srcfolder: "coldcache"
+    },
+
+    // {
+    //     name: "CropField (not yet on Github, one of ours, still needs polish)",
+    //     url: "",
+    //     checked: false,
+    //     srcfolder: ""
+    // },
+
+    {
+        name: "ImageResizer",
+        url: "https://github.com/engram-design/ImageResizer/archive/master.zip",
+        checked: false,
+        srcfolder: "imageresizer"
+    },
+
+
+    {
+        name: "FruitLinkIt",
+        url: "https://github.com/fruitstudios/LinkIt/archive/master.zip",
+        checked: false,
+        srcfolder: "fruitlinkit"
+    },
+
+    {
+        name: "Preparse Field",
+        url: "https://github.com/aelvan/Preparse-Field-Craft/archive/master.zip",
+        checked: false,
+        srcfolder: "preparsefield"
+    },
+
+    {
+        name: "RedactorI",
+        url: "https://github.com/pixelandtonic/RedactorI/archive/master.zip",
+        checked: false,
+        srcfolder: "redactori"
+    },
+
+    {
+        name: "Translate",
+        url: "https://github.com/boboldehampsink/translate/archive/master.zip",
+        checked: false,
+        srcfolder: false,
+        destfolder: 'translate',
+        strip: 0
+    },
+
 
 ];
