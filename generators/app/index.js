@@ -19,6 +19,8 @@ var craftplugins = require('./craftplugins.js');
 
 // oneutils.stripTrailingSlash(str) // returns a string without a trailing slash
 
+var generator;
+
 module.exports = yeoman.Base.extend({
 
     /**
@@ -28,7 +30,7 @@ module.exports = yeoman.Base.extend({
      * But for reference here is the order the functions will run below
 
      * initializing - Your initialization methods (checking current project state, getting configs, etc)
-     *     1. prompting - Where you prompt users for options (where you'd call this.prompt())
+     *     1. prompting - Where you prompt users for options (where you'd call generator.prompt())
      *     2. configuring - Saving configurations and configure the project (creating .editorconfig files and other metadata files)
      *     3. default - If the method name doesn't match a priority, it will be pushed to this group.
      *     4. writing - Where you write the generator specific files (routes, controllers, etc)
@@ -45,7 +47,8 @@ module.exports = yeoman.Base.extend({
 
         // Next, add your custom code
 
-
+        // this just makes it less ambiguous.
+        generator = this;
 
     }
 
@@ -64,24 +67,24 @@ module.exports = yeoman.Base.extend({
 
         // This makes `appname` an argument.
         // But how to do multiple args?
-        this.argument('appname', { type: String, required: false });
+        generator.argument('appname', { type: String, required: false });
 
 
 
 
         // if there's an argument passed, install into that directory, which would be a sub directory?
         // otherwise it'll just install here
-        if ( this.appname ) {
-            this.destinationRoot(this.appname);
+        if ( generator.appname ) {
+            generator.destinationRoot(generator.appname);
         }
 
         // but let people know the full path - they can then abort if it's not right:
         console.log( chalk.blue( "------------") );
-        console.log("Installing into " + chalk.blue( this.destinationRoot() ));
+        console.log("Installing into " + chalk.blue( generator.destinationRoot() ));
         console.log( chalk.blue( "------------") );
 
         // save a yeoman config file - this allows users to run yo in sub directories
-        this.config.save();
+        generator.config.save();
 
         // register transform streams.  ALL files are passed through this, but we can filter with gulp-if
         // run things through streams, Gulpstylee
@@ -100,7 +103,7 @@ module.exports = yeoman.Base.extend({
         // };
 
 
-        // this.registerTransformStream(
+        // generator.registerTransformStream(
 
 
         //     gulpIf(
@@ -122,10 +125,10 @@ module.exports = yeoman.Base.extend({
      *
      */
     ,prompting: function () {
-        var done = this.async();
+        var done = generator.async();
 
         // Have Yeoman greet the user.
-        this.log(yosay(
+        generator.log(yosay(
             'Welcome to the One Darnley Road\'s Craft CMS generator!'
         ));
 
@@ -171,7 +174,7 @@ module.exports = yeoman.Base.extend({
                 },
                 type: 'checkbox',
                 name: 'craftplugins',
-                message: 'Which Craft Plugins would you like to install',
+                message: 'Which Craft Plugins would you like to add?',
                 choices: plugin_options
 
             },
@@ -184,17 +187,47 @@ module.exports = yeoman.Base.extend({
                 },
                 type: 'confirm',
                 name: 'craftForce',
-                message: 'Force overwrite custom craft files? config/db.php etc',
+                message: 'Force overwrite custom craft files? (speeds things up but may delete something you wanted to keep)',
                 default: true
 
+            },
+
+            {
+                type: 'input',
+                name: 'productionServer',
+                message: 'What will be the production server name? No www and no http',
+                default: 'mysite.com'
+            },
+
+
+            {
+                type: 'input',
+                name: 'stagingServer',
+                message: '...and your staging server?',
+                default: function( response ) {
+                    return 'staging.' + response.productionServer;
+                }
+            },
+
+            {
+                type: 'input',
+                name: 'devServer',
+                message: 'Development Server?',
+                default: function( response ) {
+                    // here you could strip out .com / .co.uk / .org etc etc
+                    // var url = response.productionServer.replace( /\.(com|org|co\..)/, '' );
+                    return response.productionServer + '.craft.dev';
+                }
             },
 
 
             {
                 type: 'input',
                 name: 'localdatabase',
-                message: 'What is your local database name?  You will still have a chance to change this as it will just set up local/config/db.php',
-                default: ''
+                message: 'What is your local database name?',
+                default: function( response ) {
+                    return response.productionServer;
+                }
             },
 
 
@@ -217,13 +250,7 @@ module.exports = yeoman.Base.extend({
                 default: 0
             },
 
-            // Proxy
-            {
-                type: 'input',
-                name: 'proxy',
-                message: 'What will you call your dev server? eg 1dr.dev',
-                default: 'local.dev'
-            }
+
 
             // // Destination for Assets
             // {
@@ -236,7 +263,7 @@ module.exports = yeoman.Base.extend({
         ];
 
         // set the defaults to whatever is saved
-        var configDefaults = this.config.getAll();
+        var configDefaults = generator.config.getAll();
 
         // based on saved data, we could even skip some prompts...
         prompts.forEach( prompt => {
@@ -246,30 +273,35 @@ module.exports = yeoman.Base.extend({
         });
 
 
-        this.prompt(prompts, function (props) {
+        generator.prompt(prompts, function (props) {
 
-            this.props = props;
+            generator.props = props;
 
             // set a default here
-            this.props.assets = 'assets';
+            generator.props.assets = 'assets';
 
-            // To access props later use this.props.someOption;
+            // To access props later use generator.props.someOption;
 
-            if ( !this.props.craftLicense ) {
+            if ( !generator.props.craftLicense ) {
                 console.log( chalk.red( "NOT INSTALLING CRAFT - You have to agree to the license to download Craft!") );
             }
 
             // set some craft vars for use in templates
-            this.craftvars = {
-                localdatabase: this.props.localdatabase,
-                public_folder: this.props.public_folder
+            generator.craftvars = {
+                localdatabase: generator.props.localdatabase,
+                public_folder: generator.props.public_folder,
+                stagingServer: generator.props.stagingServer,
+                production_server: generator.props.productionServer,
+                devServer: generator.props.devServer
             };
 
+
+
             // save each property into the config
-            for (var prop in this.props) {
+            for (var prop in generator.props) {
                 var obj = {};
-                obj[prop] = this.props[prop];
-                this.config.set(obj);
+                obj[prop] = generator.props[prop];
+                generator.config.set(obj);
             }
 
             done();
@@ -305,7 +337,7 @@ module.exports = yeoman.Base.extend({
 
         console.log( chalk.grey( "Installing files" ) );
 
-        // Note `this.fs` is
+        // Note `generator.fs` is
         // https://github.com/sboudrias/mem-fs-editor
         // and not the native node fs = require('fs') module.
         //
@@ -319,23 +351,23 @@ module.exports = yeoman.Base.extend({
 
         // set some options for the templates to use.
         var gulpOptions = {
-            assets: oneutils.stripTrailingSlash( this.props.assets ),
-            bower: this.props.bower,
-            proxy: this.props.proxy,
-            public_folder: this.props.public_folder
+            assets: oneutils.stripTrailingSlash( generator.props.assets ),
+            bower: generator.props.bower,
+            proxy: generator.props.devServer,
+            public_folder: generator.props.public_folder
         };
 
         // gulpfile
-        this.fs.copyTpl( this.templatePath('_gulpfile.js'), this.destinationPath('gulpfile.js'), gulpOptions );
+        generator.fs.copyTpl( generator.templatePath('_gulpfile.js'), generator.destinationPath('gulpfile.js'), gulpOptions );
 
         // Package JSON
-        this.fs.copyTpl( this.templatePath('_package.json'), this.destinationPath('package.json'), gulpOptions );
+        generator.fs.copyTpl( generator.templatePath('_package.json'), generator.destinationPath('package.json'), gulpOptions );
 
         // gitignore
-        this.fs.copyTpl( this.templatePath('_gitignore'), this.destinationPath('.gitignore'), gulpOptions );
+        generator.fs.copyTpl( generator.templatePath('_gitignore'), generator.destinationPath('.gitignore'), gulpOptions );
 
         // Bower
-        this.fs.copyTpl( this.templatePath('_bower.json'), this.destinationPath('bower.json'), gulpOptions );
+        generator.fs.copyTpl( generator.templatePath('_bower.json'), generator.destinationPath('bower.json'), gulpOptions );
 
 
         /**
@@ -347,14 +379,7 @@ module.exports = yeoman.Base.extend({
         // would be probably better to just have one array, and loop through checking if it's empty or not
 
 
-        /**
-         * Folders with things in....do not touch /craft though! That's handled on craft installation.
-         */
-        // public - copy to whatever they named their public directory as
-        this.fs.copyTpl(
-                this.templatePath( 'public' + '/**/*'),
-                this.destinationPath( this.props.public_folder + '/')
-            );
+
 
 
 
@@ -369,10 +394,10 @@ module.exports = yeoman.Base.extend({
         folders.forEach( folder =>  {
 
 
-            this.fs.copyTpl(
-                this.templatePath( folder + '/**/*'),
-                this.destinationPath( folder + '/'),
-                this.craftvars
+            generator.fs.copyTpl(
+                generator.templatePath( folder + '/**/*'),
+                generator.destinationPath( folder + '/'),
+                generator.craftvars
 
             );
 
@@ -388,13 +413,13 @@ module.exports = yeoman.Base.extend({
         var emptyFolders = [
             'src/img',
             'src/partials',
-            this.props.public_folder + '/uploads'
+            generator.props.public_folder + '/uploads'
         ];
 
         console.log('Making empty folders...');
         emptyFolders.forEach( folder => {
             console.log(chalk.green('     ' + folder ) );
-            mkdirp( this.destinationPath( folder ), function(err) {
+            mkdirp( generator.destinationPath( folder ), function(err) {
                 if (err) { console.log( chalk.red(err) ); }
             });
         });
@@ -416,24 +441,24 @@ module.exports = yeoman.Base.extend({
         npm: function () {
 
             // install dependencies and then run gulp - this will do a first build so that Craft has assets and templates where they should be.
-            this.installDependencies({
+            generator.installDependencies({
                 callback: () => {
-                    this.spawnCommand('gulp');
+                    generator.spawnCommand('gulp');
                 }
             });
         }
 
         ,installCraft: function() {
 
-            if (!this.props.craftLicense) {
+            if (!generator.props.craftLicense) {
                 return;
             }
 
             console.log( "installing craft");
 
-            this.extract(
+            generator.extract(
                 'http://buildwithcraft.com/latest.zip?accept_license=yes',
-                this.destinationPath('./'),
+                generator.destinationPath('./'),
                 {mode:permission}, // this is important - without it we seem to end up with files that are 0000
                 err => {
                   if (err) {
@@ -443,37 +468,77 @@ module.exports = yeoman.Base.extend({
                     console.log(chalk.green("Craft download completed!"));
                     console.log('-----------------------------');
 
+
+
                     // now run specific overrides
 
                     // add force when editing files below?  This would have been set in the prompter
                     // and really it just saves people having to keep typing Y for every file.
                     //
                     // However if they type no it at least allows them to run the scaffolder again without overwriting new things.
-                    this.conflicter.force = this.props.craftForce;
+                    generator.conflicter.force = generator.props.craftForce;
+
+
+
+                    /**
+                     * ---------------
+                     * Craft Directory
+                     * ---------------
+                     */
 
                     // At this point we copy everything from the templates/craft directory into the new
                     // craft directory, thus overwriting anything that the default craft installed.
                     // for example, a new db.php file.  we're running it through the templater, so we can
                     // add custom config
-                    this.fs.copyTpl(
-                        this.templatePath( 'craft' + '/**/*'),
-                        this.destinationPath( 'craft' + '/'),
-                        this.craftvars
+                    generator.fs.copyTpl(
+                        generator.templatePath( 'craft' + '/**/*'),
+                        generator.destinationPath( 'craft' + '/'),
+                        generator.craftvars
                     );
+
+                    // make a storage folder
+                    mkdirp( generator.destinationPath('craft/storage'), permission);
 
                     // Empty Craft's default template directory - we're going to put in our own and run gulp later
                     // little bit extreme perhaps, but we don't want any default routes and templates confusing things.
-                    this.fs.delete(
-                        this.destinationPath('craft/templates' + '/**/*')
+                    generator.fs.delete(
+                        generator.destinationPath('craft/templates' + '/**/*')
                     );
 
-                    // for apache hosts, as craft has htaccess by default.
-                    if ( this.props.htaccess === '.htaccess') {
-                        this.fs.move( this.destinationPath( this.props.public_folder + "/htaccess"), this.destinationPath( this.props.public_folder + "/.htaccess") );
+
+                    /**
+                     * ---------------
+                     * Public Directory
+                     * ---------------
+                     */
+
+                    // At this point we should have 'public' sat in the destination folder which was extracted
+                    // from the craft zip.  We need to fiddle with it first...
+                    //
+                    // This should all work considering apparently mem-fs is synchronous.
+
+                    // for apache hosts, as craft has htaccess by default.  Change if the user asked for it.
+
+
+                    // Now move public to whatever the user decided - hopefully this overwrites public_html and confirms the conflicts.
+                    if ( generator.props.public_folder != 'public' ) {
+                        generator.fs.move(
+                            generator.destinationPath('public'),
+                            generator.destinationPath( generator.props.public_folder ) );
                     }
 
-                    // make a storage folder
-                    mkdirp( this.destinationPath('craft/storage'), permission);
+
+                    // copy in our custom generator code into public
+                    generator.fs.copyTpl(
+                        generator.templatePath( 'public' + '/**/*'),
+                        generator.destinationPath( generator.props.public_folder + '/'),
+                        generator.craftvars
+                    );
+
+                    // rename htaccess if this was required
+                    if ( generator.props.htaccess === '.htaccess') {
+                        generator.fs.move( generator.destinationPath( generator.props.public_folder + "/htaccess"), generator.destinationPath( generator.props.public_folder + "/.htaccess" ) );
+                    }
 
                 }
 
@@ -483,84 +548,16 @@ module.exports = yeoman.Base.extend({
 
         ,installPlugins: function() {
 
-            if (!this.props.craftLicense) {
+            if (!generator.props.craftLicense) {
                 return;
             }
 
             console.log( "installing craft plugins");
 
-
-
-
-
-            var pluginsDir = this.destinationPath('craft/plugins/');
-
-            craftplugins.forEach( plugin => {
-
-                if (plugin.essential || this.props.craftplugins.indexOf( plugin.name ) != -1) {
-
-                    plugin.strip = plugin.strip || 1;
-                    var p = new Download({ mode: permission, extract: true, strip: plugin.strip })
-                                .get( plugin.url )
-                                .run( function( err, files ) {
-
-                                    if (err) throw err;
-
-                                    files.forEach( file => {
-                                            // someone's going to complain if they run this on windows...
-
-
-
-                                            if ( plugin.srcfolder && typeof plugin.srcfolder === 'string') {
-                                                // we have specified a specific folder, so check against this:
-                                                var chunks = file.path.split( "/" );
-
-                                                // only pass if the first directory matches our src target
-                                                var folderTest = (chunks[0] === plugin.srcfolder);
-                                                // set the path
-
-
-                                            } else if (!plugin.srcfolder) {
-                                                var folderTest = true;
-                                            }
-
-
-                                            if ( plugin.destfolder) {
-                                                // specified a subfolder to put things in
-                                                file.path = pluginsDir + plugin.destfolder + "/" + file.path;
-                                            } else {
-                                                file.path = pluginsDir + file.path;
-                                            }
-
-
-
-                                            if (typeof folderTest === "string") {
-
-
-
-                                                mkdirp( file.dirname, { mode: permission } );
-
-                                                if ( file.isBuffer() ) {
-                                                    fs.writeFile( file.path, file.contents, { mode: permission }, function(err) {
-                                                        if (err) {
-                                                            //console.log( file.path + " buffer errr" );
-                                                        } else {
-
-                                                        }
-                                                    });
-                                                }
-
-                                            }
-                                    });
-
-                                    console.log( "Saved " + chalk.green( plugin.name ) );
-                                });
-
-
-                }
-
-
-});
+            // moved this to a module as it was getting a bit too cumbersome down here.
+            var pluginsDir = generator.destinationPath('craft/plugins/');
+            var saveplugins = require('./saveplugins.js');
+            saveplugins( pluginsDir, permission, generator.props.craftplugins );
 
 
 
