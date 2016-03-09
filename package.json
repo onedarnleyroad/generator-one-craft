@@ -17,6 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "chalk": "^1.1.1",
+    "download": "^4.4.3",
     "gulp-beautify": "^2.0.0",
     "gulp-if": "^2.0.0",
     "mkdirp": "^0.5.1",
