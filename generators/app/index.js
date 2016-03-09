@@ -223,15 +223,15 @@ module.exports = yeoman.Base.extend({
                 name: 'proxy',
                 message: 'What will you call your dev server? eg 1dr.dev',
                 default: 'local.dev'
-            },
-
-            // Destination for Assets
-            {
-                type: 'input',
-                name: 'assets',
-                message: 'Where will your assets live? Default assets - inside the public folder chosen above',
-                default: 'assets'
             }
+
+            // // Destination for Assets
+            // {
+            //     type: 'input',
+            //     name: 'assets',
+            //     message: 'Where will your assets live? Default assets - inside the public folder chosen above',
+            //     default: 'assets'
+            // }
 
         ];
 
@@ -249,6 +249,10 @@ module.exports = yeoman.Base.extend({
         this.prompt(prompts, function (props) {
 
             this.props = props;
+
+            // set a default here
+            this.props.assets = 'assets';
+
             // To access props later use this.props.someOption;
 
             if ( !this.props.craftLicense ) {
@@ -316,7 +320,8 @@ module.exports = yeoman.Base.extend({
         var gulpOptions = {
             assets: this.props.public_folder + "/" + oneutils.stripTrailingSlash( this.props.assets ),
             bower: this.props.bower,
-            proxy: this.props.proxy
+            proxy: this.props.proxy,
+            publicFolder: this.props.public_folder
         };
 
         // gulpfile
@@ -350,7 +355,7 @@ module.exports = yeoman.Base.extend({
 
 
 
-        var folders = ['templates', 'src/scss'];
+        var folders = ['src/templates', 'src/scss'];
 
 
         // Note that craft was installed in an earlier step.  This is going to
@@ -376,7 +381,8 @@ module.exports = yeoman.Base.extend({
         var emptyFolders = [
             'src/img',
             'src/js',
-            'src/partials'
+            'src/partials',
+            public_folder + '/uploads'
         ];
 
         console.log('Making empty folders...');
