@@ -121,7 +121,7 @@ gulp.task('templates', function () {
 
     // take anything from templates
     return gulp
-        .src('./src/templates/**/*.html')
+        .src('./src/templates/**/*.*')
         .pipe( $.fileInclude({
             prefix: '@@',
             basepath: './src/partials/'
