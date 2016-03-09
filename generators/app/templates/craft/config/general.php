@@ -5,79 +5,87 @@
  *
  * All of your system's general configuration settings go in here.
  * You can see a list of the default settings in craft/app/etc/config/defaults/general.php
+ *
+ * To determine the environment, look at public/index.php for the logic.
+ *
+ * More at: http://buildwithcraft.com/docs/config-settings
+ * Hat-tip to: https://github.com/BarrelStrength/Craft-Master
  */
-
 
 // As a precaution, only define constants once
 if( ! defined('ENV_URI_SCHEME'))
 {
-    // use the existing protocol, unless we're on production
-    $productionProtocol = 'http://';
-    $protocol = ( isset($_SERVER['HTTPS'] ) ) ? 'https://' : 'http://';
-    define('ENV_URI_SCHEME', (CRAFT_ENVIRONMENT == 'live') ? $productionProtocol : $protocol );
+    // Ensure our urls have the right scheme
+    define('ENV_URI_SCHEME',  ( isset($_SERVER['HTTPS'] ) ) ? "https://" : "http://" );
 
-    // The site url
-    define('ENV_SITE_URL', ENV_URI_SCHEME . $_SERVER['SERVER_NAME'] . '/');
-
-    // The site filesystem path
-    define('ENV_FILESYSTEM_PATH', realpath(CRAFT_BASE_PATH . '/../') . '/');
+    // The site base url
+    define('ENV_BASE_URL',    ENV_URI_SCHEME . $_SERVER['SERVER_NAME'] . '/');
 
     // The site base path
-    define('ENV_BASE_PATH', realpath(CRAFT_BASE_PATH) . '/');
+    // note the folder is configurable via yo generator
+    define('ENV_BASE_PATH',       realpath(CRAFT_BASE_PATH . '/../<%= public_folder %>') . '/');
 }
 
+
+// we start by building a default config array
 $config = array(
+
+    // global & defaults (required when configuring different environments)
     '*' => array(
-        'errorTemplatePrefix' => "_errors/",
 
-        // Immediately log in users after account creation
-        'autoLoginAfterAccountActivation' => true,
+        // customise our CP login
+        // configurable via yo generator
+        'cpTrigger' => 'one',
 
-        // Remove index.php? from URLs
-        'omitScriptNameInUrls' => true,
-
-        // never add trailing slash to outputted urls
-        'addTrailingSlashesToUrls' => false,
-
-        // pass our environment as config key
-        'environment' => CRAFT_ENVIRONMENT,
+        // error code templates
+        'errorTemplatePrefix' => "errors/",
 
         // i18n
         // http://buildwithcraft.com/docs/config-settings#siteUrl
         // http://craftcms.stackexchange.com/questions/920/what-s-the-recommended-way-to-set-the-site-url/921#921
         'siteUrl' => array(
-            'en' => ENV_SITE_URL
+            'en' => ENV_BASE_URL
         ),
 
         // used in CP settings
-        // i.e. siteUrl => {siteUrl}, basePath => {basePath}
         'environmentVariables' => array(
-            'filesystemPath'    => ENV_FILESYSTEM_PATH,
-            'basePath'  => ENV_FILESYSTEM_PATH . '<%= public_folder %>/', //ENV_BASE_PATH,
-            'siteUrl' => ENV_SITE_URL
+            'basePath'  => ENV_BASE_PATH,
+            'baseUrl' => ENV_BASE_URL
         ),
 
+        // Enable CSRF Protection (will default to true in Craft 3.0)
+        'enableCsrfProtection' => true,
+
         // Disable auto updates
-        'allowAutoUpdates' => false
+        'allowAutoUpdates' => false,
+
+        // remove username field
+        'useEmailAsUsername' => true,
+
+        // omit 'index.php' from urls
+        'omitScriptNameInUrls' => true,
 
     ),
 
+    // production
+    'production' => array(),
+
+    // staging
+    'staging' => array(),
+
+    // local / development
     'local' => array(
 
-        // customise our CP login
-        'cpTrigger' => 'one',
-
-        // disable caching locally
+        // disable template caching
         'enableTemplateCaching' => false,
 
         // log debugging info to browser console
         'devMode' => true,
 
-        // enable local environment to auto update
+        // enable updating from the CP
         'allowAutoUpdates' => true,
     )
 );
-
 
 // If a local config file exists, merge
 if (is_array($localConfig = @include(CRAFT_CONFIG_PATH . 'local/general.php')))
@@ -94,10 +102,6 @@ if (is_array($localConfig = @include(CRAFT_CONFIG_PATH . 'local/general.php')))
         $config['local'] = $localConfig;
     }
 }
-
-
-
-
 
 // return our $config back to craft
 return $config;
