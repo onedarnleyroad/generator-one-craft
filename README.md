@@ -74,68 +74,16 @@ As such, during development, do not edit anything in `craft/templates` as you ma
 
 While developing in the source folder your templates will be run through three preprocessors:
 
-#### Wiredep
+#### Injecting and saving Bower
 
-_Visit [https://www.npmjs.com/package/wiredep](https://www.npmjs.com/package/wiredep) for docs_
+When running the `templates` task, if a script has the following:
+    
+    <!-- bower:js -->
+    <!-- endinject -->
 
-Quite simply, this is for handling your Bower installs.  This reads through your `bower.json` file to work out your chosen script dependencies, and then searches through your `src/templates` folder for HTML that has the appropriate snippet to inject script tags.  We use this in conjunction with `gulp-useref` (see below) to then compile these scripts into our assets folder.
+The script will run through the bower.json file and inject all the scripts required.  It will transform the paths to look for them in the `assets/js/bower` directory.  Then, the `bower` task in the gulpfile will then run through the bower.json again and copy the JS itself over.  This way you can still poke around and easily look at the individual files, and we'll be using `minimee` to concatenate them.  Of coruse it would be trivial to update the gulpfile at this point to concatenate them at the build process.
 
-It looks for something along these lines:
-
-	<html>
-	<head>
-	  <!-- bower:css -->
-	  <!-- endbower -->
-	</head>
-	<body>
-	  <!-- bower:js -->
-	  <!-- endbower -->
-	</body>
-	</html>
-
-But feel free to look at `src/templates/_snippets/vendor.html` for our setup.
-
-#### Useref
-
-_Visit [https://www.npmjs.com/package/gulp-useref](https://www.npmjs.com/package/gulp-useref) for docs_
-
-This is the next stage of the bower step above, but it can be used for other files and other scripts.  We're mostly just using it for Bower, as [Minimee](https://github.com/johndwells/craft.minimee) handles our scripts usually.
-
-Consider the following example:
-
-From `src/templates/_snippets/vendor.html`:
-
-	<html>
-	<head>
-	    <!-- build:css assets/css/vendor.css -->
-	    <link href="css/one.css" rel="stylesheet">
-	    <link href="css/two.css" rel="stylesheet">
-	    <!-- endbuild -->
-	</head>
-	<body>
-	    <!-- build:js assets/js/vendor.js -->
-	    <!-- bower:js -->
-	    <script type="text/javascript" src="bower_components/vendor1/one.js"></script> 
-	    <script type="text/javascript" src="bower_components/vendor2/two.js"></script>
-	    <!-- endbower -->
-	    <script type="text/javascript" src="src/js/one.js"></script> 
-	    <script type="text/javascript" src="src/js/two.js"></script> 
-	    <!-- endbuild -->
-	</body>
-	</html>
-
-Would be compiled (in our case) to `craft/templates/_snippets/vendor.html` like so:
-
-	<html>
-	<head>
-	    <link rel="stylesheet" href="assets/css/combined.css"/>
-	</head>
-	<body>
-	    <script src="assets/js/combined.js"></script> 
-	</body>
-	</html>
-
-Your Craft templates can include the above in the normal way.  We aren't running a minification process here, because again [Minimee](https://github.com/johndwells/craft.minimee) handles that - but we may want to use a linter with something like `gulp-if`.
+As `templates` runs the `bower` task, you don't really need to run it manually.  
 
 #### Gulp File Include
 

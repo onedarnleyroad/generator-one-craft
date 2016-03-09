@@ -1,10 +1,10 @@
 
-var gulp = require('gulp'),
-    watch = require('gulp-watch'),
-    browserSync = require('browser-sync'),
-    gulpLoadPlugins = require('gulp-load-plugins'),
-    wiredep = require('wiredep').stream;
-
+var gulp = require('gulp');
+var watch = require('gulp-watch');
+var browserSync = require('browser-sync');
+var gulpLoadPlugins = require('gulp-load-plugins');
+var path = require('path');
+var bowerFiles = require('main-bower-files'),
 var $ = gulpLoadPlugins();
 
 /**
@@ -84,32 +84,49 @@ gulp.task('images', function () {
  * -------------
  * TEMPLATES
  *
- * Unlike the other tasks, this sends things to the craft templates folder.  We can use file include to
- * perform functions that twig can't, to keep things a little drier.  The only issue is, we have to
- * think about snippets living here and not touching them on templates.  So perhaps this isn't needed?
+ * Send all src/templates to the craft/templates folder and
  *
- * Other than the optional bower step, which is helpful for copying assets over.
+ * Run gulp-file-include including snippets as we like
+ * Inject Bower scripts into the appropriate snippets,
+ * basically, anywhere you've written this:
+
+    <!-- bower:js -->
+    <!-- endinject -->
+
+ *
+ * The 'bower' task, called before 'templates', will look through the bower
+ * json and copy all the appropriate scripts into our assets folder, in a subfolder
+ * called 'bower' for reference.
+ *
+ * The two tasks work together because the path name is transformed when injected
+ * so if you change the path of one, make sure you change the other.
  * -------------
  */
 
-gulp.task('templates', function () {
+gulp.task('bower', function() {
+    return gulp
+        .src(bowerFiles())
+        // send to
+        .pipe(gulp.dest(assets + '/js/bower'));
+})
+
+gulp.task('templates', ['bower'], function () {
 
     // take anything from templates
     return gulp
-        .src('./src/templates/*.html')
+        .src('./src/templates/**/*.html')
         .pipe( $.fileInclude({
             prefix: '@@',
             basepath: './src/partials/'
         }))
 
-    <%# /* ADD bower process only if we have asked for this in the generator */ %>
-     // Automatically pop bower components into the HTML.
-     // it might be better to just put a very specific file rather than to look through everything
-     //
-     // we need a process to copy the files to the assets folder, and perhaps bundle them.  useref can handle this quite quickly though.
-    <% if (bower) { %>
-        .pipe(wiredep())
-    <% } %>
+        .pipe($.inject(gulp.src(bowerFiles(), {read: false}), {
+            name: 'bower',
+            transform: function( filepath ) {
+
+                return '<script src="/assets/js/bower/' + path.basename( filepath ) + '"></script>';
+            }
+        }))
 
         // send to
         .pipe(gulp.dest('./craft/templates'));
@@ -135,10 +152,10 @@ gulp.task('serve', ['styles'], function() {
     gulp.watch('./src/templates/**/*.html', ['templates']);
 
 
-    <% if (bower) { %>
+
     // watch our bower.json - if someone installs and saves a package, we can load in that script into any snippets that might be calling them.
     gulp.watch('./bower.json', ['templates']);
-    <% } %>
+
 
     // Launch browser sync
     browserSync({

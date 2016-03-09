@@ -1,0 +1,18 @@
+{#
+    This snippet will dynamically update from the gulp tasks wiredep and useref.
+    Even though we might bundle this inside minimee, we still need to apply gulp-inject and
+    main-bower-files to generate a bundled vendor script from our bower scripts that Craft
+    can actually access (i.e. to move things out of the bower_components directory)
+
+    TL;DR:
+    As such the HTML comments are important the way they are as they are parsed by the gulpfile!
+
+
+
+#}
+
+<!-- bower:js -->
+<!-- endinject -->
+
+
+{# List other scripts here if you wish #}
