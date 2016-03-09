@@ -63,7 +63,6 @@ Pretty straightforward, this is your SASS compiler.  The latter simply omits sou
 This is something for discussion - but simply images go in at `src/img` and come out at `public/assets/img` - on the way they are run through `gulp-imagemin` (yet to be fully configured in the gulpfile).  This losslessly compresses them - it's good for stripping metadata.  As these assets generally come out of a PSD and PS isn't great and removing superfluous data, this should do enough work for us to get the files nice and small.  There's also `gulp-changed` to avoid doing this again and again - as it's probably quite a hefty gulp task.  Needs testing
 
 
-
 ### HTML / Twig
 
 	$ gulp templates
