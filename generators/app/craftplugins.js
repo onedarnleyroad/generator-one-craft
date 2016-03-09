@@ -26,6 +26,26 @@
  * But maybe we want to control release versions anyway
  */
 
+/**
+ * TO ADD
+ *
+
+CacheFlag
+ColdCache
+CropField (not yet on Github, one of ours, still needs polish)
+ImageResizer
+Minimee
+LinkIt
+Preparse Field
+RedactorI
+SEOMatic
+TransformInfo (not yet on Github, it's a small one of mine)
+Translate
+
+
+
+ */
+
 
 // options
 /*

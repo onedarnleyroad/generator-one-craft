@@ -4,7 +4,7 @@ var watch = require('gulp-watch');
 var browserSync = require('browser-sync');
 var gulpLoadPlugins = require('gulp-load-plugins');
 var path = require('path');
-var bowerFiles = require('main-bower-files'),
+var bowerFiles = require('main-bower-files');
 var $ = gulpLoadPlugins();
 
 /**
@@ -15,9 +15,10 @@ var $ = gulpLoadPlugins();
 
 <%# /* Set up configurations from the yeoman options */ %>
 var assets = '<%= assets %>';
+var public_folder = '<%= public_folder %>';
 var proxy = '<%= proxy %>';
 
-
+var public_assets = public_folder + '/' + assets;
 
 
 /**
@@ -37,7 +38,7 @@ gulp.task('styles', function() {
           log: true
         }))
         //.pipe($.uglifycss())
-        .pipe(gulp.dest(assets + '/css'))
+        .pipe(gulp.dest(public_assets + '/css'))
 });
 
 
@@ -51,7 +52,7 @@ gulp.task('styles-production', function() {
           log: true
         }))
         .pipe($.uglifycss())
-        .pipe(gulp.dest(assets + '/css'))
+        .pipe(gulp.dest(public_assets + '/css'))
 });
 
 
@@ -65,7 +66,7 @@ gulp.task('styles-production', function() {
 
 gulp.task('images', function () {
 
-    var imgDest = assets + '/img';
+    var imgDest = public_assets + '/img';
     return gulp.src('src/img/**/*')
 
         // Only send through changed files, as this is a somewhat 'heavy' operation
@@ -100,6 +101,12 @@ gulp.task('images', function () {
  *
  * The two tasks work together because the path name is transformed when injected
  * so if you change the path of one, make sure you change the other.
+ *
+ * Also note that this is minimee flavoured, so we don't output <script> tags,
+ * but just strings with commas to go in an array.
+ *
+ * Add script tags below if you want normal versions - but simply removing the transform
+ * function will take away the ability to change the scripts path to the assets folder.
  * -------------
  */
 
@@ -107,10 +114,10 @@ gulp.task('bower', function() {
     return gulp
         .src(bowerFiles())
         // send to
-        .pipe(gulp.dest(assets + '/js/bower'));
-})
+        .pipe(gulp.dest(public_assets + '/js/bower'));
+});
 
-gulp.task('templates', ['bower'], function () {
+gulp.task('templates', function () {
 
     // take anything from templates
     return gulp
@@ -122,9 +129,11 @@ gulp.task('templates', ['bower'], function () {
 
         .pipe($.inject(gulp.src(bowerFiles(), {read: false}), {
             name: 'bower',
+            removeTags: true, // extremely important otherwise you'll kill the minimee array
             transform: function( filepath ) {
-
-                return '<script src="/assets/js/bower/' + path.basename( filepath ) + '"></script>';
+                // Comma creep is okay, as we will have app scripts below!
+                // but watch out for this...
+                return "'/" + assets + "/js/bower/" + path.basename( filepath ) + "',";
             }
         }))
 
@@ -132,6 +141,18 @@ gulp.task('templates', ['bower'], function () {
         .pipe(gulp.dest('./craft/templates'));
 });
 
+/**
+ * -------------
+ * SCRIPTS
+ * -------------
+ */
+// Simple task to copy js into the assets folder...
+// At this point you can add various tasks, linting, whatever
+gulp.task('scripts', function() {
+    return gulp
+        .src(['./src/js/**/*', '!./src/js/bower/'])
+        .pipe( gulp.dest(public_assets + '/js') )
+});
 
 
 
@@ -152,9 +173,9 @@ gulp.task('serve', ['styles'], function() {
     gulp.watch('./src/templates/**/*.html', ['templates']);
 
 
-
+    gulp.watch('./src/js/**/*.js', ['scripts'])
     // watch our bower.json - if someone installs and saves a package, we can load in that script into any snippets that might be calling them.
-    gulp.watch('./bower.json', ['templates']);
+    gulp.watch('./bower.json', ['templates', 'bower']);
 
 
     // Launch browser sync
@@ -181,6 +202,6 @@ gulp.task('serve', ['styles'], function() {
 });
 
 
-gulp.task('default', ['styles', 'templates'], function() {
-    console.log( "copying styles and templates");
+gulp.task('default', ['styles', 'bower', 'scripts', 'templates'], function() {
+    console.log( "building everything...");
 });

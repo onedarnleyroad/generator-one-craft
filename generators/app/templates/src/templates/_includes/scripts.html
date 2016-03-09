@@ -7,12 +7,30 @@
     TL;DR:
     As such the HTML comments are important the way they are as they are parsed by the gulpfile!
 
-
+    The gulpfile also has been reconfigured to work with minimee.  Change to normal script tags
+    if you don't want this behaviour.
 
 #}
 
-<!-- bower:js -->
-<!-- endinject -->
+{# Non async scripts go here, as one non-async bundle.  Maybe we want it async? #}
+{{ craft.minimee.js([
+
+],
+{
+    minifyJsEnabled : true,
+}) }}
+
+{# Your app goes here #}
+{{ craft.minimee.js([
+    <!-- bower:js -->
+    <!-- endinject -->
+    '/assets/js/app.js'
+],
+{
+    combineJsEnabled: true,
+    jsReturnTemplate : '<script src="%s" async></script>'
+}) }}
+
 
 
 {# List other scripts here if you wish #}

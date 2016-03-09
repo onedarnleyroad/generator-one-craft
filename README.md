@@ -47,7 +47,13 @@ These folders are generated from the `app/templates` directory but there may be 
 
 The generator copies over a gulpfile with a few tasks ready made.  It can be configured how you like after the scaffold but out of the box you get some of the following tasks:
 
-_Note that while I say they come out at `public/assets` this is something that the generator can change - it'll prompt you where you want these to end up.  See below.
+_Note that while I say they come out at `public/assets` this is something that the generator can change - it'll prompt you where you want these to end up.  See below._
+
+### Building
+    
+    $ gulp
+
+The default task basically runs everything below, and 'builds' everything it needs.  It's run once the first time after running the generator, to make sure the default templates and assets are in the right folders so that Craft can run.
 
 ### CSS
 
@@ -71,18 +77,16 @@ This is the task for handling template files.  Until this changes in a later com
 
 As such, during development, do not edit anything in `craft/templates` as you may later overwrite files you added in the source folder.  
 
-While developing in the source folder your templates will be run through three preprocessors:
+Before copying, two processes run:
 
-#### Injecting and saving Bower
+#### Bower
 
-When running the `templates` task, if a script has the following:
+If a template file has the following:
     
     <!-- bower:js -->
     <!-- endinject -->
 
 The script will run through the bower.json file and inject all the scripts required.  It will transform the paths to look for them in the `assets/js/bower` directory.  Then, the `bower` task in the gulpfile will then run through the bower.json again and copy the JS itself over.  This way you can still poke around and easily look at the individual files, and we'll be using `minimee` to concatenate them.  Of coruse it would be trivial to update the gulpfile at this point to concatenate them at the build process.
-
-As `templates` runs the `bower` task, you don't really need to run it manually.  
 
 #### Gulp File Include
 
@@ -94,21 +98,34 @@ It's something that is entirely optional, and doesn't really add much to the com
 
 When an HTML file in `src/templates` contains something like the following:
 
-	<h1>Cat Voices</h1>
-	@@include("file.html", {"catsays" : "meow"} )
+    <h1>Cat Voices</h1>
+    @@include("file.html", {"catsays" : "meow"} )
 
 
 It would look for `src/partials/file.html` which might look like this:
 
-	<strong>Our cat says @@catsays</strong>
+    <strong>Our cat says @@catsays</strong>
 
 It compiles into `craft/templates` to:
 
-	<h1>Cat Voices</h1>
-	<strong>Our cat says meow</strong>
+    <h1>Cat Voices</h1>
+    <strong>Our cat says meow</strong>
 
 For the most part Twig includes can handle this kind of behaviour and more dynamically, so we may find this feature is never used.  The data object is optional, eg `@@include("file.html")` but remember if the include file references variables it can't find, gulp will throw an error.  Includes can include files themselves too.
 
+### Scripts
+
+#### General Scripts
+
+    $ gulp scripts
+
+At present, literally just copies from `src/js` to `public/assets/js` at the moment.  But this task is here so you could run minification, concatenation, linting and so on. 
+
+#### Bower
+
+    $ gulp bower
+
+Will read the `bower.json` file, find the main scripts, then copy all the scripts from the bower components directory into `public/assets/js/bower`.  
 
 ### While developing
 

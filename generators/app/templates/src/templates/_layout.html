@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie10 lt-ie9" itemscope itemtype="http://schema.org/Organization"> <![endif]-->
+<!--[if IE 9]><html class="no-js lt-ie10" itemscope itemtype="http://schema.org/Organization"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" itemscope itemtype="http://schema.org/Organization"> <!--<![endif]-->
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1">
+
+{# we can't concatenate & raw-ify it at once, so we have to do this in two steps... #}
+{% if block('title') %}
+    {% set _title = block('title') ? block('title') ~ ' | ' %}
+{% elseif entry is defined %}
+    {% set _title = entry.title ~ ' | ' %}
+{% endif %}
+<title>{{ _title is defined ? _title | raw }}{{ siteName }}</title>
+
+{# Basic SEO #}
+<meta name="keywords" content="{{ seo.metaKeywords }}">
+<meta name="description" content="{{ seo.metaDescription }}">
+<link rel="canonical" href="{{ craft.request.url }}">
+
+{# Facebook Meta #}
+<meta property="og:site_name" content="{{ siteName }}">
+<meta property="og:type" content="website">
+<meta property="og:description" content="{{ seo.metaDescription }}">
+<meta property="og:title" content="{{ _title is defined ? _title | raw }}{{ siteName }}">
+<meta property="og:url" content="{{ craft.request.url }}">
+<meta property="og:image" content="{{ siteUrl }}assets/img/og-image-default-200x200.png">
+
+{# As the client potentially adds to this, it would be smart to cache the loop #}
+{%- cache globally -%}
+    {%- for image in seo.facebookOgImages -%}
+        <meta property="og:image" content="{{ image.url }}">
+    {%- endfor -%}
+{%- endcache -%}
+
+{% block og %}{% endblock %}
+
+{# Google+ meta #}
+<meta itemprop="description" content="{{ seo.metaDescription }}">
+<meta itemprop="name" content="{{ siteName }}"/>
+
+{% include "_includes/analytics.html" %}
+
+</head>
+
+<body class="{% block bodyClass %}{% endblock %}">
+
+{% cache %}
+
+    {% block content %}{% endblock %}
+
+{% endcache %}
+
+
+
+{% include "_includes/scripts.html" %}
+
+
+
+</body>
+</html>

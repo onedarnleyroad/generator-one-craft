@@ -51,4 +51,4 @@ bower_components/
 *.log
 
 # Ignore Uploads folder
-<%= publicFolder %>/uploads
+<%= public_folder %>/uploads

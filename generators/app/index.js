@@ -261,7 +261,8 @@ module.exports = yeoman.Base.extend({
 
             // set some craft vars for use in templates
             this.craftvars = {
-                localdatabase: this.props.localdatabase
+                localdatabase: this.props.localdatabase,
+                public_folder: this.props.public_folder
             };
 
             // save each property into the config
@@ -318,10 +319,10 @@ module.exports = yeoman.Base.extend({
 
         // set some options for the templates to use.
         var gulpOptions = {
-            assets: this.props.public_folder + "/" + oneutils.stripTrailingSlash( this.props.assets ),
+            assets: oneutils.stripTrailingSlash( this.props.assets ),
             bower: this.props.bower,
             proxy: this.props.proxy,
-            publicFolder: this.props.public_folder
+            public_folder: this.props.public_folder
         };
 
         // gulpfile
@@ -343,6 +344,8 @@ module.exports = yeoman.Base.extend({
          * ---------------
          */
 
+        // would be probably better to just have one array, and loop through checking if it's empty or not
+
 
         /**
          * Folders with things in....do not touch /craft though! That's handled on craft installation.
@@ -355,7 +358,11 @@ module.exports = yeoman.Base.extend({
 
 
 
-        var folders = ['src/templates', 'src/scss'];
+        var folders = [
+            'src/templates',
+            'src/scss',
+            'src/js'
+        ];
 
 
         // Note that craft was installed in an earlier step.  This is going to
@@ -380,9 +387,8 @@ module.exports = yeoman.Base.extend({
         // We can make empty directories with code here, without them having to exist in the generator itself.
         var emptyFolders = [
             'src/img',
-            'src/js',
             'src/partials',
-            public_folder + '/uploads'
+            this.props.public_folder + '/uploads'
         ];
 
         console.log('Making empty folders...');
