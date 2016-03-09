@@ -33,6 +33,9 @@ $config = array(
     // global & defaults (required when configuring different environments)
     '*' => array(
 
+        // pass our environment as config key
+        '__environment' => CRAFT_ENVIRONMENT,
+
         // customise our CP login
         // configurable via yo generator
         'cpTrigger' => 'one',

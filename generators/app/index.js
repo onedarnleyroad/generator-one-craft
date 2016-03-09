@@ -413,7 +413,8 @@ module.exports = yeoman.Base.extend({
         var emptyFolders = [
             'src/img',
             'src/partials',
-            generator.props.public_folder + '/uploads'
+            generator.props.public_folder + '/uploads',
+            generator.props.public_folder + '/cache'
         ];
 
         console.log('Making empty folders...');
