@@ -1,12 +1,6 @@
 
 # Created by https://www.gitignore.io/api/craftcms,node,yeoman
 
-### CraftCMS ###
-# Craft Storage (cache) [http://buildwithcraft.com/help/craft-storage-gitignore]
-/craft/storage/*
-!/craft/storage/logo/*
-
-
 
 ### Node ###
 # Logs
@@ -50,5 +44,3 @@ node_modules/
 bower_components/
 *.log
 
-# Ignore Uploads folder
-<%= public_folder %>/uploads

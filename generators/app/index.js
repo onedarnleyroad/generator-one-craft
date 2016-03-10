@@ -385,9 +385,7 @@ module.exports = yeoman.Base.extend({
         // We can make empty directories with code here, without them having to exist in the generator itself.
         var emptyFolders = [
             'src/img',
-            'src/partials',
-            generator.props.public_folder + '/uploads',
-            generator.props.public_folder + '/cache'
+            'src/partials'
         ];
 
         console.log('Making empty folders...');
@@ -470,8 +468,7 @@ module.exports = yeoman.Base.extend({
                         generator.craftvars
                     );
 
-                    // make a storage folder
-                    mkdirp( generator.destinationPath('craft/storage'), permission);
+
 
                     // Empty Craft's default template directory - we're going to put in our own and run gulp later
                     // little bit extreme perhaps, but we don't want any default routes and templates confusing things.
