@@ -1,16 +1,20 @@
 {#
-    This snippet will dynamically update from the gulp tasks wiredep and useref.
-    Even though we might bundle this inside minimee, we still need to apply gulp-inject and
-    main-bower-files to generate a bundled vendor script from our bower scripts that Craft
-    can actually access (i.e. to move things out of the bower_components directory)
 
-    TL;DR:
-    As such the HTML comments are important the way they are as they are parsed by the gulpfile!
-
-    The gulpfile also has been reconfigured to work with minimee.  Change to normal script tags
-    if you don't want this behaviour.
+    Add your scripts.  Note the behaviour of the gulpfile and the bower inject code.
 
 #}
+
+{#
+    Our site global "APP" variable
+#}
+<script>
+
+    var APP = window.APP || {};
+    APP.debug = {{ craft.config.devMode ? 'true' : 'false' }};
+    APP.environment = '{{ craft.config.environment }}';
+    APP.isMobileBrowser = {{ craft.request.isMobileBrowser ? 'true' : 'false' }};
+
+</script>
 
 {# Non async scripts go here, as one non-async bundle.  Maybe we want it async? #}
 {# {{ craft.minimee.js([

@@ -1,7 +1,10 @@
 ;(function() {
+    var APP = window.APP || {};
 
-    // app
-    console.log("Hello World");
+
+
+
+
 
 
 })();
