@@ -13,12 +13,12 @@
 #}
 
 {# Non async scripts go here, as one non-async bundle.  Maybe we want it async? #}
-{{ craft.minimee.js([
+{# {{ craft.minimee.js([
 
 ],
 {
     minifyJsEnabled : true,
-}) }}
+}) }} #}
 
 {# Your app goes here #}
 {{ craft.minimee.js([
@@ -27,7 +27,6 @@
     '/assets/js/app.js'
 ],
 {
-    combineJsEnabled: true,
     jsReturnTemplate : '<script src="%s" async></script>'
 }) }}
 

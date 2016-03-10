@@ -181,13 +181,9 @@ gulp.task('serve', ['styles'], function() {
 
     // Launch browser sync
     browserSync({
-            server: {
-                proxy: proxy,
-                routes: {
-                    "/bower_components": "./bower_components"
-                }
-            },
-            files: "./cordova/www/**/*.css",
+
+            proxy: proxy,
+            files: "**/*.css",
 
             ghostMode: {
                 scroll: false,

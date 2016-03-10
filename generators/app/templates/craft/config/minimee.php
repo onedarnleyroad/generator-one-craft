@@ -27,31 +27,31 @@ return array(
          * Is Minimee enabled?
          * default: true
          */
-        // 'enabled' => true,
+        'enabled' => true,
 
         /**
          * Combine CSS assets to a single cache?
          * default: true
          */
-        // 'combineCssEnabled' => true,
+        'combineCssEnabled' => true,
 
         /**
          * Combine JS assets to a single cache?
          * default: true
          */
-        // 'combineJsEnabled' => true,
+        'combineJsEnabled' => true,
 
         /**
          * Minify CSS assets?
          * default: true
          */
-        // 'minifyCssEnabled' => true,
+        'minifyCssEnabled' => true,
 
         /**
          * Minify JS assets?
          * default: true
          */
-        // 'minifyJsEnabled' => true,
+        'minifyJsEnabled' => true,
 
         /**
          * The template to use when returning to the template.
@@ -83,33 +83,14 @@ return array(
          * The URL to your cache folder
          * default: Craft Resource URL, e.g. http://domain.com/resources/minimee
          */
-        'cacheUrl' => '{siteUrl}cache'
+        'cacheUrl' => '{baseUrl}cache'
     ),
 
     // LOCAL
+    // Just disable - this is useful and generally needed for your CSS and browsersync as you want
+    // un-renamed CSS files for injection
     'local' => array(
-        /**
-         * Combine CSS assets to a single cache?
-         * default: true
-         */
-        // 'combineCssEnabled' => false,
 
-        /**
-         * Combine JS assets to a single cache?
-         * default: true
-         */
-        // 'combineJsEnabled' => false,
-
-        /**
-         * Minify CSS assets?
-         * default: true
-         */
-        // 'minifyCssEnabled' => false,
-
-        /**
-         * Minify JS assets?
-         * default: true
-         */
-        // 'minifyJsEnabled' => false,
+        'enabled' => false
     )
 );
