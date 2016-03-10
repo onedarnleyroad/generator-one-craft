@@ -477,6 +477,7 @@ module.exports = yeoman.Base.extend({
                     );
 
 
+
                     /**
                      * ---------------
                      * Public Directory
@@ -498,7 +499,6 @@ module.exports = yeoman.Base.extend({
                             generator.destinationPath( generator.props.public_folder ) );
                     }
 
-
                     // copy in our custom generator code into public
                     generator.fs.copyTpl(
                         generator.templatePath( 'public' + '/**/*'),
@@ -511,6 +511,27 @@ module.exports = yeoman.Base.extend({
                         generator.fs.move( generator.destinationPath( generator.props.public_folder + "/htaccess"), generator.destinationPath( generator.props.public_folder + "/.htaccess" ) );
                     }
 
+                    // finally, since mem-fs doesn't seem to 'see' .gitignore we called them all _gitignore, let's rename them now
+
+                    // Globs weren't working for me and I need to get a fix done so it's an explicit list for now
+                    var gitignores = [
+                        'craft/storage/_gitignore',
+                        'craft/config/local/_gitignore',
+                        generator.props.public_folder + '/cache/_gitignore',
+                        generator.props.public_folder + '/uploads/_gitignore'
+                    ];
+
+                    gitignores.forEach( ( filename ) => {
+
+
+                        generator.fs.move(
+                            generator.destinationPath( filename ),
+                            generator.destinationPath( filename.replace('_gitignore', '.gitignore') )
+                        );
+
+                        console.log( chalk.green( "moving " + filename + " to " + filename.replace('_gitignore', '.gitignore') ) );
+
+                    });
                 }
 
             });
