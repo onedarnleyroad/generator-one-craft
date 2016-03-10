@@ -84,7 +84,7 @@ module.exports = [
     {
         name: "SEOmatic",
         url: "https://github.com/nystudio107/seomatic/archive/master.zip",
-        checked: false,
+        checked: true,
         essential: false,
         srcfolder: false, // false means it'll ignore the directories and just install what it can
         destfolder: 'seomatic', // if this is set then it will create this folder at the top level.
@@ -93,19 +93,7 @@ module.exports = [
         strip: 0
     },
 
-    {
-        name: "CacheFlag",
-        url: "https://github.com/mmikkel/CacheFlag-Craft/archive/master.zip",
-        checked: false,
-        srcfolder: "cacheflag"
-    },
 
-    {
-        name: "ColdCache",
-        url: "https://github.com/pixelandtonic/ColdCache/archive/master.zip",
-        checked: false,
-        srcfolder: "coldcache"
-    },
 
     // {
     //     name: "CropField (not yet on Github, one of ours, still needs polish)",
@@ -117,7 +105,7 @@ module.exports = [
     {
         name: "ImageResizer",
         url: "https://github.com/engram-design/ImageResizer/archive/master.zip",
-        checked: false,
+        checked: true,
         srcfolder: "imageresizer"
     },
 
@@ -125,21 +113,29 @@ module.exports = [
     {
         name: "FruitLinkIt",
         url: "https://github.com/fruitstudios/LinkIt/archive/master.zip",
-        checked: false,
+        checked: true,
         srcfolder: "fruitlinkit"
     },
 
     {
-        name: "Preparse Field",
-        url: "https://github.com/aelvan/Preparse-Field-Craft/archive/master.zip",
-        checked: false,
-        srcfolder: "preparsefield"
+        name: "Imager Craft"
+        url: "https://github.com/aelvan/Imager-Craft/archive/master.zip",
+        checked: true,
+        srcfolder: "imager"
     },
+
+    {
+        name: "Redirect Manager",
+        url: "https://github.com/rkingon/Craft-Plugin--Redirect-Manager/archive/master.zip",
+        checked: true,
+        srcfolder: "redirectmanager"
+    },
+
 
     {
         name: "RedactorI",
         url: "https://github.com/pixelandtonic/RedactorI/archive/master.zip",
-        checked: false,
+        checked: true,
         srcfolder: "redactori"
     },
 
@@ -151,6 +147,27 @@ module.exports = [
         destfolder: 'translate',
         strip: 0
     },
+
+    {
+        name: "Preparse Field",
+        url: "https://github.com/aelvan/Preparse-Field-Craft/archive/master.zip",
+        checked: false,
+        srcfolder: "preparsefield"
+    },
+
+        {
+        name: "CacheFlag",
+        url: "https://github.com/mmikkel/CacheFlag-Craft/archive/master.zip",
+        checked: false,
+        srcfolder: "cacheflag"
+    },
+
+    {
+        name: "ColdCache",
+        url: "https://github.com/pixelandtonic/ColdCache/archive/master.zip",
+        checked: false,
+        srcfolder: "coldcache"
+    }
 
 
 ];
