@@ -86,33 +86,6 @@ module.exports = yeoman.Base.extend({
         // save a yeoman config file - this allows users to run yo in sub directories
         generator.config.save();
 
-        // register transform streams.  ALL files are passed through this, but we can filter with gulp-if
-        // run things through streams, Gulpstylee
-        //
-        // remember to match the if pattern up here, with whatever you're doing with the writing of files below.
-
-
-        // var beautify = require('gulp-beautify');
-        // var gulpIf = require('gulp-if');
-
-
-        // // optionally pass a function to gulpIf instead of a glob matching pattern
-        // var fileCheck = function(file){
-        //     // do something with file
-        //     return true;
-        // };
-
-
-        // generator.registerTransformStream(
-
-
-        //     gulpIf(
-        //         "beautified.js", // if matches this pattern then...
-        //         beautify({indentSize: 2 }) // do this
-        //     )
-        // );
-
-        // basically we can use any gulp plugin if we want...
     }
 
     /**

@@ -29,7 +29,8 @@ var public_assets = public_folder + '/' + assets;
 
 // Build css files with source maps and without minification
 gulp.task('styles', function() {
-    return gulp.src('./src/scss/main.scss')
+    // will compile anything in the root of scss without an underscore.
+    return gulp.src('./src/scss/*.scss')
         .pipe($.plumber())
         .pipe($.sourcemaps.init())
         .pipe($.sass().on('error',$.sass.logError))
@@ -44,7 +45,7 @@ gulp.task('styles', function() {
 
 // Build css files without source maps and with minification
 gulp.task('styles-production', function() {
-    return gulp.src('./src/scss/main.scss')
+    return gulp.src('./src/scss/*.scss')
         .pipe($.plumber())
         .pipe($.sass().on('error',$.sass.logError))
         .pipe($.autoprefixer())
