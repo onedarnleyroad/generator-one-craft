@@ -1,0 +1,68 @@
+/*===============================
+=            Stylize            =
+===============================*/
+
+/**
+ * While Normalize resets browser defaults to a basic unstyled state, this file is for adding
+ * project specific styles to pretty much html elements only.
+ *
+ * It's not really for defining style classes (unless they're very unspecific?) but for example
+ * defining the colour of a link, or the font size of your basic p tags or H1-H6 and adding
+ * a thin layer of branding on basic html.
+ */
+
+
+html {
+    line-height: $line-height-base;
+    font-size: $font-size-base;
+    @extend %sans-serif-light;
+    color: $text-color;
+    background-color: $body-background;
+
+    @include media("<mobile") {
+        font-size:  $font-size-base--sm;
+    }
+}
+
+a {
+    color: $link-color;
+    text-decoration: none;
+
+
+    &:hover {
+        color: $link-color-hover;
+    }
+
+    &:link { }
+
+    &:hover { }
+
+    &:active { }
+
+    &:visited { }
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+    color: $headings-color;
+    @extend %sans-serif-thin;
+
+    strong {
+        @extend %sans-serif-light;
+    }
+}
+
+img {
+    max-width: 100%;
+}
+
+h1 { font-size: 2.375em; }
+h2 { font-size: 2.375em; }
+h3 { font-size: 1.375em; }
+h4 { font-size: 1.125em; }
+h5 { font-size: 1em; }
+h6 { font-size: 0.75em; }
+
+p, li, input {
+    font-family: inherit;
+}

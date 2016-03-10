@@ -1,0 +1,68 @@
+/*==============================
+=            Images            =
+==============================*/
+
+/**
+ * Use for mixins that help with images.
+ */
+
+/// Contain Image
+/// Use false as an argument if you do not want to apply the position rule
+///
+/// @example markup - Required HTML markup
+/// <div class='image-container'>
+///     <img src='img.jpg'>
+/// </div>
+///
+/// @example scss - apply styles to image container and position the image appropriately
+/// .image-container {
+///
+///     @extend containImage()
+///
+/// }
+///
+/// @example css - result:
+/// .image-container {
+///     position: relative;
+/// }
+///
+/// .image-container img {
+///     position: absolute;
+///     left: 50%;
+///     top: 50%;
+///     transform: translate(-50%,-50%);
+///     width: auto;
+///     height: auto;
+///     min-width: 100%;
+///     min-height: 100%;
+/// }
+///
+/// .lt-ie9 .image-container img {
+///     left: 0;
+///     top: 0;
+/// }
+@mixin containImage($relative: true) {
+
+    @if ($relative == true) {
+        position: relative;
+    }
+
+    img {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%,-50%);
+        width: auto;
+        height: auto;
+        min-width: 100%;
+        min-height: 100%;
+    }
+
+    .lt-ie9 & {
+        img {
+            left: 0;
+            top: 0;
+        }
+    }
+}
+

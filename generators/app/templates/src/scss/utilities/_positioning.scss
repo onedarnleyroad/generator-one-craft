@@ -1,0 +1,24 @@
+/*===================================
+=            Positioning            =
+===================================*/
+
+/**
+ * For mixins that position things!  For example when we want to vertically center something, we might
+ * use a mix of display table or flexbox or transformY(-50%); so we might speed that up here.
+ */
+
+/// absolutelyStretch
+/// Stretch an element using absolute positioning.
+///
+/// In its most basic use it can stretch an object to fill its container
+/// useful for overlays or popups.  by using the offset, it can make a
+/// smaller element with a sort of margin
+///
+/// @group mixins
+@mixin absolutelyStretch( $offset: 0 ) {
+    position: absolute;
+    left: $offset;
+    right: $offset;
+    bottom: $offset;
+    top: $offset;
+}

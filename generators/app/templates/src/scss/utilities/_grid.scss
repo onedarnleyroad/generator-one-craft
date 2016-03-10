@@ -1,0 +1,283 @@
+/**
+ * An atomic, BEM-style variable/mixin suite for creating flexible, configurable grids.
+ *
+ * All variables may be overwritten globally, or at runtime via mixin parameters.
+ *
+ * 1. Variables
+ * 2. Mixins & mixin "Modifiers"
+ */
+
+
+/* 1. Variables
+   ========================================================================== */
+
+/// The default number of columns in our grid.
+///
+/// @author John D Wells
+/// @type Number
+/// @group grid
+$gridColumns: 12 !default;
+
+
+/**
+ * Keep in mind that with side-by-side columns, EACH gutter will be rendered.
+ * So if your design has 20px spacing between each column of content, you may
+ * want to set this gutter to half that, e.g. 10px.
+ */
+/// The default gutter on either side of a single column
+///
+/// @author John D Wells
+/// @type Number
+/// @group grid
+$gridGutter: 10px !default;
+
+
+
+/*  2. Mixins
+   ========================================================================== */
+
+/// A "row" containing one or more columns
+///
+/// @author John D Wells
+/// @require {mixin} clearfix
+/// @group grid
+///
+/// @example scss - Basic Usage:
+///   .row {
+///     @include gridRow();
+///   }
+@mixin gridRow() {
+
+    /**
+     * The only thing this needs to do is clear our column floats.
+     *
+     * 1. Check for existence of a mixin named "clearfix", if so use it
+     * 2. Clear our own way
+    */
+
+    /* 1 */
+    @if mixin-exists(clearfix) {
+        @include clearfix();
+    }
+    /* 2 */
+    @else {
+
+        /**
+         * Source: http://nicolasgallagher.com/micro-clearfix-hack/
+         *
+         * For modern browsers
+         * 1. The space content is one way to avoid an Opera bug when the
+         *    contenteditable attribute is included anywhere else in the document.
+         *    Otherwise it causes space to appear at the top and bottom of elements
+         *    that are clearfixed.
+         * 2. The use of `table` rather than `block` is only necessary if using
+         *    `:before` to contain the top-margins of child elements.
+         * 3. Fixes Opera/contenteditable bug:
+         *    http://nicolasgallagher.com/micro-clearfix-hack/#commen36952
+         */
+
+        *zoom: 1;
+
+        &:before,
+        &:after {
+
+            /* 1 */
+            content: " ";
+
+            /* 2 */
+            display: table;
+
+            /* 3 */
+            line-height: 0;
+        }
+
+        &:after {
+            clear: both;
+        }
+    }
+}
+
+
+/// Modify a grid row to "remove" the outer left/right gutters of our first/last columns
+///
+/// _Note the gutter width should match the value used for any descendent `gridCol`_
+///
+/// @author John D Wells
+/// @group grid
+/// @require $gridGutter
+/// @parameter {Number} $gutter [$gridGutter] - The gutter width of our columns
+///
+/// @example scss - Basic Usage:
+///   .row {
+///     @include gridRow();
+///     @include gridRow-guttered();
+///   }
+/// @example scss - Pass grid gutter width:
+///   .row {
+///     @include gridRow();
+///     @include gridRow-guttered(12px);
+///   }
+@mixin gridRow--flush($gutter : $gridGutter) {
+
+    /**
+     * 1. Negative margins "pull" our columns beyond container boundaries
+     */
+
+    /* 1 */
+    margin-left: -$gutter;
+    margin-right: -$gutter;
+}
+
+
+/// Turn an element into a column within a grid row
+///
+/// You may optionally pass a column count & grid number; otherwise the element will have no width by default.
+///
+/// @author John D Wells
+/// @group grid
+///
+/// @parameter {Number} $columns [null] The number of columns to span
+/// @parameter {Number} $grid [null] The total number of columns in the grid
+///
+/// @example scss - Convert `.col` into a grid column, spanning 6 across:
+///   .col {
+///     @include gridCol(6);
+///   }
+@mixin gridCol($columns : null, $grid : null) {
+
+    /**
+     * 1. Begin by floating our element
+     * 2. Reverse the float direction if text is right-to-left
+     * 3. Prevent columns from collapsing when empty
+     * 4. Change box sizing so that width and padding do not conflict
+     * 5. Pass columns & grid to our width modifier
+     */
+
+    /* 1 */
+    float: left;
+
+    /* 2 */
+    [dir=rtl] &,
+    &[dir=rtl] {
+        float: right;
+    }
+
+    /* 3 */
+    min-height: 1px;
+    height: auto !important;
+
+    /* 4 */
+    box-sizing: border-box;
+
+    /* 5 */
+    @if ($columns != null and $grid != null) {
+        @include gridCol--span($columns, $grid);
+    }
+    @else if ($columns != null and $grid == null) {
+        @include gridCol--span($columns);
+    }
+}
+
+/// Modify a column to span a given number of columns
+///
+/// @author John D Wells
+/// @group grid
+/// @require $gridColumns
+/// @parameter {Number} $columns [1] The number of columns to span
+/// @parameter {Number} $grid [$gridColumns] The total number of columns in the grid
+///
+/// @example scss - Convert & modify `.col` to span 6 columns:
+///   .col {
+///     @include gridCol();
+///     @include gridCol--span(6);
+///   }
+@mixin gridCol--span($columns : 1, $grid : $gridColumns) {
+    width: percentage($columns / $grid);
+}
+
+///
+/// Modify a column to contain gutters
+///
+/// @author John D Wells
+/// @group grid
+/// @require $gridGutter
+/// @parameter {Number} $gutter [$gridGutter] The gutter width
+///
+/// @example scss - Convert `.col` into a grid column with gutters
+///   .col {
+///     @include gridCol(6);
+///     @include gridCol--guttered(20px);
+///   }
+@mixin gridCol--guttered($gutter : $gridGutter) {
+
+    /**
+     * 1. Create our gutters with left/right padding
+     */
+
+    /* 1 */
+    padding-left: $gutter;
+    padding-right: $gutter;
+}
+
+
+/// Modify a column by offsetting it by 1 or more columns
+///
+/// @author John D Wells
+/// @group grid
+/// @require $gridColumns
+/// @parameter {Number} $columns [0] The number of columns to offset
+/// @parameter {Number} $grid [$gridColumns] The total number of columns in the grid
+///
+/// @example scss - Convert `.col` into a grid column, offset by 2 columns
+///   .col {
+///     @include gridCol--offset(2);
+///   }
+@mixin gridCol--offset($columns : 0, $grid : $gridColumns) {
+
+    /*
+     * 1. Convert the number of columns to offset into a percentage left margin
+     * 2. Reverse offset placememnt if text is righ-to-left
+     */
+
+    /* 1 */
+    margin-left: percentage($columns / $grid);
+
+    /* 2 */
+    [dir=rtl] &,
+    &[dir=rtl] {
+        margin-left: 0;
+        margin-right: percentage($columns / $grid);
+    }
+}
+
+
+/// Modify a column to be centred within row.
+///
+/// @author John D Wells
+/// @group grid
+///
+/// @example scss - Convert `.col` into a centred column
+///   .col {
+///     @include gridCol--centred();
+///   }
+@mixin gridCol--centred() {
+
+    /**
+     * 1. Remove float
+     * 2. Reiterate float removal if text is right-to-left
+     * 3. Auto left/right margins
+     */
+
+    /* 1 */
+    float: none;
+
+    /* 2 */
+    [dir=rtl] &,
+    &[dir=rtl] {
+        float: none;
+    }
+
+    /* 3 */
+    margin-left: auto;
+    margin-right: auto;
+}

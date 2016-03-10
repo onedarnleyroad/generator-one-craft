@@ -1,0 +1,163 @@
+/**
+ * Colors
+ */
+
+/// Primary brand blue
+/// <img width="60" height="60" src="data:image/svg+xml;utf8,<svg viewBox='0 0 60 60' version='1.1' xmlns='http://www.w3.org/2000/svg'> <circle fill='#3c9cd7' cx='30' cy='30' r='30'/></svg>">
+///
+/// @group settings
+$brand-primary: #3c9cd7;
+
+
+/// Off Black
+/// Use for text rather than #000, change according to the designs.
+/// <img width="60" height="60" src="data:image/svg+xml;utf8,<svg viewBox='0 0 60 60' version='1.1' xmlns='http://www.w3.org/2000/svg'> <circle fill='#333' cx='30' cy='30' r='30'/></svg>">
+///
+/// @group settings
+$off-black: #333;
+
+/// Link - text color
+///
+/// @see $brand-primary
+/// @group settings
+$link-color: $brand-primary;
+
+/// Link - hover color
+/// a darker version of $link-color
+///
+/// @see $link-color
+/// @group settings
+$link-color-hover: darken($link-color, 15%);
+
+/// Default background color (white)
+///
+/// @group settings
+$body-background: #fff;
+
+/// Default text color
+///
+/// @see $gray
+/// @group settings
+$text-color: $off-black;
+
+/// Default heading color
+///
+/// @see $text-color
+/// @group settings
+$headings-color: $text-color;
+
+
+/**
+ * Grid
+ */
+
+/// Grid - default number of columns in our grid
+///
+/// @group settings
+$grid-columns:                  12;
+
+/// Grid - default padding in our grid
+///
+/// @group settings
+$grid-column-padding:           .65%;
+
+/// Grid - default padding in our grid
+///
+/// @group settings
+$grid-column-padding--px:       20px;
+
+
+/// Grid - default padding in our grid
+///
+/// @group settings
+$grid-column-padding--px--sm:       15px;
+
+
+/// Container Padding - default padding for outer containers such as header, footer, etc
+///
+/// @group settings
+$container-padding:             40px;
+$container-padding-sm:          20px;
+
+/// Max content width
+///
+/// @group settings
+$max-content-width:             1550px;
+
+
+
+$subPageFilterHeight: 46px; // magic / by design
+
+
+/**
+ * Media Queries / Breakpoints
+ */
+
+/// The smallest screen size
+///
+/// @group settings
+$screen-xs:                     480px;
+
+/// The small screen size
+///
+/// @group settings
+$screen-sm:                     768px;
+
+/// Medium screen size (default for desktop)
+///
+/// @group settings
+$screen-md:                     992px;
+
+/// Large screen size
+///
+/// @group settings
+$screen-lg:                     1200px;
+
+/// X-Large screen size
+///
+/// @group settings
+$screen-xl:                     1550px;
+
+
+/// The maximum width we design to
+///
+/// @group settings
+$screen-max:                    1600px;
+
+/// Mobile Size
+/// Alias of `$screen-xs`
+///
+/// @group settings
+$screen-mobile: $screen-xs;
+
+/// Tablet Size
+/// Alias of `$screen-sm`
+///
+/// @group settings
+$screen-tablet: $screen-sm;
+
+/// Desktop Size
+/// Alias of `$screen-lg`
+///
+/// @group settings
+$screen-desktop: $screen-lg;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

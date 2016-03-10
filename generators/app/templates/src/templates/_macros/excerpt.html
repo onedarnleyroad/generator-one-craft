@@ -1,0 +1,18 @@
+{% macro excerpt(default, fallback, limit) %}
+
+	{# limit or default #}
+	{% set runtimeLimit = limit | default(200) %}
+
+	{# use default or fallback #}
+	{% set excerpt = (default | length > 0) ? default : fallback %}
+
+	{# Strip all tags from the text #}
+	{% set excerpt = excerpt | striptags | trim %}
+
+	{# Set our excerpt to all or a portion of our tag-stripped fallback #}
+	{% set excerpt = (excerpt | length > runtimeLimit) ? excerpt | slice(0, runtimeLimit) ~ '...' : excerpt %}
+
+	{# wrap in P tags since we stripped it #}
+	<p>{{ excerpt | raw }}</p>
+
+{% endmacro %}

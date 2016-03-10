@@ -1,0 +1,200 @@
+/*==========================================
+=            Typography Grouped            =
+
+Use if your fonts are grouped eg, defined
+so font-family: 'myfont' can be bold, italic
+etc.
+
+==========================================*/
+
+
+
+
+
+$font-family-sans-serif: sans-serif;
+$font-family-serif: serif;
+
+/**
+ * As this is the grouped section, you don't necessarily have to use these mixins
+ * as once, say, @include sans-serif() has been added you can then just do font-weight
+ * and font-styles as normal.
+ */
+
+/// Mixin encapsulating every style necessary for the default sans-serif font.
+///
+/// @see $font-family-sans-serif
+/// @group settings
+@mixin sans-serif() {
+    font-family: $font-family-sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+/// Mixin encapsulating every style necessary for the "thin" sans-serif font.
+///
+/// @see $font-family-sans-serif-thin
+/// @group settings
+@mixin sans-serif-thin() {
+    font-family: $font-family-sans-serif;
+    font-weight: 200;
+    font-style: normal;
+}
+
+/// Mixin encapsulating every style necessary for the "light" sans-serif font.
+///
+/// @see $font-family-sans-serif-light
+/// @group settings
+@mixin sans-serif-light() {
+    font-family: $font-family-sans-serif;
+    font-weight: 300;
+    font-style: normal;
+}
+
+/// Mixin encapsulating every style necessary for the italic variant of the "light" sans-serif font.
+///
+/// @see $font-family-sans-serif-light-italic
+/// @group settings
+@mixin sans-serif-light-italic() {
+    font-family: $font-family-sans-serif;
+    font-weight: 300;
+    font-style: italic;
+}
+
+/// Mixin encapsulating every style necessary for the "medium" sans-serif font.
+///
+/// @see $font-family-sans-serif-medium
+/// @group settings
+@mixin sans-serif-medium() {
+    font-family: $font-family-sans-serif;
+    font-weight: 500;
+    font-style: normal;
+}
+
+/// Mixin encapsulating every style necessary for the default serif font.
+///
+/// @see $font-family-serif
+/// @group settings
+@mixin serif() {
+    font-family: $font-family-serif;
+    font-weight: 400;
+    font-style: normal;
+
+    // Better Font Rendering
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/// Mixin encapsulating every style necessary for the italic variant of the default serif font.
+///
+/// @see $font-family-serif-italic
+/// @group settings
+@mixin serif-italic() {
+    font-family: $font-family-serif;
+    font-weight: 400;
+    font-style: italic;
+
+    // Better Font Rendering
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/// Mixin encapsulating every style necessary for the "light" serif font.
+///
+/// @see $font-family-serif-light
+/// @group settings
+@mixin serif-light() {
+    font-family: $font-family-serif;
+    font-weight: 300;
+    font-style: normal;
+
+    // Better Font Rendering
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/// Mixin encapsulating every style necessary for the italic variant of the "light" serif font.
+///
+/// @see $font-family-serif-light-italic
+/// @group settings
+@mixin serif-light-italic() {
+    font-family: $font-family-serif-light;
+    font-weight: 300;
+    font-style: italic;
+
+    // Better Font Rendering
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+
+/// A placeholder variable encapsulating every style necessary for the default sans-serif font.
+///
+/// @see {mixin} sans-serif
+/// @group settings
+%sans-serif {
+    @include sans-serif();
+}
+
+/// A placeholder variable encapsulating every style necessary for the "thin" sans-serif font.
+///
+/// @see {mixin} sans-serif-thin
+/// @group settings
+%sans-serif-thin {
+    @include sans-serif-thin();
+}
+
+/// A placeholder variable encapsulating every style necessary for the "light" sans-serif font.
+///
+/// @see {mixin} sans-serif-light
+/// @group settings
+%sans-serif-light {
+    @include sans-serif-light();
+}
+
+/// A placeholder variable encapsulating every style necessary for the italic variant of the "light" sans-serif font.
+///
+/// @see {mixin} sans-serif-light-italic
+/// @group settings
+%sans-serif-light-italic {
+    @include sans-serif-light-italic();
+}
+
+/// A placeholder variable encapsulating every style necessary for the "medium" sans-serif font.
+///
+/// @see {mixin} sans-serif-medium
+/// @group settings
+%sans-serif-medium {
+    @include sans-serif-medium();
+}
+
+/// A placeholder variable encapsulating every style necessary for the default serif font.
+///
+/// @see {mixin} serif
+/// @group settings
+%serif {
+    @include serif();
+}
+
+/// A placeholder variable encapsulating every style necessary for the italic variant of the default serif font.
+///
+/// @see {mixin} serif-italic
+/// @group settings
+%serif-italic {
+    @include serif-italic();
+}
+
+/// A placeholder variable encapsulating every style necessary for the "light" version of the serif font.
+///
+/// @see {mixin} serif-light
+/// @group settings
+%serif-light {
+    @include serif-light();
+}
+
+/// A placeholder variable encapsulating every style necessary for the italic variant of the "light" version of the serif font.
+///
+/// @see {mixin} serif-light-italic
+/// @group settings
+%serif-light-italic {
+    @include serif-light-italic();
+}

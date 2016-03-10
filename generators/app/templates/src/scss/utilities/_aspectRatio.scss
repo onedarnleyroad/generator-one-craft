@@ -1,0 +1,197 @@
+/*====================================
+=            Aspect Ratio            =
+====================================*/
+
+/**
+ * Create a container which maintains a specific aspect ratio.
+ *
+ * All variables may be overwritten globally, or at runtime via mixin parameters.
+ *
+ * 1. Variables
+ * 2. Mixins & mixin "Modifiers"
+ */
+
+
+/* 1. Variables
+   ========================================================================== */
+
+/// The default width of our aspect ratio.
+///
+/// @author John D Wells
+/// @type Number
+/// @group aspectRatio
+$aspectRatioDefaultWidth: 4 !default;
+
+/// The default height of our aspect ratio.
+///
+/// @author John D Wells
+/// @type Number
+/// @group aspectRatio
+$aspectRatioDefaultHeight: 3 !default;
+
+/// The default class name of our aspect ratio's inner element.
+///
+/// @author John D Wells
+/// @type Number
+/// @group aspectRatio
+$aspectRatioInnerClassName: 'aspectRatio__inner' !default;
+
+
+/*  2. Mixins
+   ========================================================================== */
+
+/// Turn an element into an aspect ratio container.
+///
+/// You may optionally pass a width, height & inner element class name; otherwise the element will have no initial layout.
+///
+/// @author John D Wells
+/// @group aspectRatio
+///
+/// @parameter {Number} $width [null] The width of our aspect ratio
+/// @parameter {Number} $height [null] The height of our aspect ratio
+/// @parameter {Number} $innerClassName [$aspectRatioInnerClassName] The class name of our inner element
+///
+/// @example markup - Required HTML markup
+///   <div class="container">
+///     <div class="container__inner">
+///       Hello, aspect ratio!
+///     </div>
+///   </div>
+///
+/// @example scss - Convert `.container` into an element maintaining a 4:3 aspect ratio
+///   .col {
+///     @include aspectRatio(4, 3, 'container__inner');
+///   }
+@mixin aspectRatio($width: null, $height: null, $innerClassName : $aspectRatioInnerClassName) {
+
+    /**
+     * 1. Establish anchor for our absolutely positioned element
+     * 2. Prevent potential overflow of contained content
+     * 3. In case we have been applied to an inline element, make it block
+     * 4. "tuck" our inner content into the aspect ratio area created
+     * 5. Prevent potential overflow of contained content
+     * 6. If a width & height were provided, pass these to aspectRatio--size() mixin
+     */
+
+    /* 1 */
+    position: relative;
+
+    /* 2 */
+    overflow: hidden;
+
+    /* 3 */
+    display: block;
+
+    > .#{$innerClassName} {
+        /* 4 */
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+
+        /* 5 */
+        overflow: hidden;
+    }
+
+    /* 6 */
+    @if ($width != null and $height != null) {
+        @include aspectRatio--size($width, $height);
+    }
+}
+
+/// Turn an element into an aspect ratio container, containing an image.
+///
+/// You may optionally pass a width & height.
+///
+/// @author John D Wells
+/// @group aspectRatio
+///
+/// @parameter {Number} $width [null] The width of our aspect ratio
+/// @parameter {Number} $height [null] The height of our aspect ratio
+///
+/// @example markup - Required HTML markup
+///   <div class="container">
+///     <img src="http://placehold.it/1x1">
+///   </div>
+///
+/// @example scss - Convert `.container` with image into an element maintaining a 4:3 aspect ratio
+///   .col {
+///     @include aspectRatioImage(4, 3);
+///   }
+@mixin aspectRatioImage($width: null, $height: null) {
+
+    /**
+     * 1. Establish anchor for our absolutely positioned image
+     * 2. Prevent potential overflow of image
+     * 3. In case we have been applied to an inline element, make it block
+     * 4. "tuck" our image into the aspect ratio area created
+     * 5. Ensure the image scales
+     * 6. If a width & height were provided, pass these to aspectRatio--size() mixin
+     */
+
+    /* 1 */
+    position: relative;
+
+    /* 2 */
+    overflow: hidden;
+
+    /* 3 */
+    display: block;
+
+    > img {
+        /* 4 */
+        position: absolute;
+        top: 0;
+
+        /* 5 */
+        display: block;
+        width: 100%;
+        height: auto !important;
+    }
+
+    /* 6 */
+    @if ($width != null and $height != null) {
+        @include aspectRatio--size($width, $height);
+    }
+}
+
+/// Give an aspect ratio container a width & height.
+///
+/// @author John D Wells
+/// @group aspectRatio
+///
+/// @parameter {Number} $width [null] The width of our aspect ratio
+/// @parameter {Number} $height [null] The height of our aspect ratio
+///
+/// @example scss - Convert `.container` into an element, and establish a 16:9 aspect ratio
+///   .col {
+///     @include aspectRatio(null, null, 'container__inner');
+///     @include aspectRatio--size(16, 9);
+///   }
+@mixin aspectRatio--size($width : $aspectRatioDefaultWidth, $height : $aspectRatioDefaultHeight) {
+    padding-top: percentage($height / $width);
+}
+
+/// Undo styles which force our aspect ratio.
+///
+/// @author John D Wells
+/// @group aspectRatio
+///
+/// @parameter {Number} $innerClassName [$aspectRatioInnerClassName] The class name of our inner element
+@mixin aspectRatio--teardown($innerClassName: $aspectRatioInnerClassName) {
+    > .#{$innerClassName} {
+        position: relative;
+    }
+}
+
+/// Undo styles which force our aspect ratio containing an image.
+///
+/// @author John D Wells
+/// @group aspectRatio
+@mixin aspectRatioImage--teardown() {
+    > img {
+        position: relative;
+    }
+}
+
