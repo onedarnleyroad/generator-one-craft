@@ -48,6 +48,25 @@ $headings-color: $text-color;
 
 
 /**
+ * Non Font based Typography
+ */
+
+/// Default line height
+///
+/// @group settings
+$line-height-base: 1.6;
+
+/// Default font size
+///
+/// @group settings
+$font-size-base: 16px;
+
+/// Default font size on mobile
+///
+/// @group settings
+$font-size-base--sm: 14px;
+
+/**
  * Grid
  */
 

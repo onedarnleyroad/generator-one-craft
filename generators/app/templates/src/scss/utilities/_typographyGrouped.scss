@@ -117,7 +117,7 @@ $font-family-serif: serif;
 /// @see $font-family-serif-light-italic
 /// @group settings
 @mixin serif-light-italic() {
-    font-family: $font-family-serif-light;
+    font-family: $font-family-serif;
     font-weight: 300;
     font-style: italic;
 
