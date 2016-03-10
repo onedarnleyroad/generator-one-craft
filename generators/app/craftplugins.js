@@ -118,7 +118,7 @@ module.exports = [
     },
 
     {
-        name: "Imager Craft"
+        name: "Imager Craft",
         url: "https://github.com/aelvan/Imager-Craft/archive/master.zip",
         checked: true,
         srcfolder: "imager"
