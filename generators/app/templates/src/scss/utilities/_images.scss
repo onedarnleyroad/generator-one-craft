@@ -7,26 +7,32 @@
  */
 
 /// Contain Image
-/// Use false as an argument if you do not want to apply the position rule
+/// Makes an <img> tag behave as if it were set as a non-repeating background image with
+/// `background-cover: cover` and `background-position: 50% 50%` styles set.
+/// Note that the behaviour isn't quite the same - it's different whether the image is smaller or larger than the container.
 ///
 /// @example markup - Required HTML markup
-/// <div class='image-container'>
-///     <img src='img.jpg'>
+/// <div class="image-cover">
+///     <img src="img.jpg">
 /// </div>
 ///
 /// @example scss - apply styles to image container and position the image appropriately
-/// .image-container {
-///
-///     @extend containImage()
-///
+/// .image-cover {
+///     @extend coverImage() {
+///			width: 300px;
+///			height: 300px;
+///		}
 /// }
 ///
 /// @example css - result:
-/// .image-container {
+/// .image-cover {
 ///     position: relative;
+///		overflow: hidden;
+///		width: 300px;
+///		height: 300px;
 /// }
 ///
-/// .image-container img {
+/// .image-cover img {
 ///     position: absolute;
 ///     left: 50%;
 ///     top: 50%;
@@ -37,32 +43,36 @@
 ///     min-height: 100%;
 /// }
 ///
-/// .lt-ie9 .image-container img {
+/// .lt-ie9 .image-cover img {
 ///     left: 0;
 ///     top: 0;
 /// }
-@mixin containImage($relative: true) {
+@mixin coverImage() {
 
-    @if ($relative == true) {
-        position: relative;
-    }
+	position: relative;
+	overflow: hidden;
 
-    img {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%,-50%);
-        width: auto;
-        height: auto;
-        min-width: 100%;
-        min-height: 100%;
-    }
+	img {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%,-50%);
+		width: auto;
+		height: auto;
+		min-width: 100%;
+		min-height: 100%;
+	}
 
-    .lt-ie9 & {
-        img {
-            left: 0;
-            top: 0;
-        }
-    }
+	// ie8 on down can't transform, so let's just put it up in the top-left corner
+	.lt-ie9 & {
+		img {
+			left: 0;
+			top: 0;
+		}
+	}
+
+	// we're hoping that width & height are passed through via content
+	// but presumably anything can be injected here to override the default
+	@content;
+
 }
-
