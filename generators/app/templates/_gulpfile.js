@@ -1,4 +1,3 @@
-
 var gulp = require('gulp');
 var watch = require('gulp-watch');
 var browserSync = require('browser-sync');
@@ -17,7 +16,6 @@ var $ = gulpLoadPlugins();
 var assets = '<%= assets %>';
 var publicFolder = '<%= publicFolder %>';
 var proxy = '<%= proxy %>';
-
 var publicAssets = publicFolder + '/' + assets;
 
 
@@ -27,34 +25,23 @@ var publicAssets = publicFolder + '/' + assets;
  * -------------
  */
 
+var cssDest = publicAssets + '/css';
+
 // Build css files with source maps and without minification
 gulp.task('styles', function() {
-    // will compile anything in the root of scss without an underscore.
-    return gulp.src('./src/scss/*.scss')
-        .pipe($.plumber())
-        .pipe($.sourcemaps.init())
-        .pipe($.sass().on('error',$.sass.logError))
-        .pipe($.autoprefixer())
-        .pipe($.mergeMediaQueries({
-          log: true
-        }))
-        //.pipe($.uglifycss())
-        .pipe(gulp.dest(publicAssets + '/css'))
+	return gulp.src('./src/scss/**/*.scss')
+		.pipe($.changed( cssDest ))
+		.pipe($.plumber())
+		.pipe($.sourcemaps.init())
+		.pipe($.sass().on('error',$.sass.logError))
+		.pipe($.autoprefixer())
+		.pipe($.mergeMediaQueries({
+		  log: true
+		}))
+		//.pipe($.uglifycss())
+		.pipe(gulp.dest(publicAssets + '/css'))
 });
 
-
-// Build css files without source maps and with minification
-gulp.task('styles-production', function() {
-    return gulp.src('./src/scss/*.scss')
-        .pipe($.plumber())
-        .pipe($.sass().on('error',$.sass.logError))
-        .pipe($.autoprefixer())
-        .pipe($.mergeMediaQueries({
-          log: true
-        }))
-        .pipe($.uglifycss())
-        .pipe(gulp.dest(publicAssets + '/css'))
-});
 
 
 /**
@@ -65,21 +52,120 @@ gulp.task('styles-production', function() {
  * -------------
  */
 
+var imgDest = publicAssets + '/img';
+
 gulp.task('images', function () {
 
-    var imgDest = publicAssets + '/img';
-    return gulp.src('src/img/**/*')
-
-        // Only send through changed files, as this is a somewhat 'heavy' operation
-        .pipe($.changed( imgDest ))
-        // need to configure this to our tastes.
-        .pipe($.imagemin({
-            progressive: true,
-            svgoPlugins: [{removeViewBox: false}],
-            use: [pngquant()]
-        }))
-        .pipe(gulp.dest( imgDest ));
+	return gulp.src('src/img/**/*')
+		// Only send through changed files, as this is a somewhat 'heavy' operation
+		.pipe($.changed( imgDest ))
+		// need to configure this to our tastes.
+		.pipe($.imagemin({
+			progressive: true,
+			svgoPlugins: [{
+				removeViewBox: false
+			}],
+			use: [pngquant()]
+		}))
+		.pipe(gulp.dest( imgDest ));
 });
+
+
+/**
+ * -------------
+ * SCRIPTS
+ * -------------
+ */
+
+var jsDest = publicAssets + '/js';
+
+// Simple task to copy js into the assets folder...
+// At this point you can add various tasks, linting, whatever
+gulp.task('scripts', function() {
+	return gulp
+		.src(['./src/js/**/*'])
+        .pipe($.changed( jsDest ))
+		.pipe( gulp.dest(publicAssets + '/js') )
+});
+
+
+
+/**
+ * -------------
+ * DEVELOPMENT
+ * -------------
+ */
+
+// Serve watches for changes, builds, and reloads browser sync all in one.
+gulp.task('serve', ['styles'], function() {
+
+	// Watch for changes to src folders
+	gulp.watch('./src/scss/**/*.scss', ['styles']);
+	gulp.watch('./src/js/**/*.js', ['scripts'])
+
+	// Launch browser sync
+	browserSync({
+
+			proxy: proxy,
+			files: "**/*.css",
+
+			ghostMode: {
+				scroll: false,
+				clicks: false
+			},
+
+			// don't notify - it lingers too long and gets in the way of the design!
+			notify: false,
+
+			// don't automatically open a browser - usually I might start or stop gulp, so I don't want to have to keep opening and closing tabs.
+			open: false
+	});
+});
+
+
+gulp.task('clean', function() {
+    console.log("Cleaning!")
+    return gulp.src(publicAssets + '/**/*', { read: false }) // much faster
+     .pipe($.plumber())
+    //.pipe(ignore('protected/**'))
+    .pipe($.rimraf());
+
+});
+
+gulp.task('build', ['clean', 'default'], function() {
+
+});
+
+gulp.task('default', ['styles', 'vendor', 'scripts'], function() {
+    console.log( "Built Everything");
+});
+
+
+
+
+/*========================================
+=            Depracated Tasks            =
+========================================*/
+
+/**
+ * -------------
+ * STYLES
+ * -------------
+ */
+
+// Build css files without source maps and with minification
+// gulp.task('styles-production', function() {
+// 	return gulp.src('./src/scss/**/*.scss')
+// 		.pipe($.plumber())
+// 		.pipe($.sass().on('error',$.sass.logError))
+// 		.pipe($.autoprefixer())
+// 		.pipe($.mergeMediaQueries({
+// 		  log: true
+// 		}))
+// 		.pipe($.uglifycss())
+// 		.pipe(gulp.dest(publicAssets + '/css'))
+// });
+
 
 
 /**
@@ -111,94 +197,38 @@ gulp.task('images', function () {
  * -------------
  */
 
-gulp.task('bower', function() {
-    return gulp
-        .src(bowerFiles())
-        // send to
-        .pipe(gulp.dest(publicAssets + '/js/bower'));
-});
 
-gulp.task('templates', function () {
+// gulp.task('bower', function() {
+//     return gulp
+//         .src(bowerFiles())
+//         // send to
+//         .pipe(gulp.dest(publicAssets + '/js/bower'));
+// });
 
-    // take anything from templates
-    return gulp
-        .src('./src/templates/**/*.*')
-        .pipe( $.fileInclude({
-            prefix: '@@',
-            basepath: './src/partials/'
-        }))
+// gulp.task('templates', function () {
 
-        .pipe($.inject(gulp.src(bowerFiles(), {read: false}), {
-            name: 'bower',
-            removeTags: true, // extremely important otherwise you'll kill the minimee array
-            transform: function( filepath ) {
-                // Comma creep is okay, as we will have app scripts below!
-                // but watch out for this...
-                return "'/" + assets + "/js/bower/" + path.basename( filepath ) + "',";
-            }
-        }))
+//     // take anything from templates
+//     return gulp
+//         .src('./src/templates/**/*.*')
 
-        // send to
-        .pipe(gulp.dest('./craft/templates'));
-});
+//         .pipe($.changed( './craft/templates' ))
 
-/**
- * -------------
- * SCRIPTS
- * -------------
- */
-// Simple task to copy js into the assets folder...
-// At this point you can add various tasks, linting, whatever
-gulp.task('scripts', function() {
-    return gulp
-        .src(['./src/js/**/*', '!./src/js/bower/'])
-        .pipe( gulp.dest(publicAssets + '/js') )
-});
+//         .pipe( $.fileInclude({
+//             prefix: '@@',
+//             basepath: './src/partials/'
+//         }))
 
+//         .pipe($.inject(gulp.src(bowerFiles(), {read: false}), {
+//             name: 'bower',
+//             removeTags: true, // extremely important otherwise you'll kill the minimee array
+//             transform: function( filepath ) {
+//                 // Comma creep is okay, as we will have app scripts below!
+//                 // but watch out for this...
+//                 return "'/" + assets + "/js/bower/" + path.basename( filepath ) + "',";
+//             }
+//         }))
 
+//         // send to
+//         .pipe(gulp.dest('./craft/templates/_compiled'));
+// });
 
-/**
- * -------------
- * DEVELOPMENT
- * -------------
- */
-
-// Serve watches for changes, builds, and reloads browser sync all in one.
-gulp.task('serve', ['styles'], function() {
-
-    // Watch for changes to SCSS folder
-    gulp.watch('./src/scss/**/*.scss', ['styles']);
-
-    // Run templates task if any templates or partials are updated.
-    gulp.watch('./src/partials/**/*.html', ['templates']);
-    gulp.watch('./src/templates/**/*.html', ['templates']);
-
-
-    gulp.watch('./src/js/**/*.js', ['scripts'])
-    // watch our bower.json - if someone installs and saves a package, we can load in that script into any snippets that might be calling them.
-    gulp.watch('./bower.json', ['templates', 'bower']);
-
-
-    // Launch browser sync
-    browserSync({
-
-            proxy: proxy,
-            files: "**/*.css",
-
-            ghostMode: {
-                scroll: false,
-                clicks: false
-            },
-
-            // don't notify - it lingers too long and gets in the way of the design!
-            notify: false,
-
-            // don't automatically open a browser - usually I might start or stop gulp, so I don't want to have to keep opening and closing tabs.
-            open: false
-    });
-});
-
-
-gulp.task('default', ['styles', 'bower', 'scripts', 'templates'], function() {
-    console.log( "building everything...");
-});
