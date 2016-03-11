@@ -325,7 +325,7 @@ module.exports = yeoman.Base.extend({
 		// set some options for the templates to use.
 		var gulpOptions = {
 			assets: oneutils.stripTrailingSlash( generator.props.assets ),
-			bower: generator.props.bower,
+			// bower: generator.props.bower,
 			proxy: generator.props.devServer,
 			publicFolder: generator.props.publicFolder
 		};
@@ -340,7 +340,7 @@ module.exports = yeoman.Base.extend({
 		generator.fs.copyTpl( generator.templatePath('_gitignore'), generator.destinationPath('.gitignore'), gulpOptions );
 
 		// Bower
-		generator.fs.copyTpl( generator.templatePath('_bower.json'), generator.destinationPath('bower.json'), gulpOptions );
+		// generator.fs.copyTpl( generator.templatePath('_bower.json'), generator.destinationPath('bower.json'), gulpOptions );
 
 
 		/**
@@ -357,9 +357,10 @@ module.exports = yeoman.Base.extend({
 
 
 		var folders = [
-			'src/templates',
+			// 'src/templates',
 			'src/scss',
-			'src/js'
+			'src/js',
+			'vendor',
 		];
 
 
@@ -384,8 +385,7 @@ module.exports = yeoman.Base.extend({
 		// this uses `mkdir -p` where it'll make parent directories.
 		// We can make empty directories with code here, without them having to exist in the generator itself.
 		var emptyFolders = [
-			'src/img',
-			'src/partials'
+			'src/img'
 		];
 
 		console.log('Making empty folders...');

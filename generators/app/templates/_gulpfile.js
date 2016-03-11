@@ -3,7 +3,7 @@ var watch = require('gulp-watch');
 var browserSync = require('browser-sync');
 var gulpLoadPlugins = require('gulp-load-plugins');
 var path = require('path');
-var bowerFiles = require('main-bower-files');
+// var bowerFiles = require('main-bower-files');
 var $ = gulpLoadPlugins();
 
 /**
