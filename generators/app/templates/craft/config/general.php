@@ -23,7 +23,7 @@ if( ! defined('ENV_URI_SCHEME'))
 
     // The site base path
     // note the folder is configurable via yo generator
-    define('ENV_BASE_PATH',       realpath(CRAFT_BASE_PATH . '/../<%= public_folder %>') . '/');
+    define('ENV_BASE_PATH',       realpath(CRAFT_BASE_PATH . '/../<%= publicFolder %>') . '/');
 }
 
 

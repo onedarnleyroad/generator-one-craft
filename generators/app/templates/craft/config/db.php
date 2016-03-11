@@ -39,7 +39,7 @@ $config = array(
 		'server' => 'localhost',
 
 		// The name of the database to select.
-		'database' => '<%= localdatabase %>',
+		'database' => '<%= localDatabase %>',
 
 		// The database username to connect with.
 		'user' => 'root',

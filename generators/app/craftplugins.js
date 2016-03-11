@@ -55,8 +55,8 @@
 		url: string // location of the zipfile of the code
 		checked: bool // if this is checked for the user
 		essential: bool // if true then we won't ask people, it just gets installed regardless - useful if your templates have dependencies
-		srcfolder: string | false // if a string, then it will only copy that from that folder in the zip file.  If false, it'll just copy anything
-		destfolder: string | false // if string, then it will put everything into this folder, in the plugins directory.  Useful when the repo has the plugin at root
+		srcFolder: string | false // if a string, then it will only copy that from that folder in the zip file.  If false, it'll just copy anything
+		destFolder: string | false // if string, then it will put everything into this folder, in the plugins directory.  Useful when the repo has the plugin at root
 		strip: int // default 1 - will strip this directory from the path.
 
 		RE: Strip
@@ -79,78 +79,78 @@ module.exports = [
 		name: "CacheFlag",
 		url: "https://github.com/mmikkel/CacheFlag-Craft/archive/master.zip",
 		checked: false,
-		srcfolder: "cacheflag"
+		srcFolder: "cacheflag"
 	},
 
 	{
 		name: "ColdCache",
 		url: "https://github.com/pixelandtonic/ColdCache/archive/master.zip",
 		checked: false,
-		srcfolder: "coldcache"
+		srcFolder: "coldcache"
 	},
 
 	{
 		name: "CropField (not yet on Github, one of ours, still needs polish)",
 		url: "",
 		checked: false,
-		srcfolder: "cropfield"
+		srcFolder: "cropfield"
 	},
 
 	{
 		name: "FruitLinkIt",
 		url: "https://github.com/fruitstudios/LinkIt/archive/master.zip",
 		checked: true,
-		srcfolder: "fruitlinkit"
+		srcFolder: "fruitlinkit"
 	},
 
 	{
 		name: "Imager Craft",
 		url: "https://github.com/aelvan/Imager-Craft/archive/master.zip",
 		checked: true,
-		srcfolder: "imager"
+		srcFolder: "imager"
 	},
 
 	{
 		name: "ImageResizer",
 		url: "https://github.com/engram-design/ImageResizer/archive/master.zip",
 		checked: true,
-		srcfolder: "imageresizer"
+		srcFolder: "imageresizer"
 	},
 
 	{
 		name: "Minimee",
 		url: "https://github.com/johndwells/craft.minimee/archive/master.zip",
 		essential: true,
-		srcfolder: 'minimee'
+		srcFolder: 'minimee'
 	},
 
 	{
 		name: "Preparse Field",
 		url: "https://github.com/aelvan/Preparse-Field-Craft/archive/master.zip",
 		checked: false,
-		srcfolder: "preparsefield"
+		srcFolder: "preparsefield"
 	},
 
 	{
 		name: "RedactorI",
 		url: "https://github.com/pixelandtonic/RedactorI/archive/master.zip",
 		checked: true,
-		srcfolder: "redactori"
+		srcFolder: "redactori"
 	},
 
 	{
 		name: "Redirect Manager",
 		url: "https://github.com/rkingon/Craft-Plugin--Redirect-Manager/archive/master.zip",
 		checked: true,
-		srcfolder: "redirectmanager"
+		srcFolder: "redirectmanager"
 	},
 
 	{
 		name: "SEOmatic",
 		url: "https://github.com/nystudio107/seomatic/archive/master.zip",
 		checked: true,
-		srcfolder: false, // false means it'll ignore the directories and just install what it can
-		destfolder: 'seomatic', // if this is set then it will create this folder at the top level.
+		srcFolder: false, // false means it'll ignore the directories and just install what it can
+		destFolder: 'seomatic', // if this is set then it will create this folder at the top level.
 		strip: 0
 	},
 
@@ -158,8 +158,8 @@ module.exports = [
 		name: "Translate",
 		url: "https://github.com/boboldehampsink/translate/archive/master.zip",
 		checked: false,
-		srcfolder: false,
-		destfolder: 'translate',
+		srcFolder: false,
+		destFolder: 'translate',
 		strip: 0
 	}
 

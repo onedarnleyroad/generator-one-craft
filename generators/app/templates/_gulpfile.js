@@ -15,10 +15,10 @@ var $ = gulpLoadPlugins();
 
 <%# /* Set up configurations from the yeoman options */ %>
 var assets = '<%= assets %>';
-var public_folder = '<%= public_folder %>';
+var publicFolder = '<%= publicFolder %>';
 var proxy = '<%= proxy %>';
 
-var public_assets = public_folder + '/' + assets;
+var publicAssets = publicFolder + '/' + assets;
 
 
 /**
@@ -39,7 +39,7 @@ gulp.task('styles', function() {
           log: true
         }))
         //.pipe($.uglifycss())
-        .pipe(gulp.dest(public_assets + '/css'))
+        .pipe(gulp.dest(publicAssets + '/css'))
 });
 
 
@@ -53,7 +53,7 @@ gulp.task('styles-production', function() {
           log: true
         }))
         .pipe($.uglifycss())
-        .pipe(gulp.dest(public_assets + '/css'))
+        .pipe(gulp.dest(publicAssets + '/css'))
 });
 
 
@@ -67,7 +67,7 @@ gulp.task('styles-production', function() {
 
 gulp.task('images', function () {
 
-    var imgDest = public_assets + '/img';
+    var imgDest = publicAssets + '/img';
     return gulp.src('src/img/**/*')
 
         // Only send through changed files, as this is a somewhat 'heavy' operation
@@ -115,7 +115,7 @@ gulp.task('bower', function() {
     return gulp
         .src(bowerFiles())
         // send to
-        .pipe(gulp.dest(public_assets + '/js/bower'));
+        .pipe(gulp.dest(publicAssets + '/js/bower'));
 });
 
 gulp.task('templates', function () {
@@ -152,7 +152,7 @@ gulp.task('templates', function () {
 gulp.task('scripts', function() {
     return gulp
         .src(['./src/js/**/*', '!./src/js/bower/'])
-        .pipe( gulp.dest(public_assets + '/js') )
+        .pipe( gulp.dest(publicAssets + '/js') )
 });
 
 
