@@ -136,7 +136,7 @@ gulp.task('build', ['clean', 'default'], function() {
 
 });
 
-gulp.task('default', ['styles', 'vendor', 'scripts'], function() {
+gulp.task('default', ['styles', 'scripts'], function() {
     console.log( "Built Everything");
 });
 
