@@ -3,39 +3,19 @@
 ==================================*/
 
 
-
 /*----------  Initialization  ----------*/
 
 // The following generally shouldn't be adding any real styles or designs to the app
 // and should be utilities, mixins, setup, resets, vendor etc.
-@import "normalize";
+@import "../../vendor/necolas/normalize";
 @import "settings";
 @import "fonts";
 @import "utilities";
 
+
 /*----------  Vendor  ----------*/
 
-// Vendor Added scripts.  We may need to rethink where this appears in the list
-
-// Set your breakpoints before Eduardo Boucas' include media mixins.
-//
-// Remember that mobile / tablet / desktop are
-$breakpoints: (
-  'xs': $screen-xs,
-  'sm': $screen-sm,
-  'md': $screen-md,
-  'lg': $screen-lg,
-  'xl': $screen-xl,
-  'mobile': $screen-mobile,
-  'tablet': $screen-tablet,
-  'desktop': $screen-desktop
-);
-
-@import "vendor/eduardoboucas/include-media/include-media";
-
-// Uncomment if using flickity.
-// @import "vendor/metafizzy/flickity";
-
+@import "vendor";
 
 
 /*----------  App  ----------*/
@@ -43,4 +23,3 @@ $breakpoints: (
 @import "stylize";
 @import "components";
 @import "layouts";
-
