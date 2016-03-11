@@ -50,124 +50,117 @@
 // options
 /*
 
-    {
-        name : string // what will be given to the user as an option.  Also saved as a key in the yo json.
-        url: string // location of the zipfile of the code
-        checked: bool // if this is checked for the user
-        essential: bool // if true then we won't ask people, it just gets installed regardless - useful if your templates have dependencies
-        srcfolder: string | false // if a string, then it will only copy that from that folder in the zip file.  If false, it'll just copy anything
-        destfolder: string | false // if string, then it will put everything into this folder, in the plugins directory.  Useful when the repo has the plugin at root
-        strip: int // default 1 - will strip this directory from the path.
+	{
+		name : string // what will be given to the user as an option.  Also saved as a key in the yo json.
+		url: string // location of the zipfile of the code
+		checked: bool // if this is checked for the user
+		essential: bool // if true then we won't ask people, it just gets installed regardless - useful if your templates have dependencies
+		srcfolder: string | false // if a string, then it will only copy that from that folder in the zip file.  If false, it'll just copy anything
+		destfolder: string | false // if string, then it will put everything into this folder, in the plugins directory.  Useful when the repo has the plugin at root
+		strip: int // default 1 - will strip this directory from the path.
 
-        RE: Strip
+		RE: Strip
 
-        if your repo is github.com/name/repo/pluginame/files
+		if your repo is github.com/name/repo/pluginame/files
 
-        then the resulting zip will have a folder structure, something like repo/pluginame/files and so strip: 1 would remove 'repo'
+		then the resulting zip will have a folder structure, something like repo/pluginame/files and so strip: 1 would remove 'repo'
 
-        however strip 0 uses the root.  See the difference between Minimee and SEOmatic...
+		however strip 0 uses the root.  See the difference between Minimee and SEOmatic...
 
-    }
+	}
 
 
  */
 
 
 module.exports = [
-    {
-        name: "Minimee", // label so people know what they're installing
-        url: "https://github.com/johndwells/craft.minimee/archive/master.zip", // link to a zip file so yeoman can extract
-        essential: true, // set to true to not give people the option to turn it off
-        srcfolder: 'minimee'
-    },
 
-    {
-        name: "SEOmatic",
-        url: "https://github.com/nystudio107/seomatic/archive/master.zip",
-        checked: true,
-        essential: false,
-        srcfolder: false, // false means it'll ignore the directories and just install what it can
-        destfolder: 'seomatic', // if this is set then it will create this folder at the top level.
+	{
+		name: "CacheFlag",
+		url: "https://github.com/mmikkel/CacheFlag-Craft/archive/master.zip",
+		checked: false,
+		srcfolder: "cacheflag"
+	},
 
-        // default is 1 for stripe, which means it'll go to the next level and strip out the top level folder.  But since this repo
-        strip: 0
-    },
+	{
+		name: "ColdCache",
+		url: "https://github.com/pixelandtonic/ColdCache/archive/master.zip",
+		checked: false,
+		srcfolder: "coldcache"
+	},
 
+	{
+		name: "CropField (not yet on Github, one of ours, still needs polish)",
+		url: "",
+		checked: false,
+		srcfolder: "cropfield"
+	},
 
+	{
+		name: "FruitLinkIt",
+		url: "https://github.com/fruitstudios/LinkIt/archive/master.zip",
+		checked: true,
+		srcfolder: "fruitlinkit"
+	},
 
-    // {
-    //     name: "CropField (not yet on Github, one of ours, still needs polish)",
-    //     url: "",
-    //     checked: false,
-    //     srcfolder: ""
-    // },
+	{
+		name: "Imager Craft",
+		url: "https://github.com/aelvan/Imager-Craft/archive/master.zip",
+		checked: true,
+		srcfolder: "imager"
+	},
 
-    {
-        name: "ImageResizer",
-        url: "https://github.com/engram-design/ImageResizer/archive/master.zip",
-        checked: true,
-        srcfolder: "imageresizer"
-    },
+	{
+		name: "ImageResizer",
+		url: "https://github.com/engram-design/ImageResizer/archive/master.zip",
+		checked: true,
+		srcfolder: "imageresizer"
+	},
 
+	{
+		name: "Minimee",
+		url: "https://github.com/johndwells/craft.minimee/archive/master.zip",
+		essential: true,
+		srcfolder: 'minimee'
+	},
 
-    {
-        name: "FruitLinkIt",
-        url: "https://github.com/fruitstudios/LinkIt/archive/master.zip",
-        checked: true,
-        srcfolder: "fruitlinkit"
-    },
+	{
+		name: "Preparse Field",
+		url: "https://github.com/aelvan/Preparse-Field-Craft/archive/master.zip",
+		checked: false,
+		srcfolder: "preparsefield"
+	},
 
-    {
-        name: "Imager Craft",
-        url: "https://github.com/aelvan/Imager-Craft/archive/master.zip",
-        checked: true,
-        srcfolder: "imager"
-    },
+	{
+		name: "RedactorI",
+		url: "https://github.com/pixelandtonic/RedactorI/archive/master.zip",
+		checked: true,
+		srcfolder: "redactori"
+	},
 
-    {
-        name: "Redirect Manager",
-        url: "https://github.com/rkingon/Craft-Plugin--Redirect-Manager/archive/master.zip",
-        checked: true,
-        srcfolder: "redirectmanager"
-    },
+	{
+		name: "Redirect Manager",
+		url: "https://github.com/rkingon/Craft-Plugin--Redirect-Manager/archive/master.zip",
+		checked: true,
+		srcfolder: "redirectmanager"
+	},
 
+	{
+		name: "SEOmatic",
+		url: "https://github.com/nystudio107/seomatic/archive/master.zip",
+		checked: true,
+		srcfolder: false, // false means it'll ignore the directories and just install what it can
+		destfolder: 'seomatic', // if this is set then it will create this folder at the top level.
+		strip: 0
+	},
 
-    {
-        name: "RedactorI",
-        url: "https://github.com/pixelandtonic/RedactorI/archive/master.zip",
-        checked: true,
-        srcfolder: "redactori"
-    },
-
-    {
-        name: "Translate",
-        url: "https://github.com/boboldehampsink/translate/archive/master.zip",
-        checked: false,
-        srcfolder: false,
-        destfolder: 'translate',
-        strip: 0
-    },
-
-    {
-        name: "Preparse Field",
-        url: "https://github.com/aelvan/Preparse-Field-Craft/archive/master.zip",
-        checked: false,
-        srcfolder: "preparsefield"
-    },
-
-        {
-        name: "CacheFlag",
-        url: "https://github.com/mmikkel/CacheFlag-Craft/archive/master.zip",
-        checked: false,
-        srcfolder: "cacheflag"
-    },
-
-    {
-        name: "ColdCache",
-        url: "https://github.com/pixelandtonic/ColdCache/archive/master.zip",
-        checked: false,
-        srcfolder: "coldcache"
-    }
-
+	{
+		name: "Translate",
+		url: "https://github.com/boboldehampsink/translate/archive/master.zip",
+		checked: false,
+		srcfolder: false,
+		destfolder: 'translate',
+		strip: 0
+	}
 
 ];
