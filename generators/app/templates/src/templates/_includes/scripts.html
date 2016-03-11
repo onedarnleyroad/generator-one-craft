@@ -1,38 +1,42 @@
 {#
-
-    Add your scripts.  Note the behaviour of the gulpfile and the bower inject code.
-
+	=============================
+	Add your scripts.
+	Note the behaviour of the gulpfile and the bower inject code.
+	=============================
 #}
 
 {#
-    Our site global "APP" variable
+	Our site global "APP" variable
 #}
 <script>
 
-    var APP = window.APP || {};
-    APP.debug = {{ craft.config.devMode ? 'true' : 'false' }};
-    APP.environment = '{{ craft.config.environment }}';
-    APP.isMobileBrowser = {{ craft.request.isMobileBrowser ? 'true' : 'false' }};
+	var APP = window.APP || {};
+	APP.debug = {{ craft.config.devMode ? 'true' : 'false' }};
+	APP.environment = '{{ craft.config.environment }}';
+	APP.isMobileBrowser = {{ craft.request.isMobileBrowser ? 'true' : 'false' }};
 
 </script>
 
-{# Non async scripts go here, as one non-async bundle.  Maybe we want it async? #}
+{#
+	Our default Minimee config embeds scripts async.
+	If you have scripts that must be loaded before the async ones, specify those here.
+#}
 {# {{ craft.minimee.js([
-
+	'/path/to/script.js'
 ],
 {
-    minifyJsEnabled : true,
-}) }} #}
+	jsReturnTemplate : '<script src="%s"></script>'
+} }} #}
 
-{# Your app goes here #}
+
+{#
+	App js goes here
+#}
 {{ craft.minimee.js([
-    <!-- bower:js -->
-    <!-- endinject -->
-    '/assets/js/app.js'
-],
-{
-    jsReturnTemplate : '<script src="%s" async></script>'
-}) }}
+	<!-- bower:js -->
+	<!-- endinject -->
+	'/assets/js/app.js'
+]) }}
 
 
 
