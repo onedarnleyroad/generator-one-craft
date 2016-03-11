@@ -33,40 +33,47 @@ var save = function( pluginsDir, permission, approved ) {
 						.get( plugin.url )
 						.run( function( err, files ) {
 
+							console.log( "Downloading " + chalk.green( plugin.name ) );
+							console.log( "-----------------------------------------------" );
 
+							console.log(plugin.strip);
+							console.log(plugin.srcFolder);
+							console.log(typeof plugin.srcFolder === 'string');
 
 							if (err) throw err;
 
 							files.forEach( file => {
 									// someone's going to complain if they run this on windows...
 
+									// by default, include every file that we extract
+									var folderTest = true;
 
-
+									// if the srcFolder has been set, then we should only be copying over this file IF it's inside the srcFolder
 									if ( plugin.srcFolder && typeof plugin.srcFolder === 'string') {
+
 										// we have specified a specific folder, so check against this:
 										var chunks = file.path.split( "/" );
+
+										// console.log(chunks);
 
 										// only pass if the first directory matches our src target
 										var folderTest = (chunks[0] === plugin.srcFolder);
 										// set the path
-
-
-									} else if (!plugin.srcFolder) {
-										var folderTest = true;
-									}
-
-
-									if ( plugin.destFolder) {
-										// specified a subfolder to put things in
-										file.path = pluginsDir + plugin.destFolder + "/" + file.path;
-									} else {
-										file.path = pluginsDir + file.path;
 									}
 
 
 
+
+									// if we have determined that the file is inside the folder we want, then copy it over
 									if (folderTest) {
 
+										// are we moving all of the files inside a named folder?
+										if ( plugin.destFolder) {
+											// specified a subfolder to put things in
+											file.path = pluginsDir + plugin.destFolder + "/" + file.path;
+										} else {
+											file.path = pluginsDir + file.path;
+										}
 
 										mkdirp( file.dirname, { mode: permission } );
 
