@@ -458,6 +458,14 @@ module.exports = yeoman.Base.extend({
 					 * ---------------
 					 */
 
+					// Empty Craft's default template directory - we're going to put in our own and run gulp later
+					// little bit extreme perhaps, but we don't want any default routes and templates confusing things.
+					generator.fs.delete(
+						generator.destinationPath('craft/templates' + '/**/*')
+					);
+
+
+
 					// At this point we copy everything from the templates/craft directory into the new
 					// craft directory, thus overwriting anything that the default craft installed.
 					// for example, a new db.php file.  we're running it through the templater, so we can
@@ -468,13 +476,6 @@ module.exports = yeoman.Base.extend({
 						generator.craftvars
 					);
 
-
-
-					// Empty Craft's default template directory - we're going to put in our own and run gulp later
-					// little bit extreme perhaps, but we don't want any default routes and templates confusing things.
-					generator.fs.delete(
-						generator.destinationPath('craft/templates' + '/**/*')
-					);
 
 
 
