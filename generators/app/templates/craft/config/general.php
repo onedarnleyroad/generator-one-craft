@@ -41,7 +41,7 @@ $config = array(
         'cpTrigger' => 'one',
 
         // error code templates
-        'errorTemplatePrefix' => "errors/",
+        'errorTemplatePrefix' => "_errors/",
 
         // i18n
         // http://buildwithcraft.com/docs/config-settings#siteUrl
