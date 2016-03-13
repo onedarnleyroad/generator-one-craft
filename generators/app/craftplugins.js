@@ -18,7 +18,6 @@
  *
  * https://github.com/johndwells/craft.minimee/archive/master.zip
  *
- *
  * As it is there seems to be no simple way to fetch the latest *release* i.e.
  *
  * https://github.com/johndwells/craft.minimee/releases/tag/v0.9.6
@@ -29,21 +28,6 @@
 /**
  * TO ADD
  *
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
  */
 
 
@@ -55,20 +39,9 @@
 		url: string // location of the zipfile of the code
 		checked: bool // if this is checked for the user
 		essential: bool // if true then we won't ask people, it just gets installed regardless - useful if your templates have dependencies
-		srcFolder: string | false // if a string, then it will only copy that from that folder in the zip file.  If false, it'll just copy anything
+		srcFolder: string | false // if a string, then it will only copy that from that folder in the zip file.  Otherwise it'll just copy anything
 		destFolder: string | false // if string, then it will put everything into this folder, in the plugins directory.  Useful when the repo has the plugin at root
-		strip: int // default 1 - will strip this directory from the path.
-
-		RE: Strip
-
-		if your repo is github.com/name/repo/pluginame/files
-
-		then the resulting zip will have a folder structure, something like repo/pluginame/files and so strip: 1 would remove 'repo'
-
-		however strip 0 uses the root.  See the difference between Minimee and SEOmatic...
-
 	}
-
 
  */
 
@@ -149,18 +122,15 @@ module.exports = [
 		name: "SEOmatic",
 		url: "https://github.com/nystudio107/seomatic/archive/master.zip",
 		checked: true,
-		srcFolder: false, // false means it'll ignore the directories and just install what it can
-		destFolder: 'seomatic', // if this is set then it will create this folder at the top level.
-		strip: 0
+		destFolder: 'seomatic' // if this is set then it will create this folder at the top level.
+
 	},
 
 	{
 		name: "Translate",
 		url: "https://github.com/boboldehampsink/translate/archive/master.zip",
 		checked: false,
-		srcFolder: false,
-		destFolder: 'translate',
-		strip: 0
+		destFolder: 'translate'
 	}
 
 ];

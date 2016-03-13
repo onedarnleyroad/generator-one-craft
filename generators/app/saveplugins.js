@@ -1,103 +1,107 @@
-// don't commit, just for etesting
+var craftPlugins = require('./craftplugins.js'),
+	download = require("download"),
+	fs = require('fs'),
+	mkdirp = require('mkdirp'),
+	chalk = require('chalk');
 
-var craftPlugins = require('./craftplugins.js');
-var download = require("download");
-
-
-var fs = require('fs');
-var mkdirp = require('mkdirp');
-var chalk = require('chalk');
-
-
-
+/** our save function to export
+ * @param pluginsDir The directory where all plugins should be saved to
+ * @param permission The chmod to set file & folder permissions to
+ * @param approved An object of plugins to download
+ * @return Void
+ */
 var save = function( pluginsDir, permission, approved ) {
 
-
+	// loop through every plugin set in craftPlugins
 	craftPlugins.forEach( plugin => {
 
-		var true_false;
+		// bool whether to download plugin
+		var downloadYN = false;
 
 		// debug mode, allow us to force this in.
 		if (typeof approved === 'undefined') {
-			true_false = true;
+			downloadYN = true;
 		} else {
-		   true_false = (plugin.essential || approved.indexOf( plugin.name ) != -1);
+		   downloadYN = (plugin.essential || approved.indexOf( plugin.name ) != -1);
 		}
 
+		if (downloadYN) {
 
+			console.log( "Downloading " + chalk.green( plugin.name ) );
+			console.log( "-----------------------------------------------" );
 
-		if (true_false) {
+			// open up a new download stream...
+			// strip of 1 is to always step into our extracted folder,
+			// which at least in the case of github is 100% the case.
+			// i.e. when you download a ZIP from github, the entire plugin
+			// is contained within a folder named "pluginname-master".
+			// We further make 2 other general assumptions about the folder structure:
+			// 	1. Either the plugin contents exist at the root of the repo
+			// 	2. Or the plugin contents exist one level into the repo, and
+			// 	   that level directory is the correct name of the plugin folder for installation.
+			new download({ mode: permission, extract: true, strip: 1 })
+				.get( plugin.url )
+				.run( function( err, files ) {
 
-			plugin.strip = plugin.strip || 1;
-			var p = new download({ mode: permission, extract: true, strip: plugin.strip })
-						.get( plugin.url )
-						.run( function( err, files ) {
+					console.log( "Extracting " + chalk.green( plugin.name ) + " & saving files to disk." );
+					// console.log( plugin );
+					console.log( "-----------------------------------------------" );
 
-							console.log( "Downloading " + chalk.green( plugin.name ) );
-							console.log( "-----------------------------------------------" );
+					if (err) {
+						console.log(err);
+						throw err;
+					}
 
-							console.log(plugin.strip);
-							console.log(plugin.srcFolder);
-							console.log(typeof plugin.srcFolder === 'string');
+					files.forEach( file => {
+							// @TODO: someone's going to complain if they run this on windows...
 
-							if (err) throw err;
+							// by default, include every file that we extract
+							var saveFile = true;
 
-							files.forEach( file => {
-									// someone's going to complain if they run this on windows...
+							// if the srcFolder has been set, we should make sure the file is inside
+							if ( plugin.srcFolder && typeof plugin.srcFolder === 'string') {
 
-									// by default, include every file that we extract
-									var folderTest = true;
+								// we have specified a specific folder, so check against this:
+								var chunks = file.path.split( "/" );
 
-									// if the srcFolder has been set, then we should only be copying over this file IF it's inside the srcFolder
-									if ( plugin.srcFolder && typeof plugin.srcFolder === 'string') {
+								// check if the first directory matches our src target
+								saveFile = (chunks[0] === plugin.srcFolder);
+							}
 
-										// we have specified a specific folder, so check against this:
-										var chunks = file.path.split( "/" );
+							// if we have determined that the file is inside the folder we want, then copy it over
+							if (saveFile) {
 
-										// console.log(chunks);
+								// are we moving all of the files inside a named folder?
+								if ( plugin.destFolder) {
+									// specified a subfolder to put things in
+									file.path = pluginsDir + plugin.destFolder + "/" + file.path;
+								} else {
+									file.path = pluginsDir + file.path;
+								}
 
-										// only pass if the first directory matches our src target
-										var folderTest = (chunks[0] === plugin.srcFolder);
-										// set the path
-									}
+								// create our directory synchronously so that it
+								// finishes before attempting to write file
+								mkdirp.sync( file.dirname, { mode: permission } );
 
-
-
-
-									// if we have determined that the file is inside the folder we want, then copy it over
-									if (folderTest) {
-
-										// are we moving all of the files inside a named folder?
-										if ( plugin.destFolder) {
-											// specified a subfolder to put things in
-											file.path = pluginsDir + plugin.destFolder + "/" + file.path;
-										} else {
-											file.path = pluginsDir + file.path;
+								if ( file.isBuffer() ) {
+									// write file synchronously... jusr to be safe
+									fs.writeFileSync( file.path, file.contents, { mode: permission }, function(err) {
+										if (err) {
+											console.log( err );
 										}
+									});
+								}
+							} else {
+								console.log('Skipping file ' + file.path);
+							}
+					});
 
-										// create our directory synchronously so that it
-										// finishes before attempting to write file
-										mkdirp.sync( file.dirname, { mode: permission } );
-
-										if ( file.isBuffer() ) {
-											// write file synchronously to be safe
-											fs.writeFileSync( file.path, file.contents, { mode: permission }, function(err) {
-												if (err) {
-													console.log( err );
-												} else {
-
-												}
-											});
-										}
-
-									}
-							});
-
-							console.log( "downloaded " + chalk.green( plugin.name ) );
-							console.log( "-----------------------------------------------" );
-						});
-
-
+					console.log( "Extracted " + chalk.green( plugin.name ) );
+					console.log( "-----------------------------------------------" );
+				});
+		} else {
+			console.log( "Skipping " + chalk.green( plugin.name ) );
+			console.log( "-----------------------------------------------" );
 		}
 	});
 }
