@@ -75,12 +75,15 @@ var save = function( pluginsDir, permission, approved ) {
 											file.path = pluginsDir + file.path;
 										}
 
-										mkdirp( file.dirname, { mode: permission } );
+										// create our directory synchronously so that it
+										// finishes before attempting to write file
+										mkdirp.sync( file.dirname, { mode: permission } );
 
 										if ( file.isBuffer() ) {
-											fs.writeFile( file.path, file.contents, { mode: permission }, function(err) {
+											// write file synchronously to be safe
+											fs.writeFileSync( file.path, file.contents, { mode: permission }, function(err) {
 												if (err) {
-													//console.log( file.path + " buffer errr" );
+													console.log( err );
 												} else {
 
 												}
