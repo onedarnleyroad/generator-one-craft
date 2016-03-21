@@ -1,4 +1,4 @@
- {
+{
     "author": "One Darnley Road Digital Ltd",
     "devDependencies": {
         "browser-sync": "^2.9.11",
@@ -11,7 +11,7 @@
         "gulp-sass": "^2.1.0",
         "gulp-sourcemaps": "^1.6.0",
         "gulp-uglifycss": "^1.0.4",
-        "gulp-watch": "^3.0.0",
+        "gulp-watch": "^4.3.5",
         "gulp-changed": "^1.3.0",
         "gulp-imagemin": "^2.4.0"
     }

@@ -1,5 +1,4 @@
 var gulp = require('gulp');
-var watch = require('gulp-watch');
 var browserSync = require('browser-sync');
 var gulpLoadPlugins = require('gulp-load-plugins');
 var path = require('path');
@@ -64,8 +63,7 @@ gulp.task('images', function () {
 			progressive: true,
 			svgoPlugins: [{
 				removeViewBox: false
-			}],
-			use: [pngquant()]
+			}]
 		}))
 		.pipe(gulp.dest( imgDest ));
 });
@@ -89,6 +87,22 @@ gulp.task('scripts', function() {
 });
 
 
+/**
+ * -------------
+ * VENDOR (and fonts!)
+ * -------------
+ */
+// Simple task to copy our vendor packages into the assets folder...
+// At this point you can add various tasks, linting, whatever
+gulp.task('vendor', function() {
+	var dest = publicAssets + '/vendor';
+
+	return gulp
+		.src(['./vendor/**/*.{js,css,jpg,png,svg,otf,ttf,woff,woff2,gif}'])
+		.pipe($.changed( dest ))
+		.pipe( gulp.dest( dest ) );
+});
+
 
 /**
  * -------------
@@ -99,9 +113,23 @@ gulp.task('scripts', function() {
 // Serve watches for changes, builds, and reloads browser sync all in one.
 gulp.task('serve', ['styles'], function() {
 
-	// Watch for changes to src folders
-	gulp.watch('./src/scss/**/*.scss', ['styles']);
-	gulp.watch('./src/js/**/*.js', ['scripts'])
+	// Use gulp watch for any new vendor files or scripts being dropped in
+	$.watch('./src/scss/**/*.scss', function() {
+		gulp.start('styles');
+	});
+
+	// There's no processing on these files yet.
+	$.watch('./vendor/**/*', function() {
+		gulp.start('vendor');
+	});
+
+	$.watch('./src/js/**/*.js', function() {
+		gulp.start('scripts');
+	});
+
+	$.watch('./src/img/**/*.{jpg,gif,png,svg,ico}', function() {
+		gulp.start('images');
+	});
 
 	// Launch browser sync
 	browserSync({
@@ -124,11 +152,18 @@ gulp.task('serve', ['styles'], function() {
 
 
 gulp.task('clean', function() {
-    console.log("Cleaning!")
-    return gulp.src(publicAssets + '/**/*', { read: false }) // much faster
-     .pipe($.plumber())
-    //.pipe(ignore('protected/**'))
-    .pipe($.rimraf());
+	console.log("Cleaning!")
+	return gulp.src(
+		[
+			publicAssets + '/css',
+			publicAssets + '/vendor',
+			publicAssets + '/js',
+			publicAssets + '/img'
+
+		], { read: false }) // much faster
+	 .pipe($.plumber())
+	//.pipe(ignore('protected/**'))
+	.pipe($.rimraf());
 
 });
 
@@ -136,8 +171,8 @@ gulp.task('build', ['clean', 'default'], function() {
 
 });
 
-gulp.task('default', ['styles', 'scripts'], function() {
-    console.log( "Built Everything");
+gulp.task('default', ['styles', 'vendor', 'scripts', 'images'], function() {
+	console.log( "Built Everything");
 });
 
 
