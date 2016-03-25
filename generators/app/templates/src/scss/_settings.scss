@@ -66,43 +66,6 @@ $font-size-base: 16px;
 /// @group settings
 $font-size-base--sm: 14px;
 
-/**
- * Grid
- */
-
-/// Grid - default number of columns in our grid
-///
-/// @group settings
-$grid-columns:                  12;
-
-/// Grid - default padding in our grid
-///
-/// @group settings
-$grid-column-padding:           .65%;
-
-/// Grid - default padding in our grid
-///
-/// @group settings
-$grid-column-padding--px:       20px;
-
-
-/// Grid - default padding in our grid
-///
-/// @group settings
-$grid-column-padding--px--sm:       15px;
-
-
-/// Container Padding - default padding for outer containers such as header, footer, etc
-///
-/// @group settings
-$container-padding:             40px;
-$container-padding-sm:          20px;
-
-/// Max content width
-///
-/// @group settings
-$max-content-width:             1550px;
-
 
 /**
  * Media Queries / Breakpoints
@@ -131,13 +94,12 @@ $screen-lg:                     1200px;
 /// X-Large screen size
 ///
 /// @group settings
-$screen-xl:                     1550px;
-
+$screen-xl:                     1600px;
 
 /// The maximum width we design to
 ///
 /// @group settings
-$screen-max:                    1600px;
+$screen-max:                    1920px;
 
 /// Mobile Size
 /// Alias of `$screen-xs`
@@ -158,21 +120,28 @@ $screen-tablet: $screen-sm;
 $screen-desktop: $screen-lg;
 
 
+/**
+ * Grid
+ */
 
+/// Grid - default number of columns in our grid
+///
+/// @group settings
+$grid-columns:                  12;
 
+/// Grid - default padding in our grid
+///
+/// @group settings
+$grid-column-padding:           20px;
 
+/// Grid - default padding in our grid
+///
+/// @group settings
+$grid-column-padding--sm:       15px;
 
-
-
-
-
-
-
-
-
-
-
-
-
+/// Max content width
+///
+/// @group settings
+$max-content-width:             $screen-max;
 
 
