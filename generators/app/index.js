@@ -21,6 +21,31 @@ var craftPlugins = require('./craftplugins.js');
 
 var generator;
 
+// Extract the primary domain from URLs containing common domain TLDs
+// http://jsfiddle.net/mZPaf/2/
+var getDomainName = function(domain) {
+	var parts = domain.split('.').reverse();
+	var cnt = parts.length;
+	if (cnt >= 3) {
+		// see if the second level domain is a common TLD.
+		if (parts[1].match(/^(com|edu|gov|net|mil|org|nom|co|name|info|biz)$/i)) {
+			// test check that parts[0] doesn't match a common TLD (e.g. www.gov.com)
+			if(parts[0].match(/^(com|edu|gov|net|mil|org|nom|co|name|info|biz)$/i)) {
+				return parts[1] + '.' + parts[0];
+			} else {
+				return parts[2] + '.' + parts[1] + '.' + parts[0];
+			}
+		}
+	}
+	return parts[1] + '.' + parts[0];
+};
+
+// expects to operate on a string returned from getDomainName
+var getTldFromDomain = function(domain) {
+	return domain.substring(0, domain.indexOf('.'));
+};
+
+
 module.exports = yeoman.Base.extend({
 
 	/**
@@ -168,38 +193,37 @@ module.exports = yeoman.Base.extend({
 			{
 				type: 'input',
 				name: 'productionServer',
-				message: 'What will be the production server name? No www and no http',
+				message: 'What will be the production domain?',
 				default: 'mysite.com'
 			},
-
 
 			{
 				type: 'input',
 				name: 'stagingServer',
-				message: '...and your staging server?',
+				message: '... and your staging domain?',
 				default: function( response ) {
-					return 'staging.' + response.productionServer;
+					return 'staging.' + getDomainName(response.productionServer);
 				}
 			},
 
 			{
 				type: 'input',
 				name: 'devServer',
-				message: 'Development Server?',
+				message: '... and your development domain?',
 				default: function( response ) {
 					// here you could strip out .com / .co.uk / .org etc etc
-					// var url = response.productionServer.replace( /\.(com|org|co\..)/, '' );
-					return response.productionServer + '.craft.dev';
+					var url = getDomainName(response.productionServer);
+					return getTldFromDomain(url) + '.craft.dev';
 				}
 			},
-
 
 			{
 				type: 'input',
 				name: 'localDatabase',
 				message: 'What is your local database name?',
 				default: function( response ) {
-					return response.productionServer;
+					var url = getDomainName(response.productionServer);
+					return getTldFromDomain(url);
 				}
 			},
 
