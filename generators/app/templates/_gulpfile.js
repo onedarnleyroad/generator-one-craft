@@ -1,9 +1,8 @@
-var gulp = require('gulp');
-var browserSync = require('browser-sync');
-var gulpLoadPlugins = require('gulp-load-plugins');
-var path = require('path');
-// var bowerFiles = require('main-bower-files');
-var $ = gulpLoadPlugins();
+var gulp = require('gulp'),
+	browserSync = require('browser-sync'),
+	gulpLoadPlugins = require('gulp-load-plugins'),
+	path = require('path'),
+	$ = gulpLoadPlugins();
 
 /**
  * -------------
@@ -12,33 +11,72 @@ var $ = gulpLoadPlugins();
  */
 
 <%# /* Set up configurations from the yeoman options */ %>
-var assets = '<%= assets %>';
-var publicFolder = '<%= publicFolder %>';
-var proxy = '<%= proxy %>';
-var publicAssets = publicFolder + '/' + assets;
+var assets = '<%= assets %>',
+	publicFolder = '<%= publicFolder %>',
+	browserSyncProxy = '<%= proxy %>';
+
+var stylesSrc    = './src/scss/**/*.scss',
+	stylesDest   = publicFolder + '/' + assets + '/css',
+
+	scriptsSrc   = './src/js/**/*.js',
+	scriptsDest  = publicFolder + '/' + assets + '/js',
+
+	imagesSrc    = './src/img/**/*.{jpg,gif,png,svg,ico}',
+	imagesDest   = publicFolder + '/' + assets + '/img',
+
+	vendorSrc    = './vendor/**/*.{css,js,gif,jpg,png,svg,otf,ttf,woff,woff2}',
+	vendorDest   = publicFolder + '/' + assets + '/vendor';
 
 
 /**
  * -------------
  * STYLES
+ *
+ * Build css files, and put them in the public folder.
  * -------------
  */
 
-var cssDest = publicAssets + '/css';
-
-// Build css files with source maps and without minification
 gulp.task('styles', function() {
-	return gulp.src('./src/scss/**/*.scss')
-		.pipe($.changed( cssDest ))
+
+	return gulp.src(stylesSrc)
+		// Only send through changed files (speed)
+		.pipe($.changed( stylesDest ))
+
+		// handle errors without having entire task fail
 		.pipe($.plumber())
+
+		// sourcemaps
 		.pipe($.sourcemaps.init())
-		.pipe($.sass().on('error',$.sass.logError))
-		.pipe($.autoprefixer())
-		.pipe($.mergeMediaQueries({
-		  log: true
+
+		// post process sass
+		.pipe($.sass().on('error', $.sass.logError))
+
+		// postprocess vendor prefixes
+		.pipe($.autoprefixer({
+			browsers: [
+				'last 2 versions',
+				'ie 9'
+			]
 		}))
-		//.pipe($.uglifycss())
-		.pipe(gulp.dest(publicAssets + '/css'))
+
+		// merge media queries
+		.pipe($.mergeMediaQueries({
+			log: true
+		}))
+
+		// save to public
+		.pipe(gulp.dest(stylesDest))
+
+		// minify
+		.pipe($.uglifycss())
+
+		// rename with *.min extension
+		.pipe($.rename({
+			extname: '.min.css'
+		}))
+
+		// save to public
+		.pipe(gulp.dest(stylesDest))
 });
 
 
@@ -50,14 +88,12 @@ gulp.task('styles', function() {
  * Run images through optimisation, and put them in the public folder.
  * -------------
  */
-
-var imgDest = publicAssets + '/img';
-
 gulp.task('images', function () {
 
-	return gulp.src('src/img/**/*')
+	return gulp.src(imagesSrc)
 		// Only send through changed files, as this is a somewhat 'heavy' operation
-		.pipe($.changed( imgDest ))
+		.pipe($.changed(imagesDest))
+
 		// need to configure this to our tastes.
 		.pipe($.imagemin({
 			progressive: true,
@@ -65,25 +101,23 @@ gulp.task('images', function () {
 				removeViewBox: false
 			}]
 		}))
-		.pipe(gulp.dest( imgDest ));
+
+		// save output to public
+		.pipe(gulp.dest(imagesDest));
 });
 
 
 /**
  * -------------
  * SCRIPTS
+ *
+ * Build css files, and put them in the public folder.
  * -------------
  */
-
-var jsDest = publicAssets + '/js';
-
-// Simple task to copy js into the assets folder...
-// At this point you can add various tasks, linting, whatever
 gulp.task('scripts', function() {
-	return gulp
-		.src(['./src/js/**/*'])
-        .pipe($.changed( jsDest ))
-		.pipe( gulp.dest(publicAssets + '/js') )
+	return gulp.src(scriptsSrc)
+        .pipe($.changed(scriptsDest))
+		.pipe(gulp.dest(scriptsDest))
 });
 
 
@@ -95,12 +129,9 @@ gulp.task('scripts', function() {
 // Simple task to copy our vendor packages into the assets folder...
 // At this point you can add various tasks, linting, whatever
 gulp.task('vendor', function() {
-	var dest = publicAssets + '/vendor';
-
-	return gulp
-		.src(['./vendor/**/*.{js,css,jpg,png,svg,otf,ttf,woff,woff2,gif}'])
-		.pipe($.changed( dest ))
-		.pipe( gulp.dest( dest ) );
+	return gulp.src(vendorSrc)
+		.pipe($.changed(vendorDest))
+		.pipe(gulp.dest(vendorDest));
 });
 
 
@@ -111,30 +142,28 @@ gulp.task('vendor', function() {
  */
 
 // Serve watches for changes, builds, and reloads browser sync all in one.
-gulp.task('serve', ['styles'], function() {
+gulp.task('serve', ['clean'], function() {
 
-	// Use gulp watch for any new vendor files or scripts being dropped in
-	$.watch('./src/scss/**/*.scss', function() {
+	$.watch(stylesSrc, function() {
 		gulp.start('styles');
 	});
 
-	// There's no processing on these files yet.
-	$.watch('./vendor/**/*', function() {
+	$.watch(vendorSrc, function() {
 		gulp.start('vendor');
 	});
 
-	$.watch('./src/js/**/*.js', function() {
+	$.watch(scriptsSrc, function() {
 		gulp.start('scripts');
 	});
 
-	$.watch('./src/img/**/*.{jpg,gif,png,svg,ico}', function() {
+	$.watch(imagesSrc, function() {
 		gulp.start('images');
 	});
 
 	// Launch browser sync
 	browserSync({
 
-			proxy: proxy,
+			proxy: browserSyncProxy,
 			files: "**/*.css",
 
 			ghostMode: {
@@ -155,20 +184,22 @@ gulp.task('clean', function() {
 	console.log("Cleaning!")
 	return gulp.src(
 		[
-			publicAssets + '/css',
-			publicAssets + '/vendor',
-			publicAssets + '/js',
-			publicAssets + '/img'
-
-		], { read: false }) // much faster
-	 .pipe($.plumber())
-	//.pipe(ignore('protected/**'))
-	.pipe($.rimraf());
+			stylesDest,
+			scriptsDest,
+			imagesDest,
+			vendorDest
+		],
+		{
+			read: false // much faster
+		})
+		.pipe($.plumber())
+		//.pipe(ignore('protected/**'))
+		.pipe($.rimraf())
 
 });
 
-gulp.task('build', ['clean', 'default'], function() {
-
+gulp.task('build', ['clean'], function() {
+	gulp.start('default');
 });
 
 gulp.task('default', ['styles', 'vendor', 'scripts', 'images'], function() {
