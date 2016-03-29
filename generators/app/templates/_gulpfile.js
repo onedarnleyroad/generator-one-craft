@@ -35,7 +35,6 @@ var stylesSrc    = './src/scss/**/*.scss',
  * Build css files, and put them in the public folder.
  * -------------
  */
-
 gulp.task('styles', function() {
 
 	return gulp.src(stylesSrc)
@@ -141,6 +140,7 @@ gulp.task('vendor', function() {
  * -------------
  */
 
+
 // Serve watches for changes, builds, and reloads browser sync all in one.
 gulp.task('serve', ['clean'], function() {
 
@@ -180,6 +180,7 @@ gulp.task('serve', ['clean'], function() {
 });
 
 
+// Clean wipes all assets areas which we build to
 gulp.task('clean', function() {
 	console.log("Cleaning!")
 	return gulp.src(
@@ -198,103 +199,12 @@ gulp.task('clean', function() {
 
 });
 
+// Build does a clean + default task run
 gulp.task('build', ['clean'], function() {
 	gulp.start('default');
 });
 
+// Our default task calls each of our main tasks in parallel
 gulp.task('default', ['styles', 'vendor', 'scripts', 'images'], function() {
 	console.log( "Built Everything");
 });
-
-
-
-
-/*========================================
-=            Depracated Tasks            =
-========================================*/
-
-/**
- * -------------
- * STYLES
- * -------------
- */
-
-// Build css files without source maps and with minification
-// gulp.task('styles-production', function() {
-// 	return gulp.src('./src/scss/**/*.scss')
-// 		.pipe($.plumber())
-// 		.pipe($.sass().on('error',$.sass.logError))
-// 		.pipe($.autoprefixer())
-// 		.pipe($.mergeMediaQueries({
-// 		  log: true
-// 		}))
-// 		.pipe($.uglifycss())
-// 		.pipe(gulp.dest(publicAssets + '/css'))
-// });
-
-
-
-/**
- * -------------
- * TEMPLATES
- *
- * Send all src/templates to the craft/templates folder and
- *
- * Run gulp-file-include including snippets as we like
- * Inject Bower scripts into the appropriate snippets,
- * basically, anywhere you've written this:
-
-    <!-- bower:js -->
-    <!-- endinject -->
-
- *
- * The 'bower' task, called before 'templates', will look through the bower
- * json and copy all the appropriate scripts into our assets folder, in a subfolder
- * called 'bower' for reference.
- *
- * The two tasks work together because the path name is transformed when injected
- * so if you change the path of one, make sure you change the other.
- *
- * Also note that this is minimee flavoured, so we don't output <script> tags,
- * but just strings with commas to go in an array.
- *
- * Add script tags below if you want normal versions - but simply removing the transform
- * function will take away the ability to change the scripts path to the assets folder.
- * -------------
- */
-
-
-// gulp.task('bower', function() {
-//     return gulp
-//         .src(bowerFiles())
-//         // send to
-//         .pipe(gulp.dest(publicAssets + '/js/bower'));
-// });
-
-// gulp.task('templates', function () {
-
-//     // take anything from templates
-//     return gulp
-//         .src('./src/templates/**/*.*')
-
-//         .pipe($.changed( './craft/templates' ))
-
-//         .pipe( $.fileInclude({
-//             prefix: '@@',
-//             basepath: './src/partials/'
-//         }))
-
-//         .pipe($.inject(gulp.src(bowerFiles(), {read: false}), {
-//             name: 'bower',
-//             removeTags: true, // extremely important otherwise you'll kill the minimee array
-//             transform: function( filepath ) {
-//                 // Comma creep is okay, as we will have app scripts below!
-//                 // but watch out for this...
-//                 return "'/" + assets + "/js/bower/" + path.basename( filepath ) + "',";
-//             }
-//         }))
-
-//         // send to
-//         .pipe(gulp.dest('./craft/templates/_compiled'));
-// });
-
