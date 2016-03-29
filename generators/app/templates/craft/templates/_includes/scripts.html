@@ -6,7 +6,7 @@
 
 	var APP = window.APP || {};
 	APP.debug = {{ craft.config.devMode ? 'true' : 'false' }};
-	APP.environment = '{{ craft.config.environment }}';
+	APP.environment = '{{ craft.config.__environment }}';
 	APP.isMobileBrowser = {{ craft.request.isMobileBrowser ? 'true' : 'false' }};
 
 </script>
