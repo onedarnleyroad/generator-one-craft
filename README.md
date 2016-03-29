@@ -28,19 +28,19 @@ This will install into the present working directory.  If you want to install in
 
 These folders are generated from the `app/templates` directory but there may be some moving around on the Yeoman scaffolding process.  So below is what you'll end up with:
 
-	├── craft                # Craft CMS app - including templates.
-	├── public               # Document root directory, used by craft.  Compiled assets end up here
-	├── src                  # Front end source files mostly
+	├── craft           # Craft CMS app - including templates.
+	├── public          # Document root
+	|   ├── assets      # Front end assets, compiled from `/src` - DO NOT EDIT MANUALLY
+	|   ├── cache       # for Minimee
+	|   ├── uploads     # The default Assets source
+	├── src             # Front end source files
 	|   ├── scss                    
 	|   ├── js
-	|   ├── partials         # for the templates folder using @@includes - see below.
-	|   ├── img              # see gulpfile - we put in images here and they get compressed into public
-	|   └── templates        # this is for any twig template snippets you wish to transform before sending to craft
+	|   ├── img         # Un-compressed images
 	|   
 	├── README.md
 	├── .gitignore       
 	├── package.json
-	├── bower.json                  
 	└── gulpfile.js
 
 ## Gulpfile and Gulp Plugins
@@ -68,51 +68,6 @@ Pretty straightforward, this is your SASS compiler.  The latter simply omits sou
 
 This is something for discussion - but simply images go in at `src/img` and come out at `public/assets/img` - on the way they are run through `gulp-imagemin` (yet to be fully configured in the gulpfile).  This losslessly compresses them - it's good for stripping metadata.  As these assets generally come out of a PSD and PS isn't great and removing superfluous data, this should do enough work for us to get the files nice and small.  There's also `gulp-changed` to avoid doing this again and again - as it's probably quite a hefty gulp task.  Needs testing
 
-
-### HTML / Twig
-
-	$ gulp templates
-
-This is the task for handling template files.  Until this changes in a later commit, the idea is that you build ALL your Craft templates in `src/templates` and these get compiled into `craft/templates`.
-
-As such, during development, do not edit anything in `craft/templates` as you may later overwrite files you added in the source folder.  
-
-Before copying, two processes run:
-
-#### Bower
-
-If a template file has the following:
-    
-    <!-- bower:js -->
-    <!-- endinject -->
-
-The script will run through the bower.json file and inject all the scripts required.  It will transform the paths to look for them in the `assets/js/bower` directory.  Then, the `bower` task in the gulpfile will then run through the bower.json again and copy the JS itself over.  This way you can still poke around and easily look at the individual files, and we'll be using `minimee` to concatenate them.  Of coruse it would be trivial to update the gulpfile at this point to concatenate them at the build process.
-
-#### Gulp File Include
-
-_Visit https://www.npmjs.com/package/gulp-file-include for docs_
-
-Lastly, for extra functionality we have access to `gulp-file-include` but this is entirely optional.  So as to avoid conflicts when compiling all included files from this step are in `src/partials` rather than within the `src/templates` folder.  
-
-It's something that is entirely optional, and doesn't really add much to the compiling time, but can be used whenever you're having trouble using Twig to keep things DRY. 
-
-When an HTML file in `src/templates` contains something like the following:
-
-    <h1>Cat Voices</h1>
-    @@include("file.html", {"catsays" : "meow"} )
-
-
-It would look for `src/partials/file.html` which might look like this:
-
-    <strong>Our cat says @@catsays</strong>
-
-It compiles into `craft/templates` to:
-
-    <h1>Cat Voices</h1>
-    <strong>Our cat says meow</strong>
-
-For the most part Twig includes can handle this kind of behaviour and more dynamically, so we may find this feature is never used.  The data object is optional, eg `@@include("file.html")` but remember if the include file references variables it can't find, gulp will throw an error.  Includes can include files themselves too.
-
 ### Scripts
 
 #### General Scripts
@@ -120,12 +75,6 @@ For the most part Twig includes can handle this kind of behaviour and more dynam
     $ gulp scripts
 
 At present, literally just copies from `src/js` to `public/assets/js` at the moment.  But this task is here so you could run minification, concatenation, linting and so on. 
-
-#### Bower
-
-    $ gulp bower
-
-Will read the `bower.json` file, find the main scripts, then copy all the scripts from the bower components directory into `public/assets/js/bower`.  
 
 ### While developing
 
@@ -155,14 +104,16 @@ After the latest version of Craft is downloaded and installed, we then overwrite
 
 `craft/config/db.php` is copied over from the `generators/app/templates/craft/generator` directory, with the `localdatabase` variable that Yeoman will have asked you for.  This is so you can set it up in your server configuration, we're using the MAMP Pro defaults for mysql being `localhost` with `root` as the username and password - but the database name is updated.  
 
-It also adds some custom code to look for `craft/config/local/db.php` and use that in place of the existing file.  That way you can make custom modifications for you local environment - there is also a .gitignore in the local directory so that it stays local. 
+It also adds some custom code to look for `craft/config/local/db.php` and use that in place of the existing file.  That way you can make custom modifications for you local environment - there is also a `.gitignore` in the local directory so that it stays local. 
 
 ### Plugins
 
 We have added a list of our preferred plugins in `generators/app/craftplugins.js` which is called on in the generator and processed.  As plugin developers have their own ways of storing the plugin itself, we have to do a little bit of configuration to get the downloader to extract the right thing (and not a load of junk) to the right place.
 
-As such you have to build an array of objects with the following options - but since this is in the generator, you're not really editing this unless you want to 
-tweak the generator to your liking.  We can always modify this generator to accept some sort of config json?
+As such you have to build an array of objects with the following options - but since this is in the generator, you're not really editing this unless you want to tweak the generator to your liking.  We can always modify this generator to accept some sort of config json?
+
+The _download-extract-save_ routine has only been tested on Github repositories, where the plugin's contents are either at the repo root,
+or one folder inside the repo, where that folder is tne name it should be when placed inside `craft/plugins`.
 
 **While the options have defaults, leave them unset at your peril!  The combination of things can create a bit of a mess potentially, so it's important to know what's being copied where, as we cannot always predict how someone sets their plugin repo**
 
@@ -210,29 +161,20 @@ Type: `string, false`
 
 If a string, then it will put everything into this folder, in the plugins directory.  Eg.
 
-`seomatic` will copy everything into `craft/plugins/seomatic`.  This is useful when the plugin has everything at its repository root and `plugin.strip` is 0
+`seomatic` will copy everything into `craft/plugins/seomatic`.  This is useful when the plugin has everything at its repository root.
 
 Otherwise you may end up with some weird results.  But some fiddling may be good if a zip had, say, more than 1 plugin in.
 
-#### plugin.strip
-Default: `1`
-Type: `int`
-
-How many paths to strip from the path of the files in the directory.  For example a repo might generate `myrepo-master/pluginname`
-
-At `strip: 0` it would extract to `craft/plugins/myrepo-master/pluginname` which is obviously incorrect.  1 would then strip out `myrepo-master` and so on.  
-
-Use in combination with `srcfolder` and `destfolder` to track down the right directory and put it in the right place.
-
-
 ----------------
-
 
 # To Do
 
-## MAMP PRO automation / PHP
-
-It'd be nice to be able to set up the server based on our prompting options.  Since we generate a db.php file that has a database name, and we generate a gulpfile that has the hostname, it'd be great to send that to MySQL and to MAMP Pro to add all the bits and then we could literally start developing our site - especially if we were to perform a SQL import.  All depends on MAMP, and it's still a fairly basic GUI process.  
+- split this readme into usage / developer notes
+- add default readme to the generated project root
+- split generator into sub-generators (craft vs plugins vs src?)
+- add gulp task for fonts?
+- MAMP PRO automation / PHP  
+	_It'd be nice to be able to set up the server based on our prompting options.  Since we generate a db.php file that has a database name, and we generate a gulpfile that has the hostname, it'd be great to send that to MySQL and to MAMP Pro to add all the bits and then we could literally start developing our site - especially if we were to perform a SQL import.  All depends on MAMP, and it's still a fairly basic GUI process._
 
 ----------------
 

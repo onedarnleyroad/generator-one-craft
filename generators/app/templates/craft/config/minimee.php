@@ -65,7 +65,7 @@ return array(
          * Prior to 0.9.0 this was "jsTagTemplate"
          * default: <script src="%s"></script>
          */
-        // 'jsReturnTemplate' => '',
+        'jsReturnTemplate' => '<script src="%s" async></script>',
 
         /**
          * The Filesystem Path to your cache folder

@@ -1,0 +1,21 @@
+// Vendor Added scripts.  We may need to rethink where this appears in the list
+
+// Set your breakpoints before Eduardo Boucas' include media mixins.
+//
+// Remember that mobile / tablet / desktop are
+$breakpoints: (
+  'xs': $screen-xs,
+  'sm': $screen-sm,
+  'md': $screen-md,
+  'lg': $screen-lg,
+  'xl': $screen-xl,
+  'mobile': $screen-mobile,
+  'tablet': $screen-tablet,
+  'desktop': $screen-desktop
+);
+
+@import "../../vendor/eduardoboucas/include-media/include-media";
+
+// Uncomment if using flickity.
+// @import "../../vendor/metafizzy/flickity";
+

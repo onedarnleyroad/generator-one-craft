@@ -1,0 +1,20 @@
+
+{#
+	Our site global "APP" variable
+#}
+<script>
+
+	var APP = window.APP || {};
+	APP.debug = {{ craft.config.devMode ? 'true' : 'false' }};
+	APP.environment = '{{ craft.config.__environment }}';
+	APP.isMobileBrowser = {{ craft.request.isMobileBrowser ? 'true' : 'false' }};
+
+</script>
+
+{#
+	App JS goes here
+#}
+{{ craft.minimee.js([
+	'/assets/vendor/jquery/jquery-2.2.1.min.js',
+	'/assets/js/app.js'
+]) }}

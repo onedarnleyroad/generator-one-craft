@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie10 lt-ie9"> <![endif]-->
+<!--[if lt 9]><html class="no-js lt-ie10 lt-ie9"> <![endif]-->
 <!--[if IE 9]><html class="no-js lt-ie10"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<!--[if gt IE 9]><!--> <html class="no-js"> <!--<![endif]-->
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -24,16 +24,14 @@
 
 </head>
 
-<body class="{% block bodyClass %}{% endblock %}">
+<body class="body {% block bodyClass %}{% endblock %}">
 
 
     {% block content %}{% endblock %}
 
-
-
+	<!--[if gte IE 9]><!-->
     {% include "_includes/scripts.html" %}
-
-
+	<!--<![endif]-->
 
 </body>
 </html>

@@ -1,0 +1,7 @@
+{% if craft.config.__environment == 'production' %}
+User-agent: *
+Disallow:
+{% else %}
+User-agent: *
+Disallow: /
+{% endif %}
