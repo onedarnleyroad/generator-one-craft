@@ -142,7 +142,7 @@ gulp.task('vendor', function() {
 
 
 // Serve watches for changes, builds, and reloads browser sync all in one.
-gulp.task('serve', ['clean'], function() {
+gulp.task('serve', function() {
 
 	$.watch(stylesSrc, function() {
 		gulp.start('styles');
