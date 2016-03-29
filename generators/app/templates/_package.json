@@ -9,6 +9,7 @@
         "gulp-merge-media-queries": "^0.2.1",
         "gulp-plumber": "^0.6.6",
         "gulp-rename": "^1.2.2",
+        "gulp-rimraf": "^0.2.0",
         "gulp-sass": "^2.1.0",
         "gulp-sourcemaps": "^1.6.0",
         "gulp-uglifycss": "^1.0.4",
