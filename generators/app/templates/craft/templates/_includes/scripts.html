@@ -18,3 +18,11 @@
 	'/assets/vendor/jquery/jquery-2.2.1.min.js',
 	'/assets/js/app.js'
 ]) }}
+
+
+{#
+	If in local development, include our debugging helper
+#}
+{% if craft.config.__environment == 'local' %}
+	{% include '_includes/debugpsd' %}
+{% endif %}
