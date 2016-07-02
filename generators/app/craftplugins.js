@@ -98,6 +98,13 @@ module.exports = [
 	},
 
 	{
+		name: "MN Twig Perversion",
+		url: "https://github.com/marionnewlevant/craft-twig_perversion/archive/master.zip",
+		checked: true,
+		srcFolder: "mntwigperversion"
+	},
+
+	{
 		name: "Preparse Field",
 		url: "https://github.com/aelvan/Preparse-Field-Craft/archive/master.zip",
 		checked: false,
