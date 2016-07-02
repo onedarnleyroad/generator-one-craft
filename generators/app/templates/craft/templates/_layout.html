@@ -9,29 +9,33 @@
 
 {# we can't concatenate & raw-ify it at once, so we have to do this in two steps... #}
 {% if block('title') %}
-    {% set _title = block('title') ? block('title') ~ ' | ' %}
+	{% set _title = block('title') ? block('title') ~ ' | ' %}
 {% elseif entry is defined %}
-    {% set _title = entry.title ~ ' | ' %}
+	{% set _title = entry.title ~ ' | ' %}
 {% endif %}
 <title>{{ _title is defined ? _title | raw }}{{ siteName }}</title>
 
-
-{{ craft.minimee.css([
-        '/assets/css/app.css'
-    ]) }}
+{# {{ craft.minimee.css([
+	'/assets/css/app.css'
+]) }} #}
+<link rel="stylesheet" type="text/css" href="{{siteUrl}}assets/css/app.min.v{{ craft.config.__siteVersion }}.css">
 
 {% include "_includes/analytics.html" %}
+
+{# Only put this in the header if all the scripts are Async! #}
+<!--[if gte IE 9]><!-->
+{% include "_includes/scripts.html" %}
+<!--<![endif]-->
 
 </head>
 
 <body class="body {% block bodyClass %}{% endblock %}">
 
+	{% block content %}{% endblock %}
 
-    {% block content %}{% endblock %}
-
-	<!--[if gte IE 9]><!-->
-    {% include "_includes/scripts.html" %}
-	<!--<![endif]-->
-
+	{# If in local development, include our debugging helper #}
+	{% if craft.config.__environment == 'local' %}
+		{% include '_includes/debugpsd' %}
+	{% endif %}
 </body>
 </html>

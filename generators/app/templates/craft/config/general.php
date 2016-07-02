@@ -36,6 +36,9 @@ $config = array(
 		// pass our environment as config key
 		'__environment' => CRAFT_ENVIRONMENT,
 
+		// Site version.  This is manually updated!
+		'__siteVersion' => '1.0.0',
+
 		// customise our CP login
 		// configurable via yo generator
 		'cpTrigger' => 'one',

@@ -1,0 +1,4 @@
+<IfModule mod_rewrite.c>
+	# redirect file.v1.2.3.css to file.css
+	RewriteRule ^(js|css)/(.+)\.v(.+)\.(js|css)$ $1/$2.$4 [L]
+</IfModule>

@@ -1,28 +1,20 @@
-
 {#
+	DO NOT PUT ANY NON-ASYNC SCRIPTS IN HERE!
+
+	We're loading in the header to ensure that the browser can start fetching them asap, rather than actually waiting for the whole page,
+	but withough renderblocking.
+
 	Our site global "APP" variable
 #}
 <script>
-
 	var APP = window.APP || {};
 	APP.debug = {{ craft.config.devMode ? 'true' : 'false' }};
 	APP.environment = '{{ craft.config.__environment }}';
 	APP.isMobileBrowser = {{ craft.request.isMobileBrowser ? 'true' : 'false' }};
-
 </script>
 
 {#
-	App JS goes here
+	Async head vendor stuff.  The main bundle is in the footer, this is just a few
+	helpers that aren't adding functionality, just some cross borwser help
 #}
-{{ craft.minimee.js([
-	'/assets/vendor/jquery/jquery-2.2.1.min.js',
-	'/assets/js/app.js'
-]) }}
-
-
-{#
-	If in local development, include our debugging helper
-#}
-{% if craft.config.__environment == 'local' %}
-	{% include '_includes/debugpsd' %}
-{% endif %}
+<script src="{{siteUrl}}assets/js/bundle.min.v{{ craft.config.__siteVersion }}.js" async></script>
