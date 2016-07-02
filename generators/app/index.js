@@ -357,6 +357,9 @@ module.exports = yeoman.Base.extend({
 		// gulpfile
 		generator.fs.copyTpl( generator.templatePath('_gulpfile.js'), generator.destinationPath('gulpfile.js'), gulpOptions );
 
+		// scriptFiles
+		generator.fs.copyTpl( generator.templatePath('_scriptFiles.js'), generator.destinationPath('scriptFiles.js'), gulpOptions );
+
 		// Package JSON
 		generator.fs.copyTpl( generator.templatePath('_package.json'), generator.destinationPath('package.json'), gulpOptions );
 
