@@ -1,0 +1,92 @@
+/*----------  Icomoon Definitions  ----------*/
+$icomoon-font-path: '/assets/vendor/icomoon/fonts';
+@import '../../vendor/icomoon/style.scss'; // add extension as there is a .css in there
+
+// Because IE8 is being annoying with webfonts, we need PNG fallbacks.  Unfortunately there
+// does not seem to be a quick way to extract a nice SASSable list from our icomoon icons
+// so we need to list them as an array here, after the content definitions.  We can then
+// adapt our mixin accordingly.
+$icomoonIcons: (
+	search		: $icon-search,
+	facebook	: $icon-facebook,
+	instagram	: $icon-instagram,
+	pinterest	: $icon-pinterest,
+	twitter		: $icon-twitter,
+	youtube		: $icon-youtube,
+	caret-right	: $icon-caret-right,
+	caret-down	: $icon-caret-down,
+	caret-left	: $icon-caret-left,
+	caret-up	: $icon-caret-up
+);
+
+
+/// Add an icon before an element.
+/// Unlike the 'out of the box' icomoon class
+/// this does not apply styles to the element,
+/// but only to its before class allowing some
+/// leaner markup
+///
+/// @example html
+/// <li class='search'>Search</li>
+///
+/// @example scss
+/// .search {
+///
+///     /* styles here */
+///     @include icomoon( $icon-magnifying-glass );
+/// }
+///
+/// @example scss
+/// .search {
+///     // would place pseudo element after, not before
+///     @include icomoon( $icon-magnifying-glass, 'after');
+/// }
+///
+/// This would output a magnifying glass before the "Search" text
+/// in a pseudo element
+@mixin icomoon( $icon: '', $before: 'before', $size: 19px) {
+	&:#{$before} {
+
+		// The icon itself, pulls from app.scss:
+		content: map-get($icomoonIcons, $icon);
+
+		// Standard:
+		/* use !important to prevent issues with browser extensions that change fonts */
+		font-family: 'icomoon' !important;
+		speak: none;
+		font-style: normal;
+		font-weight: normal;
+		font-variant: normal;
+		text-transform: none;
+		line-height: 1;
+		display: inline-block;
+		font-size: $size;
+		vertical-align: middle;
+		position: relative;
+		top: -2px;
+
+		/* Better Font Rendering =========== */
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+
+		// allow user to do some overrides.
+		@content;
+	}
+}
+
+/*----------  Icons  ----------*/
+// Add a bunch of generic icon classes
+// so we don't always have to use a mixin
+
+
+// Generally these are going to be links
+// and not just icon lists
+@each $iconName, $value in $icomoonIcons {
+	.b4-#{$iconName} {
+		@include icomoon( $iconName ) {
+			margin-right: 20px;
+			font-size: 13px;
+		}
+	}
+}
+
