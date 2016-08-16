@@ -24,6 +24,9 @@ if( ! defined('ENV_URI_SCHEME'))
 	// The site base path
 	// note the folder is configurable via yo generator
 	define('ENV_BASE_PATH',       realpath(CRAFT_BASE_PATH . '/../<%= publicFolder %>') . '/');
+
+	// Load up the site version
+	define('ENV_SITE_VERSION', trim(@file_get_contents(CRAFT_BASE_PATH . '/../SITEVERSION' )));
 }
 
 
@@ -36,8 +39,8 @@ $config = array(
 		// pass our environment as config key
 		'__environment' => CRAFT_ENVIRONMENT,
 
-		// Site version.  This is manually updated!
-		'__siteVersion' => '1.0.0',
+		// Site version.  This is updated from the SITEVERSION file in the root of the folder!
+		'__siteVersion' => ENV_SITE_VERSION,
 
 		// Google Analytics ID
 		'__GoogleAnalyticsID' => 'UA-XXXXX-X',
