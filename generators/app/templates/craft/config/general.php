@@ -39,6 +39,9 @@ $config = array(
 		// Site version.  This is manually updated!
 		'__siteVersion' => '1.0.0',
 
+		// Google Analytics ID
+		'__GoogleAnalyticsID' => 'UA-XXXXX-X',
+
 		// customise our CP login
 		// configurable via yo generator
 		'cpTrigger' => 'one',
