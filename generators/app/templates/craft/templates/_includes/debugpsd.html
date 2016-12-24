@@ -1,204 +1,22 @@
-<style>
-.debugoverlays {
-	position: fixed;
-	left: 0;
-	right: 0;
-	top: 0;
-	bottom: 0;
-	z-index: 10453453545435;
-	pointer-events: none;
-}
-
-.js-debug-hide {
-	display: none;
-}
-
-@media screen and (min-width: 1000px) {
-
-	.t12col {
-		margin: auto;
-		width: 1600px;
-	}
-
-	.t12col__col {
-		height: 100%;
-		width: 101.5px;
-		background: rgba(255, 0, 0, 0.02);
-		float: left;
-		margin-left: 29px;
-		margin-right: 0.5px;
-		border: 1px solid rgba(255,255,55,0.1);
-	}
-
-}
-
-@media screen and (max-width: 999px) {
-
-	.t3 {
-		margin: auto;
-		width: 100%;
-	}
-
-	.t3:after {
-		content: "";
-		position: absolute;
-		left:0;
-		right: 0;
-		width: 30px;
-		background: RGBA(255,255,255,0.3);
-		top: 0;
-		bottom: 0;
-		margin: auto;
-		border: 1px solid rgba(0,0,0,0.1);
-	}
-
-	.t3__col {
-		height: 100%;
-		width: calc(33.333% - 40px);
-		background: rgba(112, 132, 110, 0.15);
-		float: left;
-		margin-left: 30px;
-		margin-right: 0;
-		border: 1px solid rgba(255,255,55,0.1);
-	}
-
-}
-
-
-@media screen and (max-width: 480px) {
-
-	.t3 {
-		margin: auto;
-		width: 100%;
-	}
-
-	.t3:after {
-		content: "";
-		position: absolute;
-		left:0;
-		right: 0;
-		width: 20px;
-		background: RGBA(255,255,255,0.3);
-		top: 0;
-		bottom: 0;
-		margin: auto;
-		border: 1px solid rgba(0,0,0,0.1);
-	}
-
-	.t3__col {
-		height: 100%;
-		width: calc(50% - 30px);
-		background: rgba(112, 132, 110, 0.15);
-		float: left;
-		margin-left: 20px;
-		margin-right: 0;
-		border: 1px solid rgba(255,255,55,0.1);
-	}
-
-	.t3__col:last-child {
-		display: none;
-	}
-}
-
-
-#draggableOuter {
-	z-index: 354398572948379478947398257439857234098324;
-}
-#draggableOuter:after {
-	content:"";
-	left: 0;
-	right: 0;
-	width: 2px;
-	margin: auto;
-	top: 0;
-	bottom: 0;
-	background: rgba(0,255,0,0.4);
-	position: absolute;
-}
-
-#draggableOuter:before {
-	content:"";
-	left: 0;
-	right: 0;
-	width: 1600px;
-	margin: auto;
-	top: 0;
-	bottom: 0;
-	border: 1px solid rgba(0,255,0,0.4);
-	position: absolute;
-}
-
-
-.draggable {
-	pointer-events: all;
-	background: #f60;
-	color: #fff;
-	font-weight: bold;
-	padding: 5px;
-	text-align: center;
-}
-
-.draggable--30 {
-	width: 30px;
-	height: 30px;
-	line-height: 20px;
-	font-size: 15px;
-}
-
-.draggable--37 {
-	width: 37px;
-	height: 37px;
-	line-height: 27px;
-	font-size: 15px;
-}
-
-.draggable--45 {
-	width: 45px;
-	height: 45px;
-	line-height: 35px;
-	font-size: 16px;
-}
 
 
 
-.draggable--60 {
-	width: 60px;
-	height: 60px;
-	line-height: 50px;
-	font-size: 30px;
-}
-
-.draggable--90 {
-	width: 90px;
-	height: 90px;
-	line-height: 80px;
-	font-size: 45px;
-}
-
-
-#toggle-debug {
-	padding: 10px;
-	background: #f6f;
-	color: #fff;
-	position: fixed;
-	bottom: 40%;
-	left: 0;
-	top: 50%;
-	width: 20px;
-	z-index: 34324324897239847;
-}
-
-</style>
-
-<div id="draggableOuter" class="debugoverlays">
-	<div class="draggable draggable--90">90</div>
-	<div class="draggable draggable--60">60</div>
+<div id="draggableOuter" class="sizeOverlays js-debug-hide">
+	<div class="draggable draggable--25">25</div>
+	<div class="draggable draggable--25">25</div>
 	<div class="draggable draggable--45">45</div>
-	<div class="draggable draggable--37">37</div>
+	<div class="draggable draggable--45">45</div>
+	<div class="draggable draggable--60">60</div>
+	<div class="draggable draggable--60">60</div>
 	<div class="draggable draggable--30">30</div>
+	<div class="draggable draggable--30">30</div>
+	<div class="draggable draggable--20">20</div>
+	<div class="draggable draggable--26">26</div>
+	<div class="draggable draggable--26">26</div>
+	<div class="draggable draggable--26">26</div>
 </div>
 
-<div class="t12col debugoverlays">
+<div class="t12col debugoverlays js-debug-hide">
 	<div class="t12col__col"></div>
 	<div class="t12col__col"></div>
 	<div class="t12col__col"></div>
@@ -213,13 +31,14 @@
 	<div class="t12col__col"></div>
 </div>
 
-<div class="t3 debugoverlays">
+<div class="t3 debugoverlays js-debug-hide">
 	<div class="t3__col"></div>
 	<div class="t3__col"></div>
 	<div class="t3__col"></div>
 </div>
 
-<div id="toggle-debug">&nbsp;</div>
+<div id="toggle-sizing">SIZING</div>
+<div id="toggle-columns">COLUMNS</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.2/TweenLite.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.2/plugins/CSSPlugin.min.js"></script>
@@ -228,10 +47,13 @@
 (function() {
 	Draggable.create(".draggable", {type:"x,y", bounds:"#draggableOuter"});
 
-	var btn = document.querySelector('#toggle-debug');
+	var sizingBtn = document.querySelector('#toggle-sizing');
+	var columnsBtn = document.querySelector('#toggle-columns');
 	var overlays = document.querySelectorAll('.debugoverlays');
+	var sizing = document.querySelectorAll('.sizeOverlays');
 
-	Draggable.create("#toggle-debug", {type:"x,y", bounds:"#draggableOuter"});
+
+
 	window.toggleDebug = function() {
 
 		[].forEach.call(overlays, function(el) {
@@ -240,7 +62,16 @@
 
 	};
 
-	btn.addEventListener('click', toggleDebug);
+	window.toggleSizing = function() {
+
+		[].forEach.call(sizing, function(el) {
+			el.classList.toggle('js-debug-hide');
+		});
+
+	};
+
+	sizingBtn.addEventListener('click', toggleSizing);
+	columnsBtn.addEventListener('click', toggleDebug);
 
 })();
 </script>

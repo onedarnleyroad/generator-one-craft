@@ -2,24 +2,37 @@
 =            app.scss             =
 ==================================*/
 
-
-/*----------  Initialization  ----------*/
-
-// The following generally shouldn't be adding any real styles or designs to the app
-// and should be utilities, mixins, setup, resets, vendor etc.
+/*----------  Normalize  ----------*/
+// It's important this goes before utilities
+// thanks to the way extends work, and the way
+// our clean css works.  Normalize can end up
+// overwriting extends in utilities with low
+// specificity.
 @import "../../vendor/necolas/normalize";
+
+
+/*----------  Settings  ----------*/
 @import "settings";
-@import "fonts";
-@import "utilities";
 
 
 /*----------  Vendor  ----------*/
 
 @import "vendor";
+@import "icomoon";
+
+
+/*----------  Initialization  ----------*/
+
+@import "utilities";
 
 
 /*----------  App  ----------*/
 
+@import "fonts";
 @import "stylize";
 @import "components";
 @import "layouts";
+
+
+/*----------  Debug - if using the debug psd snippet  ----------*/
+@import "debug";

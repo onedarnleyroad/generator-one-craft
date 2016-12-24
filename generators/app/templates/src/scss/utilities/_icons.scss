@@ -1,0 +1,61 @@
+/*=============================
+=            Icons            =
+
+Use as helpers for things like
+icomoon fonts
+
+=============================*/
+
+/// Add an icon before an element.
+/// Unlike the 'out of the box' icomoon class
+/// this does not apply styles to the element,
+/// but only to its before class allowing some
+/// leaner markup
+///
+/// @example html
+/// <li class='search'>Search</li>
+///
+/// @example scss
+/// .search {
+///
+///     /* styles here */
+///     @include icomoon( $icon-magnifying-glass );
+/// }
+///
+/// @example scss
+/// .search {
+///     // would place pseudo element after, not before
+///     @include icomoon( $icon-magnifying-glass, 'after');
+/// }
+///
+/// This would output a magnifying glass before the "Search" text
+/// in a pseudo element
+@mixin icomoon( $icon: '', $before: 'before', $size: 19px) {
+	&:#{$before} {
+
+		// The icon itself, pulls from app.scss:
+		content: map-get($icomoonIcons, $icon);
+
+		// Standard:
+		/* use !important to prevent issues with browser extensions that change fonts */
+		font-family: 'icomoon' !important;
+		speak: none;
+		font-style: normal;
+		font-weight: normal;
+		font-variant: normal;
+		text-transform: none;
+		line-height: 1;
+		display: inline-block;
+		font-size: $size;
+		vertical-align: middle;
+		position: relative;
+		top: -2px;
+
+		/* Better Font Rendering =========== */
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+
+		// allow user to do some overrides.
+		@content;
+	}
+}
