@@ -94,12 +94,16 @@ gulp.task('images', function () {
 		.pipe($.changed(imagesDest))
 
 		// need to configure this to our tastes.
-		.pipe($.imagemin({
-			progressive: true,
-			svgoPlugins: [{
-				removeViewBox: false
-			}]
-		}))
+		.pipe($.imagemin([
+			imagemin.mozjpeg({
+				progressive: true
+			}),
+			imagemin.svgo({
+				plugins: [{
+					removeViewBox: false
+				}]
+			})
+		]))
 
 		// save output to public
 		.pipe(gulp.dest(imagesDest));
