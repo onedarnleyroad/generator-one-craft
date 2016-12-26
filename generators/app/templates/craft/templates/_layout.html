@@ -18,7 +18,7 @@
 {# {{ craft.minimee.css([
 	'/assets/css/app.css'
 ]) }} #}
-<link rel="stylesheet" type="text/css" href="{{siteUrl}}assets/css/app.min.v{{ craft.config.__siteVersion }}.css">
+<link rel="stylesheet" type="text/css" href="{{siteUrl}}assets/css/app.min.v{{- craft.config.get('version', 'app') -}}.css">
 
 {% include "_includes/analytics.html" %}
 
@@ -34,7 +34,7 @@
 	{% block content %}{% endblock %}
 
 	{# If in local development, include our debugging helper #}
-	{% if craft.config.__environment == 'local' %}
+	{% if craft.config.get('environment', 'app') == 'local' %}
 		{% include '_includes/debugpsd' %}
 	{% endif %}
 </body>

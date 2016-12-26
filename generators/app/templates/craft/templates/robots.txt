@@ -1,4 +1,4 @@
-{% if craft.config.__environment == 'production' %}
+{% if craft.config.get('environment', 'app') == 'production' %}
 User-agent: *
 Disallow:
 {% else %}

@@ -9,7 +9,7 @@
 <script>
 	var APP = window.APP || {};
 	APP.debug = {{ craft.config.devMode ? 'true' : 'false' }};
-	APP.environment = '{{ craft.config.__environment }}';
+	APP.environment = '{{ craft.config.get('environment', 'app') }}';
 	APP.isMobileBrowser = {{ craft.request.isMobileBrowser ? 'true' : 'false' }};
 </script>
 
@@ -17,4 +17,4 @@
 	Async head vendor stuff.  The main bundle is in the footer, this is just a few
 	helpers that aren't adding functionality, just some cross borwser help
 #}
-<script src="{{siteUrl}}assets/js/bundle.min.v{{ craft.config.__siteVersion }}.js" async></script>
+<script src="{{siteUrl}}assets/js/bundle.min.v{{ craft.config.get('version', 'app') }}.js" async></script>

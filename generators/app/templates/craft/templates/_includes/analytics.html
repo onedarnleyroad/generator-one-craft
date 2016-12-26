@@ -6,8 +6,8 @@
 	e.src='https://www.google-analytics.com/analytics.js';
 	r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
 	{# only track view if production, not admin, and not live preview -#}
-	{%- if craft.config.__environment == 'production' and not craft.request.isLivePreview and (not currentUser or not currentUser.admin) -%}
-		ga('create','{{- craft.config.__GoogleAnalyticsID -}}','auto');
+	{%- if craft.config.get('environment', 'app') == 'production' and not craft.request.isLivePreview and (not currentUser or not currentUser.admin) -%}
+		ga('create','{{- craft.config.get('googleAnalyticsID', 'app') -}}','auto');
 		ga('send','pageview');
 	{%- endif -%}
 </script>
