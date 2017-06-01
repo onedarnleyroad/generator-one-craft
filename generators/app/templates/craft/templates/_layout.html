@@ -9,16 +9,34 @@
 
 {# we can't concatenate & raw-ify it at once, so we have to do this in two steps... #}
 {% if block('title') %}
-	{% set _title = block('title') ? block('title') ~ ' | ' %}
+    {% set _title = block('title') ? block('title') ~ ' | ' %}
 {% elseif entry is defined %}
-	{% set _title = entry.title ~ ' | ' %}
+    {% set _title = entry.title ~ ' | ' %}
 {% endif %}
 <title>{{ _title is defined ? _title | raw }}{{ siteName }}</title>
 
-{# {{ craft.minimee.css([
-	'/assets/css/app.css'
-]) }} #}
-<link rel="stylesheet" type="text/css" href="/assets/css/app.min.v{{- craft.config.get('version', 'app') -}}.css">
+
+
+{# <link rel="stylesheet" type="text/css" href="/assets/css/app.min.v{{- craft.config.get('version', 'app') -}}.css"> #}
+{# Inline our font declarations #}
+<style type="text/css">
+    {{- source('_readonly/css/fonts.min.css') -}}
+</style>
+
+{# INLINING CSS - requires Cookies plugin to be activated #}
+{%- set cssPath -%}
+    /assets/css/app.{{ craft.config.get('environment', 'app') != 'local' ? 'min.' }}{{- craft.config.get('environment', 'app') != 'local' ? 'v' ~ craft.config.get('version', 'app') ~ '.' -}}css
+{%- endset -%}
+{% set cachedCssVersion = getCookie('cached-css-version') %}
+{% if not craft.config.devMode and cachedCssVersion != craft.config.get('version', 'app') %}
+    {{ setCookie('cached-css-version', plus.one.config('version'), now | date_modify("+7 days").timestamp ) }}
+    <style>
+        {{ source('_readonly/css/app.min.css') }}
+    </style>
+    <link rel="preload" as="style" href="{{- cssPath -}}" onload="this.rel='stylesheet'">
+{% else %}
+    <link rel="stylesheet" type="text/css" href="{{- cssPath -}}">
+{% endif %}
 
 {% include "_includes/analytics.html" %}
 
@@ -31,11 +49,22 @@
 
 <body class="body {% block bodyClass %}{% endblock %}">
 
-	{% block content %}{% endblock %}
+    {% block content %}{% endblock %}
 
-	{# If in local development, include our debugging helper #}
-	{% if craft.config.get('environment', 'app') == 'local' %}
-		{% include '_includes/debugpsd' %}
-	{% endif %}
+    {# If in local development, include our debugging helper #}
+    {% if craft.config.get('environment', 'app') == 'local' %}
+        {% include '_includes/debugpsd' %}
+    {% endif %}
+
+    <div style="border: 0 !important;
+        clip: rect(0 0 0 0) !important;
+        height: 1px !important;
+        margin: -1px !important;
+        overflow: hidden !important;
+        padding: 0 !important;
+        position: absolute !important;
+        width: 1px !important;">
+        { source('_readonly/svg/svg-symbols.svg') }}
+    </div>
 </body>
 </html>

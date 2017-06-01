@@ -23,5 +23,17 @@
     "gulp-uglifycss": "^1.0.4",
     "gulp-watch": "^4.3.5",
     "require-new": "^1.1.0"
+  },
+  "dependencies": {
+    "flickity": "^2.0.5",
+    "fontfaceobserver": "^2.0.9",
+    "jquery": "^3.2.1",
+    "lazysizes": "^3.0.0",
+    "loadjs": "^3.4.0",
+    "private-package-1": "https://github.com/onedarnleyroad/modals.js.git",
+    "private-package-2": "https://github.com/onedarnleyroad/jquery.exposure.git",
+    "private-package-3": "https://github.com/onedarnleyroad/mediaQueries.js.git",
+    "private-package-4": "https://github.com/onedarnleyroad/classToggle.git",
+    "promise-polyfill": "^6.0.2"
   }
 }

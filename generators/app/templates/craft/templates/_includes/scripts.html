@@ -1,20 +1,61 @@
 {#
-	DO NOT PUT ANY NON-ASYNC SCRIPTS IN HERE!
+    DO NOT PUT ANY NON-ASYNC SCRIPTS IN HERE!
 
-	We're loading in the header to ensure that the browser can start fetching them asap, rather than actually waiting for the whole page,
-	but withough renderblocking.
+    We're loading in the header to ensure that the browser can start fetching them asap, rather than actually waiting for the whole page,
+    but withough renderblocking.
 
-	Our site global "APP" variable
+    Our site global "APP" variable
 #}
 <script>
-	var APP = window.APP || {};
-	APP.debug = {{ craft.config.devMode ? 'true' : 'false' }};
-	APP.environment = '{{ craft.config.get('environment', 'app') }}';
-	APP.isMobileBrowser = {{ craft.request.isMobileBrowser ? 'true' : 'false' }};
+    var APP = window.APP || {};
+    APP.debug = {{ craft.config.devMode ? 'true' : 'false' }};
+    APP.environment = '{{ craft.config.get('environment', 'app') }}';
+    APP.isMobileBrowser = {{ craft.request.isMobileBrowser ? 'true' : 'false' }};
+
+    {{ source('_readonly/js/inlined.min.js') }}
+
+    // if our fonts haven't loaded, loadJS our fonts
+    if(sessionStorage.getItem('fontfaceLoaded') === APP.siteVersion) {
+        document.documentElement.className += " fontface fontface--wasLoaded";
+    } else {
+        loadjs(['/assets/js/fonts.min.v{{ craft.config.get('version', 'app') }}.js'], 'fonts');
+    }
 </script>
 
+
+<script src="/assets/js/bundle.min.v{{ craft.config.get('version', 'app') }}.js" async onload="APP.promises.run();">></script>
 {#
-	Async head vendor stuff.  The main bundle is in the footer, this is just a few
-	helpers that aren't adding functionality, just some cross borwser help
+    How to play with the APP.promises thing:
+
+    1. There's no need to use it for anything inside of 'bundle.js'.
+    2. For anything outside of bundle, that would rely on it (i.e. jquery)
+       you can use this. basically, it queues up a function to be excuted after
+       bundle.js has downloaded and executed.
+
+    3. APP.promises.ready(function() {}) is basically a replacement for $(function() {})
+       But one that waits for jQuery to be ready. Inside the function, you can assume `$` works.
+
+    4. It doesn't matter whether the ready function is called before or after bundle has loaded, if bundle loaded
+       already, the promise is resolved instantly.
+
+    <script>
+        // Example:
+        APP.promises.q(function( ) {
+            console.log("I waited until bundle.js was ready and all I got was this lousy console.log");
+        });
+
+        // Replacement for $(function() {});
+        APP.promises.ready(function( ) {
+            console.log("I waited until bundle.js was ready AND I waited for Doc ready, and yet STILL I got was this lousy console.log");
+        });
+
+        // Proves that you can 'queue' even after the whole thing kicked off, eg if a script took
+        // a long time to load, the promises just auto runs something if the resolver resolved:
+        setTimeout(function() {
+            APP.promises.q( function() {
+                console.log("I waited for so long to be initialised, and bundle had run long ago, but I still, all I got was this lousy console.log");
+            });
+        }, 5000);
+    </script>
 #}
-<script src="/assets/js/bundle.min.v{{ craft.config.get('version', 'app') }}.js" async></script>
+
