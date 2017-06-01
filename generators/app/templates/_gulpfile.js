@@ -55,17 +55,24 @@ var stylesSrc    = './src/scss/**/*.scss',
 var joinscripts = function (src, dest, target) {
 
 
-	return gulp.src( filesExist(src, { exceptionMessage: ' Files from scriptFiles are missing' }) )
-			.pipe($.plumber())
-			.pipe($.sourcemaps.init())
-			.pipe($.concat( target ))
+    gulp.src( filesExist(src, { exceptionMessage: ' Files from scriptFiles are missing' }) )
+            .pipe($.plumber())
+            .pipe($.sourcemaps.init())
+            .pipe($.concat( target ))
+            .pipe($.rename( function(path) {
+                path.extname = ".min.js";
+            }))
+            .pipe($.uglify())
             .pipe($.sourcemaps.write('maps'))
-			.pipe(gulp.dest(dest))
-			.pipe($.rename( function(path) {
-				path.extname = ".min.js";
-			}))
-			.pipe($.uglify())
-			.pipe(gulp.dest( dest ));
+            .pipe(gulp.dest( dest ));
+
+
+    return gulp.src( filesExist(src, { exceptionMessage: ' Files from scriptFiles are missing' }) )
+            .pipe($.plumber())
+            .pipe($.sourcemaps.init())
+            .pipe($.concat( target ))
+            .pipe($.sourcemaps.write('maps'))
+            .pipe(gulp.dest(dest));
 };
 
 // copy an array of scripts over to dest,

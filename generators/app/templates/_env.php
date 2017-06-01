@@ -7,8 +7,8 @@ if( ! defined('CRAFT_ENVIRONMENT'))
 {
     // Setup environment-friendly configs
     switch ($_SERVER['SERVER_NAME']) {
-        case 'www.<%= production_server %>' :
-        case '<%= production_server %>' :
+        case 'www.<%= productionServer %>' :
+        case '<%= productionServer %>' :
             define('CRAFT_ENVIRONMENT', 'production');
             break;
 

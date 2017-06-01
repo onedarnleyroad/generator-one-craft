@@ -351,11 +351,16 @@ module.exports = yeoman.Base.extend({
 			assets: oneutils.stripTrailingSlash( generator.props.assets ),
 			// bower: generator.props.bower,
 			proxy: generator.props.devServer,
+            productionServer: generator.props.productionServer,
+            stagingServer: generator.props.stagingServer,
 			publicFolder: generator.props.publicFolder
 		};
 
 		// gulpfile
 		generator.fs.copyTpl( generator.templatePath('_gulpfile.js'), generator.destinationPath('gulpfile.js'), gulpOptions );
+
+        // env
+        generator.fs.copyTpl( generator.templatePath('_env.php'), generator.destinationPath('env.php'), gulpOptions );
 
 		// scriptFiles
 		generator.fs.copyTpl( generator.templatePath('_scriptFiles.js'), generator.destinationPath('scriptFiles.js'), gulpOptions );
@@ -546,7 +551,6 @@ module.exports = yeoman.Base.extend({
 						'craft/storage/_gitignore',
 						'craft/config/env/_gitignore',
 						generator.props.publicFolder + '/cache/_gitignore',
-                        generator.props.publicFolder + '/assets/_gitignore',
 						generator.props.publicFolder + '/uploads/_gitignore'
 					];
 
