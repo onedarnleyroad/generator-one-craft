@@ -23,6 +23,10 @@ var stylesSrc    = './src/scss/**/*.scss',
 	scriptsSrc   = './src/js/**/*.js',
 	scriptsDest  = publicFolder + '/' + assets + '/js',
 
+    svgSrc   = './src/svg/**/*.svg',
+    svgDest  = craftReadonly + '/svg',
+    svgAssetDest = publicFolder + '/' + assets + '/svg',
+
 	imagesSrc    = './src/img/**/*.{jpg,gif,png,svg,ico}',
 	imagesDest   = publicFolder + '/' + assets + '/img',
 
@@ -179,6 +183,25 @@ gulp.task('images', function () {
 });
 
 
+
+/**
+ * -----------
+ * SVG
+ * -----------
+ */
+
+/**
+ * SVG
+ */
+gulp.task('svg', function () {
+  return gulp.src(svgSrc)
+    .pipe($.svgSymbols({
+        title: '%f icon'
+    }))
+    .pipe(gulp.dest(svgDest))
+    // copy to assets to use as a sprite
+    .pipe(gulp.dest(svgAssetDest));
+});
 
 
 

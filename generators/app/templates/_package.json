@@ -13,6 +13,7 @@
     "gulp-imagemin": "^3.0.1",
     "gulp-load-plugins": "^1.0.0",
     "gulp-merge-media-queries": "^0.2.1",
+    "gulp-svg-symbols": "^2.0.2",
     "gulp-plumber": "^0.6.6",
     "gulp-rename": "^1.2.2",
     "gulp-rimraf": "^0.2.0",
