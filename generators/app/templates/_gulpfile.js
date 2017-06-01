@@ -53,12 +53,12 @@ var joinscripts = function (src, dest, target) {
 			.pipe($.plumber())
 			.pipe($.sourcemaps.init())
 			.pipe($.concat( target ))
+            .pipe($.sourcemaps.write('maps'))
 			.pipe(gulp.dest(dest))
 			.pipe($.rename( function(path) {
 				path.extname = ".min.js";
 			}))
 			.pipe($.uglify())
-			.pipe($.sourcemaps.write('maps'))
 			.pipe(gulp.dest( dest ));
 };
 
@@ -130,6 +130,8 @@ gulp.task('styles', function() {
 			]
 		}))
 
+        // write sourcemaps to a subfolder
+        .pipe($.sourcemaps.write('maps'))
 
 		// save to public
 		.pipe(gulp.dest(stylesDest))
@@ -144,8 +146,6 @@ gulp.task('styles', function() {
 			extname: '.min.css'
 		}))
 
-		// write sourcemaps to a subfolder
-		.pipe($.sourcemaps.write('maps'))
 
 		// save to public
 		.pipe(gulp.dest(stylesDest))

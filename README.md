@@ -60,9 +60,8 @@ The default task basically runs everything below, and 'builds' everything it nee
 ### CSS
 
 	$ gulp styles
-	$ gulp styles-production
 
-Pretty straightforward, this is your SASS compiler.  The latter simply omits sourcemaps, and minifies.  Tweak the `serve` bit below if you prefer this - but something like [Minimee](https://github.com/johndwells/craft.minimee) may do the compression for us.  Sourcemaps are useful for development, and probably a negligible bloat to the filesize of the compiled CSS.
+Pretty straightforward, this is your SASS compiler.  Will output compressed `.min.css` version as well as `.css` version. Sourcemaps only written for uncompressed, i.e. for dev purposes.
 
 
 ### SVGs
@@ -87,7 +86,7 @@ This is something for discussion - but simply images go in at `src/img` and come
 
     $ gulp scripts
 
-At present, literally just copies from `src/js` to `public/assets/js` at the moment.  But this task is here so you could run minification, concatenation, linting and so on. 
+Runs through `scriptFiles.js` and concatenates and minifies (`.min.js`) as per the configuration. Sourcemaps only written for uncompressed, i.e. for dev purposes.
 
 ### While developing
 
