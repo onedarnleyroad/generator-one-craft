@@ -91,31 +91,10 @@ module.exports = [
 	},
 
 	{
-		name: "Minimee",
-		url: "https://github.com/johndwells/craft.minimee/archive/master.zip",
-		essential: true,
-		srcFolder: 'minimee'
-	},
-
-	{
-		name: "MN Twig Perversion",
-		url: "https://github.com/marionnewlevant/craft-twig_perversion/archive/master.zip",
-		checked: true,
-		srcFolder: "mntwigperversion"
-	},
-
-	{
 		name: "Preparse Field",
 		url: "https://github.com/aelvan/Preparse-Field-Craft/archive/master.zip",
 		checked: false,
 		srcFolder: "preparsefield"
-	},
-
-	{
-		name: "RedactorI",
-		url: "https://github.com/pixelandtonic/RedactorI/archive/master.zip",
-		checked: true,
-		srcFolder: "redactori"
 	},
 
 	{
