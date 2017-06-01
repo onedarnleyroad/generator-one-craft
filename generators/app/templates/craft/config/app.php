@@ -4,7 +4,8 @@
 if( ! defined('ENV_URI_SCHEME'))
 {
 	// Load up the site version
-	define('ENV_SITE_VERSION', trim(@file_get_contents(CRAFT_BASE_PATH . '/../SITEVERSION' )) ?: '0.0.0');
+	$package = json_decode( file_get_contents(CRAFT_BASE_PATH . '/../package.json'), true);
+    define('ENV_SITE_VERSION', trim($package['version']) );
 }
 
 return array(
