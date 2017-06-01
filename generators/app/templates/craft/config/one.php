@@ -8,6 +8,15 @@ if( ! defined('ENV_URI_SCHEME'))
     define('ENV_SITE_VERSION', trim($package['version']) );
 }
 
+
+// include transforms as part of our one bundle.
+$transforms = @include(CRAFT_CONFIG_PATH . 'transforms.php');
+if (!is_array( $transforms ) )
+{
+    $transforms = [];
+}
+
+
 return array(
 
 	// pass our environment as config key
@@ -18,5 +27,7 @@ return array(
 
 	// Google Analytics ID
 	'googleAnalyticsID' => 'UA-XXXXX-X',
+
+    'transforms' => $transforms;
 
 );
