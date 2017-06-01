@@ -546,6 +546,7 @@ module.exports = yeoman.Base.extend({
 						'craft/storage/_gitignore',
 						'craft/config/env/_gitignore',
 						generator.props.publicFolder + '/cache/_gitignore',
+                        generator.props.publicFolder + '/assets/_gitignore',
 						generator.props.publicFolder + '/uploads/_gitignore'
 					];
 
