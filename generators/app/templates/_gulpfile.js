@@ -30,47 +30,7 @@ var stylesSrc    = './src/scss/**/*.scss',
 	vendorDest   = publicFolder + '/' + assets + '/vendor';
 
 
-/**
- * --------------------
- * UPDATE SITE VERSION
- * --------------------
- */
 
-var bump = function( level, callback ) {
-	var level = level || 'patch';
-	var semver = require('semver');
-	var fs = require('fs');
-	var v = fs.readFileSync( './SITEVERSION', { encoding: 'utf8' } );
-	var newv = semver.inc(v, level);
-	fs.writeFile( './SITEVERSION', newv, { encoding: 'utf8' }, function(err) {
-		if (err) throw err;
-		console.log( "Updated Version " + v + " --> " + newv );
-
-		if (typeof callback === 'function') {
-			callback();
-		}
-	});
-}
-
-gulp.task('bump:major', function() { bump( 'major' ); });
-gulp.task('bump:minor', function() { bump( 'minor' ); });
-gulp.task('bump:patch', function() { bump( 'patch' ); });
-gulp.task('bump', function() { bump( 'patch' ); });
-gulp.task('bump-commit', function() {
-	const spawn = require('child_process').spawn;
-
-	bump('patch', function() {
-		const gitcommit = spawn('git', ['commit', 'SITEVERSION', '-m', '"Patch Version Bump"']);
-
-		gitcommit.stdout.on('data', (data) => {
-			console.log(`stdout: ${data}`);
-		});
-
-		gitcommit.on('close', (code) => {
-			console.log(`child process exited with code ${code}`);
-		});
-	});
-});
 
 
 /**
