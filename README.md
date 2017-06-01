@@ -8,7 +8,7 @@ While this is in development and not published on NPM, we need to take a few ste
 
 **Please note that the folder that the repo lives in needs to be prefixed with `generator`.**  Eg: `generator-one-craft` - where `one-craft` is the name of the generator,  and thus you would run `yo one-craft` to run the app.  See http://yeoman.io/authoring/ for more details.
 
-	$ git clone https://github.com/onedarnleyroad/generator-one-craft.git
+	$ git clone https://github.com/onedarnleyroad/generator-one-craft.git && cd generator-one-craft
 	$ npm install
 
 We need to link this as a global npm module so that yeoman can find it, and make sure yeoman is globally installed:
