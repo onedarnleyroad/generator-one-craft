@@ -50,21 +50,13 @@ $config = array(
 
 );
 
-
-// If a local config file exists, merge
-if (is_array($localConfig = @include(CRAFT_CONFIG_PATH . 'local/db.php')))
+// If environment config file exists, merge
+if (is_array($envConfig = @include(CRAFT_CONFIG_PATH . 'env/db.php')))
 {
-	// does our default config already have a local key?
-	if(array_key_exists('local', $config))
-	{
-		// If so, merge what's in our local/db.php
-		$config['local'] = array_merge($config['local'], $localConfig);
-	}
-	else
-	{
-		// Otherwise, just set as our 'local' key
-		$config['local'] = $localConfig;
-	}
+    // Merge or straight up add to config
+    $config[CRAFT_ENVIRONMENT] = ( array_key_exists(CRAFT_ENVIRONMENT, $config) )
+                                 ? array_merge($config[CRAFT_ENVIRONMENT], $envConfig)
+                                 : $envConfig;
 }
 
 // return our $config back to craft
