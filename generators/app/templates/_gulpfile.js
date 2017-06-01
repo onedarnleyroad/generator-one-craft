@@ -15,10 +15,14 @@ var gulp = require('gulp'),
 <%# /* Set up configurations from the yeoman options */ %>
 var assets = '<%= assets %>',
 	publicFolder = '<%= publicFolder %>',
-	browserSyncProxy = '<%= proxy %>';
+	browserSyncProxy = '<%= proxy %>',
+    craftReadonly = './craft/templates/_readonly';
 
 var stylesSrc    = './src/scss/**/*.scss',
 	stylesDest   = publicFolder + '/' + assets + '/css',
+
+    // save css to craft's read only templates folder.
+    stylesCraftDest = craftReadonly + '/css',
 
 	scriptsSrc   = './src/js/**/*.js',
 	scriptsDest  = publicFolder + '/' + assets + '/js',
@@ -31,7 +35,9 @@ var stylesSrc    = './src/scss/**/*.scss',
 	imagesDest   = publicFolder + '/' + assets + '/img',
 
 	vendorSrc    = './vendor/**/*.{css,js,gif,eot,jpg,png,svg,otf,ttf,woff,woff2}',
-	vendorDest   = publicFolder + '/' + assets + '/vendor';
+	vendorDest   = publicFolder + '/' + assets + '/vendor',
+
+    readOnlyDest = craftReadonly + '/**/*.{css,js,html,map}';
 
 
 
@@ -272,9 +278,11 @@ gulp.task('clean', function() {
 	return gulp.src(
 		[
 			stylesDest,
-			scriptsDest,
-			imagesDest,
-			vendorDest
+            svgDest,
+            scriptsDest,
+            imagesDest,
+            vendorDest,
+            readOnlyDest
 		],
 		{
 			read: false // much faster
@@ -291,37 +299,10 @@ gulp.task('build', ['clean'], function() {
 });
 
 // Our default task calls each of our main tasks in parallel
-gulp.task('default', ['styles', 'vendor', 'scripts', 'images'], function() {
+gulp.task('default', ['styles', 'svg', 'vendor', 'scripts', 'images'], function() {
 	console.log( "Built Everything");
 });
 
 
-/*========================================
-=            Helper Utilities            =
-========================================*/
-// Super Specific things that help out.
-var spawn = require('child_process').spawn;
-
-gulp.task('icomoon', function() {
-	var extract = spawn('unzip', ['-o', 'vendor/icomoon.zip', '-d', 'vendor/icomoon/']);
-
-	extract.stdout.on('data', (data) => {
-	  console.log(`stdout: ${data}`);
-	});
-
-	extract.on('close', (code) => {
-	  console.log(`child process exited with code ${code}`);
-	});
-
-	// var extract2 = spawn('unzip', ['-o', 'vendor/icomoon-png.zip', '-d', 'vendor/icomoon-png/']);
-
-	// extract2.stdout.on('data', (data) => {
-	//   console.log(`stdout: ${data}`);
-	// });
-
-	// extract2.on('close', (code) => {
-	//   console.log(`child process exited with code ${code}`);
-	// });
-});
 
 
