@@ -32,15 +32,17 @@ These folders are generated from the `app/templates` directory but there may be 
 	├── public          # Document root
 	|   ├── assets      # Front end assets, compiled from `/src` - DO NOT EDIT MANUALLY
 	|   ├── cache       # for Minimee
-	|   ├── uploads     # The default Assets source
+	|   └── uploads     # The default Assets source
 	├── src             # Front end source files
 	|   ├── scss                    
 	|   ├── js
-	|   ├── img         # Un-compressed images
+    |   ├── img         # Un-compressed images
+    |   └── svg
 	|   
 	├── README.md
 	├── .gitignore       
 	├── package.json
+    ├── scriptFiles.js
 	└── gulpfile.js
 
 ## Gulpfile and Gulp Plugins
