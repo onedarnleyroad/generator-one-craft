@@ -133,6 +133,20 @@ module.exports = [
 
 	},
 
+    {
+        name: "Cookies",
+        url: "https://github.com/nystudio107/cookies/archive/master.zip",
+        checked: true,
+        destFolder: 'cookies'
+    },
+
+    {
+        name: "Plus",
+        url: "https://github.com/fvaldes33/plus/archive/master.zip",
+        checked: true,
+        destFolder: 'plus'
+    },
+
 	{
 		name: "Translate",
 		url: "https://github.com/boboldehampsink/translate/archive/master.zip",
