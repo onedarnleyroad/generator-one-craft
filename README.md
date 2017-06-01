@@ -64,6 +64,17 @@ The default task basically runs everything below, and 'builds' everything it nee
 
 Pretty straightforward, this is your SASS compiler.  The latter simply omits sourcemaps, and minifies.  Tweak the `serve` bit below if you prefer this - but something like [Minimee](https://github.com/johndwells/craft.minimee) may do the compression for us.  Sourcemaps are useful for development, and probably a negligible bloat to the filesize of the compiled CSS.
 
+
+### SVGs
+
+    $ gulp svg
+
+Runs through `src/svg` folder, finds SVGs and compiles them into one symbols SVG. Our default `_layout.html` has a visually hidden div, which then inlines this SVG. You can then output SVGs with the `<use>` tag eg:
+
+    <svg xmlns="http://www.w3.org/2000/svg" class="facebook"><use xlink:href="#facebook"></use></svg>
+
+Would output the `facebook.svg` file. Be careful, as this uses ID tags, that this doesn't clash with IDs that you use in HTML.
+
 ### Images
 
 	$ gulp images
