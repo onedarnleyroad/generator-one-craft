@@ -1,8 +1,7 @@
 (function() {
 
 	var timeoutSeconds = 30,
-		timeout = timeoutSeconds * 1000,
-	];
+		timeout = timeoutSeconds * 1000;
 
 	var loader_1 = new FontFaceObserver( "myFont", { weight: '400', style: 'normal' });
 

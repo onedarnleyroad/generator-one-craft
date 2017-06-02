@@ -442,17 +442,9 @@ module.exports = yeoman.Base.extend({
 	// approach of using force to overwrite default craft files).  It's not perfect, as the download of Craft then happens a lot
 	// later and not parallel to other actions, but it's 'safer' this way.
 	,install: {
-		npm: function () {
 
-			// install dependencies and then run gulp - this will do a first build so that Craft has assets and templates where they should be.
-			generator.installDependencies({
-				callback: () => {
-					generator.spawnCommand('gulp');
-				}
-			});
-		}
 
-		,installCraft: function() {
+		installCraft: function() {
 
 			if (!generator.props.craftLicense) {
 				return;
@@ -583,10 +575,20 @@ module.exports = yeoman.Base.extend({
 			var pluginsDir = generator.destinationPath('craft/plugins/');
 			var saveplugins = require('./saveplugins.js');
 			saveplugins( pluginsDir, permission, generator.props.craftPlugins );
-
-
-
 		}
+
+        ,npm: function () {
+
+            // install dependencies and then run gulp - this will do a first build so that Craft has assets and templates where they should be.
+            generator.installDependencies({
+                bower: false,
+                npm: true,
+                callback: () => {
+                    generator.spawnCommand('npm install');
+                    generator.spawnCommand('gulp');
+                }
+            });
+        }
 	}
 
 	/**
