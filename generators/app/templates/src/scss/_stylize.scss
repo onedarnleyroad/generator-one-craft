@@ -15,7 +15,6 @@
 html {
     line-height: $line-height-base;
     font-size: $font-size-base;
-    @extend %sans-serif-light;
     color: $text-color;
     background-color: $body-background;
 
@@ -45,10 +44,9 @@ a {
 h1, h2, h3, h4, h5, h6 {
     margin: 0;
     color: $headings-color;
-    @extend %sans-serif-thin;
 
     strong {
-        @extend %sans-serif-light;
+
     }
 }
 
