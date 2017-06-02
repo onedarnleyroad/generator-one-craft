@@ -584,7 +584,6 @@ module.exports = yeoman.Base.extend({
                 bower: false,
                 npm: true,
                 callback: () => {
-                    generator.spawnCommand('npm install');
                     generator.spawnCommand('gulp');
                 }
             });
