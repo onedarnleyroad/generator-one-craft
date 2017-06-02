@@ -28,6 +28,6 @@ return array(
 	// Google Analytics ID
 	'googleAnalyticsID' => 'UA-XXXXX-X',
 
-    'transforms' => $transforms;
+    'transforms' => $transforms
 
 );
