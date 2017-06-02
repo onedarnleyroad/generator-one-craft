@@ -162,6 +162,7 @@ gulp.task('styles', function() {
 
 		// save to public
 		.pipe(gulp.dest(stylesDest))
+        .pipe(gulp.dest(stylesCraftDest))
 });
 
 
