@@ -218,5 +218,9 @@ Just some notes for our node modules and tools to run the generator.  This is no
 [https://www.npmjs.com/package/mkdirp](https://www.npmjs.com/package/mkdirp)  
 **So we can just build empty directories, as Yeoman isn't so great at 'copying' empty directories.**
 
+## Updating Packages
+
+Use `npm-check-updates` to update all packages. Hattip [http://alwaystwisted.com/articles/updating-dependencies-in-a-packagejson](http://alwaystwisted.com/articles/updating-dependencies-in-a-packagejson)
+
 --
 
