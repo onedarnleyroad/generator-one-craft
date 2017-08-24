@@ -1,11 +1,11 @@
 <?php
 
 // As a precaution, only define constants once
-if( ! defined('ENV_URI_SCHEME'))
+if( ! defined('ENV_SITE_VERSION'))
 {
 	// Load up the site version
-	$package = json_decode( file_get_contents(CRAFT_BASE_PATH . '/../package.json'), true);
-    define('ENV_SITE_VERSION', trim($package['version']) );
+	$package = json_decode(@file_get_contents(CRAFT_BASE_PATH . '/../package.json'), true) ?: array('version' => '0.0.0');
+	define('ENV_SITE_VERSION', trim($package['version']) );
 }
 
 
@@ -13,7 +13,7 @@ if( ! defined('ENV_URI_SCHEME'))
 $transforms = @include(CRAFT_CONFIG_PATH . 'transforms.php');
 if (!is_array( $transforms ) )
 {
-    $transforms = [];
+	$transforms = [];
 }
 
 
