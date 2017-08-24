@@ -15,11 +15,6 @@
 // As a precaution, only define constants once
 if( ! defined('ENV_URI_SCHEME'))
 {
-
-    // Load up the site version from package.json
-    $package = json_decode(@file_get_contents(CRAFT_BASE_PATH . '/../package.json'), true) ?: array('version' => '1.0.0');
-    define('ENV_SITE_VERSION', trim($package['version']) );
-
     // Ensure our urls have the right scheme
     if (isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0 || $_SERVER['HTTPS'] == 1)
      || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') === 0)
