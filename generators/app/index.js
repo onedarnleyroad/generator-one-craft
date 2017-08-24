@@ -572,9 +572,8 @@ module.exports = yeoman.Base.extend({
 			console.log( "installing craft plugins");
 
 			// moved this to a module as it was getting a bit too cumbersome down here.
-			var pluginsDir = generator.destinationPath('craft/plugins/');
 			var saveplugins = require('./saveplugins.js');
-			saveplugins( pluginsDir, permission, generator.props.craftPlugins );
+			saveplugins( generator, permission, generator.props.craftPlugins );
 		}
 
         ,npm: function () {

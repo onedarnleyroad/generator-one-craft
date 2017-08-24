@@ -5,12 +5,15 @@ var craftPlugins = require('./craftplugins.js'),
 	chalk = require('chalk');
 
 /** our save function to export
- * @param pluginsDir The directory where all plugins should be saved to
+ * @param generator Yeoman
  * @param permission The chmod to set file & folder permissions to
  * @param approved An object of plugins to download
  * @return Void
  */
-var save = function( pluginsDir, permission, approved ) {
+var save = function( generator, permission, approved ) {
+
+	var pluginsDir = generator.destinationPath('craft/plugins/');
+
 
 	// loop through every plugin set in craftPlugins
 	craftPlugins.forEach( plugin => {
@@ -74,7 +77,7 @@ var save = function( pluginsDir, permission, approved ) {
 								// are we moving all of the files inside a named folder?
 								if ( plugin.destFolder) {
 									// specified a subfolder to put things in
-									file.path = pluginsDir + plugin.destFolder + "/" + file.path;
+									file.path = generator.destinationPath(plugin.destFolder) + "/" + file.path;
 								} else {
 									file.path = pluginsDir + file.path;
 								}

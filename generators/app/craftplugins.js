@@ -63,6 +63,14 @@ module.exports = [
 	},
 
 	{
+		name: "Craft Scripts (1DR Fork)",
+		url: "https://github.com/onedarnleyroad/craft-scripts/archive/master.zip",
+		checked: true,
+		srcFolder: "scripts",
+		destFolder: "./"
+	},
+
+	{
 		name: "CropField (not yet on Github, one of ours, still needs polish)",
 		url: "",
 		checked: false,
@@ -108,7 +116,7 @@ module.exports = [
 		name: "SEOmatic",
 		url: "https://github.com/nystudio107/seomatic/archive/master.zip",
 		checked: true,
-		destFolder: 'seomatic' // if this is set then it will create this folder at the top level.
+		destFolder: "craft/plugins/seomatic" // if this is set then it will create this folder at the top level.
 
 	},
 
@@ -116,21 +124,21 @@ module.exports = [
         name: "Cookies",
         url: "https://github.com/nystudio107/cookies/archive/master.zip",
         checked: true,
-        destFolder: 'cookies'
+        destFolder: "craft/plugins/cookies"
     },
 
     {
         name: "Plus",
         url: "https://github.com/fvaldes33/plus/archive/master.zip",
         checked: true,
-        destFolder: 'plus'
+        destFolder: "craft/plugins/plus"
     },
 
 	{
 		name: "Translate",
 		url: "https://github.com/boboldehampsink/translate/archive/master.zip",
 		checked: false,
-		destFolder: 'translate'
+		destFolder: "craft/plugins/translate"
 	}
 
 ];
