@@ -8,10 +8,6 @@
  */
 
 return array(
-
-	// turn on debug/logging
 	'devMode' => true,
-
-	// Where to send all test emails
 	'testToEmailAddress' => 'your@email.com',
 );
