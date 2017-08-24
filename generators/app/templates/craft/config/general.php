@@ -94,8 +94,9 @@ $config = array(
 		// keep staging offline
 		'isSystemOn' => false,
 
+		// Route all generated emails to internal account
+		'testToEmailAddress' => 'digital@onedarnleyroad.com'
 	),
-
 
 	// local / development
 	'local' => array(
@@ -108,6 +109,9 @@ $config = array(
 
 		// enable updating from the CP
 		'allowAutoUpdates' => true,
+
+		// Route all generated emails to internal account
+		'testToEmailAddress' => 'digital@onedarnleyroad.com'
 	)
 );
 
