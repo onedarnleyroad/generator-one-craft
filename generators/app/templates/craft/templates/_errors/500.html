@@ -1,6 +1,7 @@
-{% extends "_layout" %}
-{% set title = "500" %}
+{% extends "_errors/_layout" %}
+
+{% set title = "Internal Server Error" %}
 
 {% block content %}
-    <h1>500 - Sorry, there was an error</h1>
+    <h1>{{ title }}</h1>
 {% endblock %}
